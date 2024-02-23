@@ -29,18 +29,19 @@ Research project, implementing Lee et. al.'s (https://arxiv.org/pdf/2306.14892.p
 - `utils.py`: Contains utilities for generating filenames for bandit data and model, initializing worker for data loading, and converting data to Tensor.
 
 
+## Setting up environment:
+1. Be sure to have pytorch installed on your system (needs to elaborate)
+
+2. Install dependencies: `pip install -r requirements.txt`
+
+
 ## Example usage:
 
-Set up environment:
-1. Be sure to have pytorch installed on your system (needs to elaborate)
-2. Install dependencies:
-    `pip install -r requirements.txt`
-
-Collect data:
+1. Collect data:
 `python3 collect_data.py --env bandit --envs 100000 --H 500 --dim 5 --var 0.3 --cov 0.0 --envs_eval 200`
 
-Train:
+2. Train:
 `python3 train.py --env bandit --envs 100000 --H 500 --dim 5 --var 0.3 --cov 0.0 --lr 0.0001 --layer 4 --head 4 --shuffle --n_epochs 300 --seed 1`
 
-Evaluate:
+3. Evaluate:
 `python3 eval.py --env bandit --envs 100000 --H 500 --dim 5 --var 0.3 --cov 0.0 --lr 0.0001 --layer 4 --head 4 --shuffle --epoch 400 --n_eval 200 --seed 1`
