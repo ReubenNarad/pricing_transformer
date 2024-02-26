@@ -4,7 +4,8 @@ Research project, implementing Lee et. al.'s (https://arxiv.org/pdf/2306.14892.p
 ## Notes:
 
 - We use OpenAI's Gym library for simulating environments
-- 
+- The base transformer model is GPT2 via 🤗 Transformers
+- We use wandb for tracking loss on runs
 
 ## File explanations:
 
