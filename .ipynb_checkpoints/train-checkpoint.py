@@ -14,17 +14,12 @@ from torchvision.transforms import transforms
 import numpy as np
 import common_args
 import random
+import wandb
 from dataset import Dataset, ImageDataset
 from net import Transformer, ImageTransformer
 from utils import (
     build_bandit_data_filename,
     build_bandit_model_filename,
-    build_linear_bandit_data_filename,
-    build_linear_bandit_model_filename,
-    build_darkroom_data_filename,
-    build_darkroom_model_filename,
-    build_miniworld_data_filename,
-    build_miniworld_model_filename,
     worker_init_fn,
 )
 
@@ -104,6 +99,20 @@ if __name__ == '__main__':
         'dim': dim,
         'seed': seed,
     }
+    
+    wandb.init(
+        # set the wandb project where this run will be logged
+        project="pricing_transformer",
+
+        # track hyperparameters and run metadata
+        config={
+        "learning_rate": lr,
+        "architecture": "Transformer",
+        "dataset": "Custom",
+        "epochs": num_epochs,
+        }
+    )
+    
     if env == 'bandit':
         state_dim = 1
 
@@ -281,6 +290,9 @@ if __name__ == '__main__':
         end_time = time.time()
         printw(f"\tTest loss: {test_loss[-1]}")
         printw(f"\tEval time: {end_time - start_time}")
+        
+        wandb.log({"Test Loss": test_loss[-1]})
+
 
 
         # TRAINING
@@ -330,3 +342,4 @@ if __name__ == '__main__':
 
     torch.save(model.state_dict(), f'models/{filename}.pt')
     print("Done.")
+    wandb.finish()

@@ -41,7 +41,7 @@ Research project, implementing Lee et. al.'s (https://arxiv.org/pdf/2306.14892.p
 `python3 collect_data.py --env bandit --envs 100000 --H 500 --dim 5 --var 0.3 --cov 0.0 --envs_eval 200`
 
 2. Train:
-`python3 train.py --env bandit --envs 100000 --H 500 --dim 5 --var 0.3 --cov 0.0 --lr 0.0001 --layer 4 --head 4 --shuffle --n_epochs 300 --seed 1`
+`python3 train.py --env bandit --envs 100000 --H 500 --dim 5 --var 0.3 --cov 0.0 --lr 0.0001 --layer 4 --head 4 --shuffle --num_epochs 3 --seed 1`
 
 3. Evaluate:
 `python3 eval.py --env bandit --envs 100000 --H 500 --dim 5 --var 0.3 --cov 0.0 --lr 0.0001 --layer 4 --head 4 --shuffle --epoch 400 --n_eval 200 --seed 1`
