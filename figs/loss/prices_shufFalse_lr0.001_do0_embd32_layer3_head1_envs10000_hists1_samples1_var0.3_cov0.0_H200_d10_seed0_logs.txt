@@ -1,0 +1,1660 @@
+Num train batches: 125
+Num test batches: 32
+Epoch: 1
+	Test loss: 2.330089638671875
+	Eval time: 1.0596985816955566
+	Train loss: 0.20812449954032905
+	Train time: 1.9032845497131348
+Epoch: 2
+	Test loss: 0.012705404348373413
+	Eval time: 0.11509084701538086
+	Train loss: 0.00748721236228943
+	Train time: 1.7696290016174316
+Epoch: 3
+	Test loss: 0.00447729519367218
+	Eval time: 0.11067485809326172
+	Train loss: 0.003202252053022384
+	Train time: 1.769266128540039
+Epoch: 4
+	Test loss: 0.002312259645462036
+	Eval time: 0.11049222946166992
+	Train loss: 0.0018036916112899788
+	Train time: 1.7627370357513428
+Epoch: 5
+	Test loss: 0.0014194061136245729
+	Eval time: 0.11476922035217285
+	Train loss: 0.0011628088080883029
+	Train time: 1.7606723308563232
+Epoch: 6
+	Test loss: 0.0009606217586994175
+	Eval time: 0.11034488677978516
+	Train loss: 0.0008127650707960133
+	Train time: 1.7672479152679443
+Epoch: 7
+	Test loss: 0.0006932063782215116
+	Eval time: 0.11082577705383301
+	Train loss: 0.0005997055256366727
+	Train time: 1.7590405941009521
+Epoch: 8
+	Test loss: 0.0005229497826099394
+	Eval time: 0.11146974563598633
+	Train loss: 0.0004599757152795793
+	Train time: 1.7569856643676758
+Epoch: 9
+	Test loss: 0.0004077493485808372
+	Eval time: 0.10961103439331055
+	Train loss: 0.0003632191100716591
+	Train time: 1.7494962215423584
+Epoch: 10
+	Test loss: 0.0003260593795776367
+	Eval time: 0.10954165458679199
+	Train loss: 0.00029337960720062244
+	Train time: 1.7435088157653809
+Epoch: 10
+Test Loss:        0.0003260593795776367
+Train Loss:       0.00029337960720062244
+
+
+Epoch: 11
+	Test loss: 0.0002659977725148201
+	Eval time: 0.09775066375732422
+	Train loss: 0.00024128905072808265
+	Train time: 1.7302989959716797
+Epoch: 12
+	Test loss: 0.00022054620072245592
+	Eval time: 0.1109623908996582
+	Train loss: 0.00020139700770378127
+	Train time: 1.7555391788482666
+Epoch: 13
+	Test loss: 0.00018530192822217942
+	Eval time: 0.11096882820129395
+	Train loss: 0.00017017025403678424
+	Train time: 1.7588567733764648
+Epoch: 14
+	Test loss: 0.00015744738072156906
+	Eval time: 0.11055588722229004
+	Train loss: 0.00014527798965573312
+	Train time: 1.681581974029541
+Epoch: 15
+	Test loss: 0.0001350559454411268
+	Eval time: 0.09784078598022461
+	Train loss: 0.00012512305460870267
+	Train time: 1.6896297931671143
+Epoch: 16
+	Test loss: 0.00011678449593484403
+	Eval time: 0.11139535903930664
+	Train loss: 0.00010858434580266476
+	Train time: 1.9767184257507324
+Epoch: 17
+	Test loss: 0.0001017067658901215
+	Eval time: 0.11159992218017578
+	Train loss: 9.485485635697845e-05
+	Train time: 1.9212226867675781
+Epoch: 18
+	Test loss: 8.911904640495774e-05
+	Eval time: 0.11235165596008301
+	Train loss: 8.3340976126492e-05
+	Train time: 1.9723632335662842
+Epoch: 19
+	Test loss: 7.850592419505121e-05
+	Eval time: 0.11176609992980957
+	Train loss: 7.359687734395267e-05
+	Train time: 1.9896728992462158
+Epoch: 20
+	Test loss: 6.950286991894248e-05
+	Eval time: 0.11308550834655762
+	Train loss: 6.528696548193691e-05
+	Train time: 1.7501535415649414
+Epoch: 20
+Test Loss:        6.950286991894248e-05
+Train Loss:       6.528696548193691e-05
+
+
+Epoch: 21
+	Test loss: 6.176998581737281e-05
+	Eval time: 0.09827065467834473
+	Train loss: 5.814826812595132e-05
+	Train time: 1.7662980556488037
+Epoch: 22
+	Test loss: 5.512019038200378e-05
+	Eval time: 0.11566400527954102
+	Train loss: 5.19771395623684e-05
+	Train time: 1.791778802871704
+Epoch: 23
+	Test loss: 4.9357721805572495e-05
+	Eval time: 0.11201357841491699
+	Train loss: 4.66115474700928e-05
+	Train time: 1.7567100524902344
+Epoch: 24
+	Test loss: 4.431694507598876e-05
+	Eval time: 0.11203503608703613
+	Train loss: 4.192141212522984e-05
+	Train time: 1.7550301551818848
+Epoch: 25
+	Test loss: 3.993110306560994e-05
+	Eval time: 0.11141109466552734
+	Train loss: 3.780295904725791e-05
+	Train time: 1.76530122756958
+Epoch: 26
+	Test loss: 3.60344197973609e-05
+	Eval time: 0.11225080490112305
+	Train loss: 3.417051123455166e-05
+	Train time: 1.7665858268737793
+Epoch: 27
+	Test loss: 3.262491036206484e-05
+	Eval time: 0.11262130737304688
+	Train loss: 3.095567144453525e-05
+	Train time: 1.7563045024871826
+Epoch: 28
+	Test loss: 2.9569739028811456e-05
+	Eval time: 0.11275005340576172
+	Train loss: 2.80992166697979e-05
+	Train time: 1.9373486042022705
+Epoch: 29
+	Test loss: 2.6875679083168505e-05
+	Eval time: 0.11287236213684082
+	Train loss: 2.5550325773656374e-05
+	Train time: 2.022078275680542
+Epoch: 30
+	Test loss: 2.4455152098089463e-05
+	Eval time: 0.10114765167236328
+	Train loss: 2.327518530189991e-05
+	Train time: 1.8420660495758057
+Epoch: 30
+Test Loss:        2.4455152098089463e-05
+Train Loss:       2.327518530189991e-05
+
+
+Epoch: 31
+	Test loss: 2.2312461249530313e-05
+	Eval time: 0.09824442863464355
+	Train loss: 2.1234537120908494e-05
+	Train time: 1.9096882343292236
+Epoch: 32
+	Test loss: 2.0363249517977235e-05
+	Eval time: 0.09992074966430664
+	Train loss: 1.93981018755585e-05
+	Train time: 1.8618197441101074
+Epoch: 33
+	Test loss: 1.8605894027277823e-05
+	Eval time: 0.09997129440307617
+	Train loss: 1.7744756657630203e-05
+	Train time: 1.7632033824920654
+Epoch: 34
+	Test loss: 1.702971613034606e-05
+	Eval time: 0.0978994369506836
+	Train loss: 1.6249887356534602e-05
+	Train time: 1.6808266639709473
+Epoch: 35
+	Test loss: 1.5616974029690028e-05
+	Eval time: 0.0992431640625
+	Train loss: 1.4896484306082135e-05
+	Train time: 1.682724952697754
+Epoch: 36
+	Test loss: 1.4332371158525346e-05
+	Eval time: 0.09886884689331055
+	Train loss: 1.3671810971572988e-05
+	Train time: 1.7234141826629639
+Epoch: 37
+	Test loss: 1.3137057628482581e-05
+	Eval time: 0.11194252967834473
+	Train loss: 1.257244441658258e-05
+	Train time: 1.7507808208465576
+Epoch: 38
+	Test loss: 1.2061640974134206e-05
+	Eval time: 0.11166572570800781
+	Train loss: 1.1542322449386118e-05
+	Train time: 1.7587413787841797
+Epoch: 39
+	Test loss: 1.112579492852092e-05
+	Eval time: 0.11090946197509766
+	Train loss: 1.0634429855272181e-05
+	Train time: 1.7589280605316162
+Epoch: 40
+	Test loss: 1.0210378617048265e-05
+	Eval time: 0.11179280281066895
+	Train loss: 9.785904185846455e-06
+	Train time: 1.7650985717773438
+Epoch: 40
+Test Loss:        1.0210378617048265e-05
+Train Loss:       9.785904185846455e-06
+
+
+Epoch: 41
+	Test loss: 9.4395534414798e-06
+	Eval time: 0.11157441139221191
+	Train loss: 9.032563068903985e-06
+	Train time: 1.773296594619751
+Epoch: 42
+	Test loss: 8.667359994724392e-06
+	Eval time: 0.1107020378112793
+	Train loss: 8.310557804070412e-06
+	Train time: 1.7806835174560547
+Epoch: 43
+	Test loss: 8.033200912177561e-06
+	Eval time: 0.11114978790283203
+	Train loss: 7.694738069549204e-06
+	Train time: 1.77085542678833
+Epoch: 44
+	Test loss: 7.419562903232873e-06
+	Eval time: 0.11166548728942871
+	Train loss: 7.0688067609444264e-06
+	Train time: 1.7633357048034668
+Epoch: 45
+	Test loss: 6.787666333839296e-06
+	Eval time: 0.11217260360717773
+	Train loss: 6.549636307172478e-06
+	Train time: 1.7682907581329346
+Epoch: 46
+	Test loss: 6.314362175762655e-06
+	Eval time: 0.11286234855651855
+	Train loss: 6.07037422247231e-06
+	Train time: 1.7714941501617432
+Epoch: 47
+	Test loss: 5.8363453764468435e-06
+	Eval time: 0.11328911781311035
+	Train loss: 5.603012451902032e-06
+	Train time: 1.7668583393096924
+Epoch: 48
+	Test loss: 5.337694315239787e-06
+	Eval time: 0.1123359203338623
+	Train loss: 5.14341879170388e-06
+	Train time: 1.7840802669525146
+Epoch: 49
+	Test loss: 5.01133382320404e-06
+	Eval time: 0.1124734878540039
+	Train loss: 4.799567142035812e-06
+	Train time: 1.769454002380371
+Epoch: 50
+	Test loss: 4.668067274615168e-06
+	Eval time: 0.11065244674682617
+	Train loss: 4.457120040897281e-06
+	Train time: 1.8098628520965576
+Epoch: 50
+Test Loss:        4.668067274615168e-06
+Train Loss:       4.457120040897281e-06
+
+
+Epoch: 51
+	Test loss: 4.2815387062728395e-06
+	Eval time: 0.11391901969909668
+	Train loss: 4.127570055425166e-06
+	Train time: 2.0026676654815674
+Epoch: 52
+	Test loss: 3.9616192271932945e-06
+	Eval time: 0.11377382278442383
+	Train loss: 3.7779967603273695e-06
+	Train time: 1.891693353652954
+Epoch: 53
+	Test loss: 3.639131938107312e-06
+	Eval time: 0.11303901672363281
+	Train loss: 3.5035854740999637e-06
+	Train time: 1.7745485305786133
+Epoch: 54
+	Test loss: 3.4097192250192165e-06
+	Eval time: 0.11371493339538574
+	Train loss: 3.2488148310221747e-06
+	Train time: 1.7667410373687744
+Epoch: 55
+	Test loss: 3.194148396141826e-06
+	Eval time: 0.11289358139038086
+	Train loss: 3.0882169050164512e-06
+	Train time: 1.7682595252990723
+Epoch: 56
+	Test loss: 3.040376929566264e-06
+	Eval time: 0.11295676231384277
+	Train loss: 2.8149397298693666e-06
+	Train time: 1.8030900955200195
+Epoch: 57
+	Test loss: 2.722501847892999e-06
+	Eval time: 0.11369132995605469
+	Train loss: 2.62300522532314e-06
+	Train time: 2.032386064529419
+Epoch: 58
+	Test loss: 2.580628423020243e-06
+	Eval time: 0.11434197425842285
+	Train loss: 2.4436981533654053e-06
+	Train time: 1.988506555557251
+Epoch: 59
+	Test loss: 2.2849103691987696e-06
+	Eval time: 0.1128697395324707
+	Train loss: 2.2104886057786654e-06
+	Train time: 1.8561840057373047
+Epoch: 60
+	Test loss: 2.122959112748503e-06
+	Eval time: 0.11269688606262207
+	Train loss: 2.075098038185388e-06
+	Train time: 1.7983379364013672
+Epoch: 60
+Test Loss:        2.122959112748503e-06
+Train Loss:       2.075098038185388e-06
+
+
+Epoch: 61
+	Test loss: 2.018778377678245e-06
+	Eval time: 0.11294198036193848
+	Train loss: 1.9059354066848758e-06
+	Train time: 1.9055449962615967
+Epoch: 62
+	Test loss: 1.8506226176396017e-06
+	Eval time: 0.1126253604888916
+	Train loss: 1.760544227436185e-06
+	Train time: 1.7930643558502197
+Epoch: 63
+	Test loss: 1.6854086215607822e-06
+	Eval time: 0.11229920387268066
+	Train loss: 1.6148128209169954e-06
+	Train time: 1.7829861640930176
+Epoch: 64
+	Test loss: 1.6006696992553765e-06
+	Eval time: 0.11244082450866699
+	Train loss: 1.5815356688108293e-06
+	Train time: 1.8933658599853516
+Epoch: 65
+	Test loss: 1.5238026063889267e-06
+	Eval time: 0.1132056713104248
+	Train loss: 1.475570006296039e-06
+	Train time: 1.8946278095245361
+Epoch: 66
+	Test loss: 1.4662838261574508e-06
+	Eval time: 0.11189913749694824
+	Train loss: 1.4347567735239858e-06
+	Train time: 1.853508710861206
+Epoch: 67
+	Test loss: 1.3604051084257658e-06
+	Eval time: 0.11312317848205566
+	Train loss: 1.2478823488345363e-06
+	Train time: 1.798349380493164
+Epoch: 68
+	Test loss: 1.1735115444753318e-06
+	Eval time: 0.11260008811950684
+	Train loss: 1.127507849596441e-06
+	Train time: 1.8149826526641846
+Epoch: 69
+	Test loss: 1.1115248687565326e-06
+	Eval time: 0.11274385452270508
+	Train loss: 1.0921371390577406e-06
+	Train time: 1.7745370864868164
+Epoch: 70
+	Test loss: 1.0267663781996817e-06
+	Eval time: 0.11300897598266602
+	Train loss: 9.897591732442378e-07
+	Train time: 1.7604503631591797
+Epoch: 70
+Test Loss:        1.0267663781996817e-06
+Train Loss:       9.897591732442378e-07
+
+
+Epoch: 71
+	Test loss: 9.82488029403612e-07
+	Eval time: 0.11473393440246582
+	Train loss: 9.74915532860905e-07
+	Train time: 1.7751739025115967
+Epoch: 72
+	Test loss: 9.734863007906825e-07
+	Eval time: 0.11266016960144043
+	Train loss: 9.676318685524167e-07
+	Train time: 1.75313138961792
+Epoch: 73
+	Test loss: 9.570747672114524e-07
+	Eval time: 0.1111154556274414
+	Train loss: 7.786299305735153e-07
+	Train time: 1.7584054470062256
+Epoch: 74
+	Test loss: 6.521312915720044e-07
+	Eval time: 0.11201739311218262
+	Train loss: 6.343667989131063e-07
+	Train time: 1.7748563289642334
+Epoch: 75
+	Test loss: 6.291280721779912e-07
+	Eval time: 0.11191606521606445
+	Train loss: 6.206166034098714e-07
+	Train time: 1.809849739074707
+Epoch: 76
+	Test loss: 6.187079881783574e-07
+	Eval time: 0.1108560562133789
+	Train loss: 6.13070953404531e-07
+	Train time: 1.7640013694763184
+Epoch: 77
+	Test loss: 6.120128964539616e-07
+	Eval time: 0.11152863502502441
+	Train loss: 5.983308859867975e-07
+	Train time: 1.7945256233215332
+Epoch: 78
+	Test loss: 5.315744143445047e-07
+	Eval time: 0.11182427406311035
+	Train loss: 5.016981827793644e-07
+	Train time: 1.767103910446167
+Epoch: 79
+	Test loss: 4.956897359807045e-07
+	Eval time: 0.11171793937683105
+	Train loss: 4.907338338671253e-07
+	Train time: 1.7722547054290771
+Epoch: 80
+	Test loss: 4.897823196370154e-07
+	Eval time: 0.11089944839477539
+	Train loss: 4.864868539152667e-07
+	Train time: 1.9689562320709229
+Epoch: 80
+Test Loss:        4.897823196370154e-07
+Train Loss:       4.864868539152667e-07
+
+
+Epoch: 81
+	Test loss: 4.860132199246435e-07
+	Eval time: 0.11270570755004883
+	Train loss: 4.836875217733905e-07
+	Train time: 1.8885259628295898
+Epoch: 82
+	Test loss: 4.835336667019874e-07
+	Eval time: 0.11182641983032227
+	Train loss: 4.806020128307864e-07
+	Train time: 1.7691998481750488
+Epoch: 83
+	Test loss: 4.715635639149696e-07
+	Eval time: 0.11174726486206055
+	Train loss: 4.1065752680879097e-07
+	Train time: 1.765547275543213
+Epoch: 84
+	Test loss: 3.7549697037320585e-07
+	Eval time: 0.11153030395507812
+	Train loss: 3.591207467252391e-07
+	Train time: 1.804535150527954
+Epoch: 85
+	Test loss: 2.9305603326065455e-07
+	Eval time: 0.11153483390808105
+	Train loss: 2.6239011524012315e-07
+	Train time: 1.8164424896240234
+Epoch: 86
+	Test loss: 2.559035652666353e-07
+	Eval time: 0.11168766021728516
+	Train loss: 2.5132548151304937e-07
+	Train time: 1.7868013381958008
+Epoch: 87
+	Test loss: 2.5028880772879346e-07
+	Eval time: 0.11152005195617676
+	Train loss: 2.4745170114329075e-07
+	Train time: 1.7641167640686035
+Epoch: 88
+	Test loss: 2.468755477457307e-07
+	Eval time: 0.11145639419555664
+	Train loss: 2.430440866737626e-07
+	Train time: 1.752410888671875
+Epoch: 89
+	Test loss: 2.1931883034994822e-07
+	Eval time: 0.11133646965026855
+	Train loss: 1.6018157090002203e-07
+	Train time: 1.7898051738739014
+Epoch: 90
+	Test loss: 1.3842700092936863e-07
+	Eval time: 0.11454653739929199
+	Train loss: 1.334132817282807e-07
+	Train time: 1.786911964416504
+Epoch: 90
+Test Loss:        1.3842700092936863e-07
+Train Loss:       1.334132817282807e-07
+
+
+Epoch: 91
+	Test loss: 1.321855005517136e-07
+	Eval time: 0.11384177207946777
+	Train loss: 1.2918358712340705e-07
+	Train time: 1.7830407619476318
+Epoch: 92
+	Test loss: 1.2869922487880102e-07
+	Eval time: 0.11327433586120605
+	Train loss: 1.265624730149284e-07
+	Train time: 1.7699508666992188
+Epoch: 93
+	Test loss: 1.2632785408641212e-07
+	Eval time: 0.11366772651672363
+	Train loss: 1.2474728799134034e-07
+	Train time: 1.7614808082580566
+Epoch: 94
+	Test loss: 1.2461362450267188e-07
+	Eval time: 0.11574149131774902
+	Train loss: 1.2335946841631089e-07
+	Train time: 1.7733838558197021
+Epoch: 95
+	Test loss: 1.2334851591731417e-07
+	Eval time: 0.1130070686340332
+	Train loss: 1.2237614100740756e-07
+	Train time: 1.7925448417663574
+Epoch: 96
+	Test loss: 1.2240110008860944e-07
+	Eval time: 0.11264514923095703
+	Train loss: 1.2160634745669086e-07
+	Train time: 1.7636361122131348
+Epoch: 97
+	Test loss: 1.216319027298596e-07
+	Eval time: 0.11139130592346191
+	Train loss: 1.2098131883249154e-07
+	Train time: 1.7646677494049072
+Epoch: 98
+	Test loss: 1.210048624488991e-07
+	Eval time: 0.11308050155639648
+	Train loss: 1.205134972406086e-07
+	Train time: 1.7732369899749756
+Epoch: 99
+	Test loss: 1.205918029154418e-07
+	Eval time: 0.11213994026184082
+	Train loss: 1.2017650864436294e-07
+	Train time: 1.7713265419006348
+Epoch: 100
+	Test loss: 1.2026964090182446e-07
+	Eval time: 0.11210966110229492
+	Train loss: 1.199041162908543e-07
+	Train time: 1.7529921531677246
+Epoch: 100
+Test Loss:        1.2026964090182446e-07
+Train Loss:       1.199041162908543e-07
+
+
+Epoch: 101
+	Test loss: 1.1997132023680024e-07
+	Eval time: 0.11297369003295898
+	Train loss: 9.920201049681055e-08
+	Train time: 1.7737040519714355
+Epoch: 102
+	Test loss: 2.7429158908489632e-08
+	Eval time: 0.11291360855102539
+	Train loss: 1.6200912268686797e-08
+	Train time: 1.7843194007873535
+Epoch: 103
+	Test loss: 1.2090502004866724e-08
+	Eval time: 0.11156702041625977
+	Train loss: 9.01430697695105e-09
+	Train time: 1.7729308605194092
+Epoch: 104
+	Test loss: 8.30411759125127e-09
+	Eval time: 0.11179113388061523
+	Train loss: 6.611346150293684e-09
+	Train time: 1.7575478553771973
+Epoch: 105
+	Test loss: 6.4226974700432035e-09
+	Eval time: 0.11222672462463379
+	Train loss: 5.200802455647136e-09
+	Train time: 1.7697157859802246
+Epoch: 106
+	Test loss: 5.068480177214951e-09
+	Eval time: 0.1131598949432373
+	Train loss: 4.143490704109353e-09
+	Train time: 1.9251036643981934
+Epoch: 107
+	Test loss: 4.0823214567353716e-09
+	Eval time: 0.11148357391357422
+	Train loss: 3.3371890344824377e-09
+	Train time: 1.8424456119537354
+Epoch: 108
+	Test loss: 3.3035869546438333e-09
+	Eval time: 0.11168551445007324
+	Train loss: 2.7094777243519277e-09
+	Train time: 1.776409387588501
+Epoch: 109
+	Test loss: 2.716779267188941e-09
+	Eval time: 0.1116185188293457
+	Train loss: 2.2215392804980647e-09
+	Train time: 1.7599234580993652
+Epoch: 110
+	Test loss: 2.249478950488992e-09
+	Eval time: 0.11198592185974121
+	Train loss: 1.8074360802700096e-09
+	Train time: 1.8216214179992676
+Epoch: 110
+Test Loss:        2.249478950488992e-09
+Train Loss:       1.8074360802700096e-09
+
+
+Epoch: 111
+	Test loss: 1.8349287142882532e-09
+	Eval time: 0.11294102668762207
+	Train loss: 1.4580039062650485e-09
+	Train time: 2.0166752338409424
+Epoch: 112
+	Test loss: 1.4746187014225143e-09
+	Eval time: 0.11212801933288574
+	Train loss: 1.1673567930614585e-09
+	Train time: 1.8236708641052246
+Epoch: 113
+	Test loss: 1.1968610999524287e-09
+	Eval time: 0.11181807518005371
+	Train loss: 9.366123529019895e-10
+	Train time: 1.7817554473876953
+Epoch: 114
+	Test loss: 9.983776611477426e-10
+	Eval time: 0.11126232147216797
+	Train loss: 7.525830441990067e-10
+	Train time: 1.7711431980133057
+Epoch: 115
+	Test loss: 8.353589865350842e-10
+	Eval time: 0.11092686653137207
+	Train loss: 5.958973602337988e-10
+	Train time: 1.7571897506713867
+Epoch: 116
+	Test loss: 6.720422828720984e-10
+	Eval time: 0.11174798011779785
+	Train loss: 4.5724207230257726e-10
+	Train time: 1.7607059478759766
+Epoch: 117
+	Test loss: 5.185603430390984e-10
+	Eval time: 0.1112513542175293
+	Train loss: 3.4667547246236564e-10
+	Train time: 1.795029640197754
+Epoch: 118
+	Test loss: 3.942846756999075e-10
+	Eval time: 0.11187386512756348
+	Train loss: 2.6248392476890824e-10
+	Train time: 1.8076181411743164
+Epoch: 119
+	Test loss: 3.021955120985354e-10
+	Eval time: 0.11149716377258301
+	Train loss: 1.9945201972237918e-10
+	Train time: 1.7985310554504395
+Epoch: 120
+	Test loss: 2.3901460078690204e-10
+	Eval time: 0.11143159866333008
+	Train loss: 1.5303490981999355e-10
+	Train time: 1.8053717613220215
+Epoch: 120
+Test Loss:        2.3901460078690204e-10
+Train Loss:       1.5303490981999355e-10
+
+
+Epoch: 121
+	Test loss: 1.8119810111016928e-10
+	Eval time: 0.1139068603515625
+	Train loss: 1.1153518068240945e-10
+	Train time: 1.7708353996276855
+Epoch: 122
+	Test loss: 1.3709066882583441e-10
+	Eval time: 0.11307525634765625
+	Train loss: 7.65919612755184e-11
+	Train time: 1.762695550918579
+Epoch: 123
+	Test loss: 9.387730575127762e-11
+	Eval time: 0.11352729797363281
+	Train loss: 4.9993391182390236e-11
+	Train time: 1.7625017166137695
+Epoch: 124
+	Test loss: 5.5432314134407066e-11
+	Eval time: 0.11311674118041992
+	Train loss: 2.808868659442963e-11
+	Train time: 1.7689390182495117
+Epoch: 125
+	Test loss: 3.099441268972214e-11
+	Eval time: 0.11184477806091309
+	Train loss: 1.3411044057498606e-11
+	Train time: 1.773193597793579
+Epoch: 126
+	Test loss: 1.4007090580747674e-11
+	Eval time: 0.11309576034545898
+	Train loss: 6.109475707560822e-12
+	Train time: 1.763273000717163
+Epoch: 127
+	Test loss: 5.662440916154309e-12
+	Eval time: 0.11362981796264648
+	Train loss: 2.1606682443220385e-12
+	Train time: 1.769052505493164
+Epoch: 128
+	Test loss: 1.4901160305669237e-12
+	Eval time: 0.11226177215576172
+	Train loss: 6.705522137551156e-13
+	Train time: 1.7695510387420654
+Epoch: 129
+	Test loss: 0.0
+	Eval time: 0.11377286911010742
+	Train loss: 2.2351740458503854e-13
+	Train time: 1.7677104473114014
+Epoch: 130
+	Test loss: 0.0
+	Eval time: 0.11265754699707031
+	Train loss: 1.4901160305669235e-13
+	Train time: 1.775177001953125
+Epoch: 130
+Test Loss:        0.0
+Train Loss:       1.4901160305669235e-13
+
+
+Epoch: 131
+	Test loss: 0.0
+	Eval time: 0.11302018165588379
+	Train loss: 0.0
+	Train time: 1.7789087295532227
+Epoch: 132
+	Test loss: 0.0
+	Eval time: 0.1126868724822998
+	Train loss: 0.0
+	Train time: 1.7651903629302979
+Epoch: 133
+	Test loss: 0.0
+	Eval time: 0.11185669898986816
+	Train loss: 0.0
+	Train time: 1.757704734802246
+Epoch: 134
+	Test loss: 0.0
+	Eval time: 0.11148333549499512
+	Train loss: 0.0
+	Train time: 1.765108585357666
+Epoch: 135
+	Test loss: 0.0
+	Eval time: 0.11147809028625488
+	Train loss: 0.0
+	Train time: 1.7575764656066895
+Epoch: 136
+	Test loss: 0.0
+	Eval time: 0.11085844039916992
+	Train loss: 0.0
+	Train time: 1.7906074523925781
+Epoch: 137
+	Test loss: 0.0
+	Eval time: 0.11269092559814453
+	Train loss: 0.0
+	Train time: 1.7733771800994873
+Epoch: 138
+	Test loss: 0.0
+	Eval time: 0.11167025566101074
+	Train loss: 0.0
+	Train time: 1.774435043334961
+Epoch: 139
+	Test loss: 0.0
+	Eval time: 0.11127233505249023
+	Train loss: 0.0
+	Train time: 1.755614995956421
+Epoch: 140
+	Test loss: 0.0
+	Eval time: 0.11390995979309082
+	Train loss: 0.0
+	Train time: 1.7757360935211182
+Epoch: 140
+Test Loss:        0.0
+Train Loss:       0.0
+
+
+Epoch: 141
+	Test loss: 0.0
+	Eval time: 0.11266756057739258
+	Train loss: 0.0
+	Train time: 1.783198356628418
+Epoch: 142
+	Test loss: 0.0
+	Eval time: 0.11354541778564453
+	Train loss: 0.0
+	Train time: 1.7696619033813477
+Epoch: 143
+	Test loss: 0.0
+	Eval time: 0.11342477798461914
+	Train loss: 0.0
+	Train time: 1.768479585647583
+Epoch: 144
+	Test loss: 0.0
+	Eval time: 0.11192440986633301
+	Train loss: 0.0
+	Train time: 1.7692527770996094
+Epoch: 145
+	Test loss: 0.0
+	Eval time: 0.11190009117126465
+	Train loss: 0.0
+	Train time: 1.7639429569244385
+Epoch: 146
+	Test loss: 0.0
+	Eval time: 0.1133418083190918
+	Train loss: 0.0
+	Train time: 1.8024702072143555
+Epoch: 147
+	Test loss: 0.0
+	Eval time: 0.11367249488830566
+	Train loss: 0.0
+	Train time: 1.8110454082489014
+Epoch: 148
+	Test loss: 0.0
+	Eval time: 0.11296892166137695
+	Train loss: 0.0
+	Train time: 1.8759684562683105
+Epoch: 149
+	Test loss: 0.0
+	Eval time: 0.11300277709960938
+	Train loss: 0.0
+	Train time: 1.7765166759490967
+Epoch: 150
+	Test loss: 0.0
+	Eval time: 0.11369609832763672
+	Train loss: 0.0
+	Train time: 1.777127981185913
+Epoch: 150
+Test Loss:        0.0
+Train Loss:       0.0
+
+
+Epoch: 151
+	Test loss: 0.0
+	Eval time: 0.11396431922912598
+	Train loss: 0.0
+	Train time: 1.7732601165771484
+Epoch: 152
+	Test loss: 0.0
+	Eval time: 0.11462903022766113
+	Train loss: 0.0
+	Train time: 1.7791411876678467
+Epoch: 153
+	Test loss: 0.0
+	Eval time: 0.11397790908813477
+	Train loss: 0.0
+	Train time: 1.7863376140594482
+Epoch: 154
+	Test loss: 0.0
+	Eval time: 0.11410212516784668
+	Train loss: 0.0
+	Train time: 1.9169106483459473
+Epoch: 155
+	Test loss: 0.0
+	Eval time: 0.11291170120239258
+	Train loss: 0.0
+	Train time: 1.797652006149292
+Epoch: 156
+	Test loss: 0.0
+	Eval time: 0.11455488204956055
+	Train loss: 0.0
+	Train time: 1.7781145572662354
+Epoch: 157
+	Test loss: 0.0
+	Eval time: 0.11250591278076172
+	Train loss: 0.0
+	Train time: 1.7681224346160889
+Epoch: 158
+	Test loss: 0.0
+	Eval time: 0.11303424835205078
+	Train loss: 0.0
+	Train time: 1.7705981731414795
+Epoch: 159
+	Test loss: 0.0
+	Eval time: 0.1127767562866211
+	Train loss: 0.0
+	Train time: 1.7855229377746582
+Epoch: 160
+	Test loss: 0.0
+	Eval time: 0.11253714561462402
+	Train loss: 0.0
+	Train time: 1.7914831638336182
+Epoch: 160
+Test Loss:        0.0
+Train Loss:       0.0
+
+
+Epoch: 161
+	Test loss: 0.0
+	Eval time: 0.11332011222839355
+	Train loss: 0.0
+	Train time: 1.98067045211792
+Epoch: 162
+	Test loss: 0.0
+	Eval time: 0.11256265640258789
+	Train loss: 0.0
+	Train time: 1.9648363590240479
+Epoch: 163
+	Test loss: 0.0
+	Eval time: 0.11228179931640625
+	Train loss: 0.0
+	Train time: 1.7523012161254883
+Epoch: 164
+	Test loss: 0.0
+	Eval time: 0.11218070983886719
+	Train loss: 0.0
+	Train time: 1.6421141624450684
+Epoch: 165
+	Test loss: 0.0
+	Eval time: 0.11289834976196289
+	Train loss: 0.0
+	Train time: 1.7722878456115723
+Epoch: 166
+	Test loss: 0.0
+	Eval time: 0.11280155181884766
+	Train loss: 0.0
+	Train time: 1.7716584205627441
+Epoch: 167
+	Test loss: 0.0
+	Eval time: 0.11344718933105469
+	Train loss: 0.0
+	Train time: 1.7609045505523682
+Epoch: 168
+	Test loss: 0.0
+	Eval time: 0.1127934455871582
+	Train loss: 0.0
+	Train time: 1.7689855098724365
+Epoch: 169
+	Test loss: 0.0
+	Eval time: 0.1137397289276123
+	Train loss: 0.0
+	Train time: 1.773576021194458
+Epoch: 170
+	Test loss: 0.0
+	Eval time: 0.1125326156616211
+	Train loss: 0.0
+	Train time: 1.7716200351715088
+Epoch: 170
+Test Loss:        0.0
+Train Loss:       0.0
+
+
+Epoch: 171
+	Test loss: 0.0
+	Eval time: 0.11383366584777832
+	Train loss: 0.0
+	Train time: 1.7757782936096191
+Epoch: 172
+	Test loss: 0.0
+	Eval time: 0.11352157592773438
+	Train loss: 0.0
+	Train time: 1.792208194732666
+Epoch: 173
+	Test loss: 0.0
+	Eval time: 0.11373257637023926
+	Train loss: 0.0
+	Train time: 1.7944145202636719
+Epoch: 174
+	Test loss: 0.0
+	Eval time: 0.11432313919067383
+	Train loss: 0.0
+	Train time: 1.781496286392212
+Epoch: 175
+	Test loss: 0.0
+	Eval time: 0.11339330673217773
+	Train loss: 0.0
+	Train time: 1.779062271118164
+Epoch: 176
+	Test loss: 0.0
+	Eval time: 0.11331772804260254
+	Train loss: 0.0
+	Train time: 1.7877964973449707
+Epoch: 177
+	Test loss: 0.0
+	Eval time: 0.11342382431030273
+	Train loss: 0.0
+	Train time: 1.780125379562378
+Epoch: 178
+	Test loss: 0.0
+	Eval time: 0.11275768280029297
+	Train loss: 0.0
+	Train time: 1.7812249660491943
+Epoch: 179
+	Test loss: 0.0
+	Eval time: 0.11334490776062012
+	Train loss: 0.0
+	Train time: 1.786177158355713
+Epoch: 180
+	Test loss: 0.0
+	Eval time: 0.11392879486083984
+	Train loss: 0.0
+	Train time: 1.7761430740356445
+Epoch: 180
+Test Loss:        0.0
+Train Loss:       0.0
+
+
+Epoch: 181
+	Test loss: 0.0
+	Eval time: 0.11421036720275879
+	Train loss: 0.0
+	Train time: 1.7743213176727295
+Epoch: 182
+	Test loss: 0.0
+	Eval time: 0.11353659629821777
+	Train loss: 0.0
+	Train time: 1.7759883403778076
+Epoch: 183
+	Test loss: 0.0
+	Eval time: 0.11343502998352051
+	Train loss: 0.0
+	Train time: 1.7839813232421875
+Epoch: 184
+	Test loss: 0.0
+	Eval time: 0.11381268501281738
+	Train loss: 0.0
+	Train time: 1.7956664562225342
+Epoch: 185
+	Test loss: 0.0
+	Eval time: 0.1129913330078125
+	Train loss: 0.0
+	Train time: 1.7633435726165771
+Epoch: 186
+	Test loss: 0.0
+	Eval time: 0.11315655708312988
+	Train loss: 0.0
+	Train time: 1.7782230377197266
+Epoch: 187
+	Test loss: 0.0
+	Eval time: 0.11226654052734375
+	Train loss: 0.0
+	Train time: 1.7723491191864014
+Epoch: 188
+	Test loss: 0.0
+	Eval time: 0.11316084861755371
+	Train loss: 0.0
+	Train time: 1.7726829051971436
+Epoch: 189
+	Test loss: 0.0
+	Eval time: 0.11269354820251465
+	Train loss: 0.0
+	Train time: 1.7708775997161865
+Epoch: 190
+	Test loss: 0.0
+	Eval time: 0.11232542991638184
+	Train loss: 0.0
+	Train time: 1.7990975379943848
+Epoch: 190
+Test Loss:        0.0
+Train Loss:       0.0
+
+
+Epoch: 191
+	Test loss: 0.0
+	Eval time: 0.11364531517028809
+	Train loss: 0.0
+	Train time: 1.7731938362121582
+Epoch: 192
+	Test loss: 0.0
+	Eval time: 0.1123499870300293
+	Train loss: 0.0
+	Train time: 1.7728254795074463
+Epoch: 193
+	Test loss: 0.0
+	Eval time: 0.11361122131347656
+	Train loss: 0.0
+	Train time: 1.7820942401885986
+Epoch: 194
+	Test loss: 0.0
+	Eval time: 0.1122586727142334
+	Train loss: 0.0
+	Train time: 1.7776799201965332
+Epoch: 195
+	Test loss: 0.0
+	Eval time: 0.11256527900695801
+	Train loss: 0.0
+	Train time: 1.782412052154541
+Epoch: 196
+	Test loss: 0.0
+	Eval time: 0.11281538009643555
+	Train loss: 0.0
+	Train time: 1.7724738121032715
+Epoch: 197
+	Test loss: 0.0
+	Eval time: 0.11257767677307129
+	Train loss: 0.0
+	Train time: 1.7779045104980469
+Epoch: 198
+	Test loss: 0.0
+	Eval time: 0.11361074447631836
+	Train loss: 0.0
+	Train time: 1.7641329765319824
+Epoch: 199
+	Test loss: 0.0
+	Eval time: 0.11367225646972656
+	Train loss: 0.0
+	Train time: 1.7727978229522705
+Epoch: 200
+	Test loss: 0.0
+	Eval time: 0.11230611801147461
+	Train loss: 0.0
+	Train time: 1.7835891246795654
+Epoch: 200
+Test Loss:        0.0
+Train Loss:       0.0
+
+
+Epoch: 201
+	Test loss: 0.0
+	Eval time: 0.11347007751464844
+	Train loss: 0.0
+	Train time: 1.7633843421936035
+Epoch: 202
+	Test loss: 0.0
+	Eval time: 0.11310720443725586
+	Train loss: 0.0
+	Train time: 1.771517276763916
+Epoch: 203
+	Test loss: 0.0
+	Eval time: 0.11377143859863281
+	Train loss: 0.0
+	Train time: 1.8025767803192139
+Epoch: 204
+	Test loss: 0.0
+	Eval time: 0.1127634048461914
+	Train loss: 0.0
+	Train time: 1.8169176578521729
+Epoch: 205
+	Test loss: 0.0
+	Eval time: 0.1141667366027832
+	Train loss: 0.0
+	Train time: 1.7869970798492432
+Epoch: 206
+	Test loss: 0.0
+	Eval time: 0.1131601333618164
+	Train loss: 0.0
+	Train time: 1.7662365436553955
+Epoch: 207
+	Test loss: 0.0
+	Eval time: 0.11238861083984375
+	Train loss: 0.0
+	Train time: 1.7720355987548828
+Epoch: 208
+	Test loss: 0.0
+	Eval time: 0.11256790161132812
+	Train loss: 0.0
+	Train time: 1.786449670791626
+Epoch: 209
+	Test loss: 0.0
+	Eval time: 0.11277079582214355
+	Train loss: 0.0
+	Train time: 1.773024320602417
+Epoch: 210
+	Test loss: 0.0
+	Eval time: 0.11232185363769531
+	Train loss: 0.0
+	Train time: 1.8010263442993164
+Epoch: 210
+Test Loss:        0.0
+Train Loss:       0.0
+
+
+Epoch: 211
+	Test loss: 0.0
+	Eval time: 0.1137082576751709
+	Train loss: 0.0
+	Train time: 1.7560696601867676
+Epoch: 212
+	Test loss: 0.0
+	Eval time: 0.11317825317382812
+	Train loss: 0.0
+	Train time: 1.7747225761413574
+Epoch: 213
+	Test loss: 0.0
+	Eval time: 0.11321640014648438
+	Train loss: 0.0
+	Train time: 1.9403376579284668
+Epoch: 214
+	Test loss: 0.0
+	Eval time: 0.11370205879211426
+	Train loss: 0.0
+	Train time: 1.7918338775634766
+Epoch: 215
+	Test loss: 0.0
+	Eval time: 0.11265301704406738
+	Train loss: 0.0
+	Train time: 1.770965814590454
+Epoch: 216
+	Test loss: 0.0
+	Eval time: 0.11281943321228027
+	Train loss: 0.0
+	Train time: 1.7835266590118408
+Epoch: 217
+	Test loss: 0.0
+	Eval time: 0.11198687553405762
+	Train loss: 0.0
+	Train time: 1.7672228813171387
+Epoch: 218
+	Test loss: 0.0
+	Eval time: 0.11284255981445312
+	Train loss: 0.0
+	Train time: 1.7692527770996094
+Epoch: 219
+	Test loss: 0.0
+	Eval time: 0.11171913146972656
+	Train loss: 0.0
+	Train time: 1.7717514038085938
+Epoch: 220
+	Test loss: 0.0
+	Eval time: 0.11226797103881836
+	Train loss: 0.0
+	Train time: 1.772261381149292
+Epoch: 220
+Test Loss:        0.0
+Train Loss:       0.0
+
+
+Epoch: 221
+	Test loss: 0.0
+	Eval time: 0.11329913139343262
+	Train loss: 0.0
+	Train time: 1.7731029987335205
+Epoch: 222
+	Test loss: 0.0
+	Eval time: 0.11223292350769043
+	Train loss: 0.0
+	Train time: 1.7655203342437744
+Epoch: 223
+	Test loss: 0.0
+	Eval time: 0.11382627487182617
+	Train loss: 0.0
+	Train time: 1.7756366729736328
+Epoch: 224
+	Test loss: 0.0
+	Eval time: 0.11251020431518555
+	Train loss: 0.0
+	Train time: 1.7842786312103271
+Epoch: 225
+	Test loss: 0.0
+	Eval time: 0.11237835884094238
+	Train loss: 0.0
+	Train time: 1.7679986953735352
+Epoch: 226
+	Test loss: 0.0
+	Eval time: 0.11356663703918457
+	Train loss: 0.0
+	Train time: 1.7741518020629883
+Epoch: 227
+	Test loss: 0.0
+	Eval time: 0.1120450496673584
+	Train loss: 0.0
+	Train time: 1.7791392803192139
+Epoch: 228
+	Test loss: 0.0
+	Eval time: 0.1128547191619873
+	Train loss: 0.0
+	Train time: 1.7541990280151367
+Epoch: 229
+	Test loss: 0.0
+	Eval time: 0.11234855651855469
+	Train loss: 0.0
+	Train time: 1.781358242034912
+Epoch: 230
+	Test loss: 0.0
+	Eval time: 0.11258959770202637
+	Train loss: 0.0
+	Train time: 1.7203090190887451
+Epoch: 230
+Test Loss:        0.0
+Train Loss:       0.0
+
+
+Epoch: 231
+	Test loss: 0.0
+	Eval time: 0.11291217803955078
+	Train loss: 0.0
+	Train time: 1.78001070022583
+Epoch: 232
+	Test loss: 0.0
+	Eval time: 0.11170673370361328
+	Train loss: 0.0
+	Train time: 1.7651393413543701
+Epoch: 233
+	Test loss: 0.0
+	Eval time: 0.11225342750549316
+	Train loss: 0.0
+	Train time: 1.7885067462921143
+Epoch: 234
+	Test loss: 0.0
+	Eval time: 0.11193561553955078
+	Train loss: 0.0
+	Train time: 1.760298728942871
+Epoch: 235
+	Test loss: 0.0
+	Eval time: 0.11178088188171387
+	Train loss: 0.0
+	Train time: 1.7674472332000732
+Epoch: 236
+	Test loss: 0.0
+	Eval time: 0.11285734176635742
+	Train loss: 0.0
+	Train time: 1.792147159576416
+Epoch: 237
+	Test loss: 0.0
+	Eval time: 0.11133193969726562
+	Train loss: 0.0
+	Train time: 1.7996082305908203
+Epoch: 238
+	Test loss: 0.0
+	Eval time: 0.11157631874084473
+	Train loss: 0.0
+	Train time: 1.7748668193817139
+Epoch: 239
+	Test loss: 0.0
+	Eval time: 0.11289834976196289
+	Train loss: 0.0
+	Train time: 1.7617294788360596
+Epoch: 240
+	Test loss: 0.0
+	Eval time: 0.11249351501464844
+	Train loss: 0.0
+	Train time: 1.7676630020141602
+Epoch: 240
+Test Loss:        0.0
+Train Loss:       0.0
+
+
+Epoch: 241
+	Test loss: 0.0
+	Eval time: 0.11220121383666992
+	Train loss: 0.0
+	Train time: 1.8051390647888184
+Epoch: 242
+	Test loss: 0.0
+	Eval time: 0.11267399787902832
+	Train loss: 0.0
+	Train time: 1.8409662246704102
+Epoch: 243
+	Test loss: 0.0
+	Eval time: 0.11342597007751465
+	Train loss: 0.0
+	Train time: 1.7993757724761963
+Epoch: 244
+	Test loss: 0.0
+	Eval time: 0.11326217651367188
+	Train loss: 0.0
+	Train time: 1.7880833148956299
+Epoch: 245
+	Test loss: 0.0
+	Eval time: 0.1131892204284668
+	Train loss: 0.0
+	Train time: 1.7859737873077393
+Epoch: 246
+	Test loss: 0.0
+	Eval time: 0.11292481422424316
+	Train loss: 0.0
+	Train time: 1.8470768928527832
+Epoch: 247
+	Test loss: 0.0
+	Eval time: 0.11215877532958984
+	Train loss: 0.0
+	Train time: 1.830578088760376
+Epoch: 248
+	Test loss: 0.0
+	Eval time: 0.11192750930786133
+	Train loss: 0.0
+	Train time: 1.7914035320281982
+Epoch: 249
+	Test loss: 0.0
+	Eval time: 0.11217164993286133
+	Train loss: 0.0
+	Train time: 1.7693684101104736
+Epoch: 250
+	Test loss: 0.0
+	Eval time: 0.1132807731628418
+	Train loss: 0.0
+	Train time: 1.8051586151123047
+Epoch: 250
+Test Loss:        0.0
+Train Loss:       0.0
+
+
+Epoch: 251
+	Test loss: 0.0
+	Eval time: 0.1142270565032959
+	Train loss: 0.0
+	Train time: 1.7791056632995605
+Epoch: 252
+	Test loss: 0.0
+	Eval time: 0.11285758018493652
+	Train loss: 0.0
+	Train time: 1.7801434993743896
+Epoch: 253
+	Test loss: 0.0
+	Eval time: 0.11357402801513672
+	Train loss: 0.0
+	Train time: 1.7705538272857666
+Epoch: 254
+	Test loss: 0.0
+	Eval time: 0.11282634735107422
+	Train loss: 0.0
+	Train time: 1.767956018447876
+Epoch: 255
+	Test loss: 0.0
+	Eval time: 0.11177492141723633
+	Train loss: 0.0
+	Train time: 1.757096529006958
+Epoch: 256
+	Test loss: 0.0
+	Eval time: 0.11271166801452637
+	Train loss: 0.0
+	Train time: 1.7689847946166992
+Epoch: 257
+	Test loss: 0.0
+	Eval time: 0.11255145072937012
+	Train loss: 0.0
+	Train time: 1.7778692245483398
+Epoch: 258
+	Test loss: 0.0
+	Eval time: 0.11264824867248535
+	Train loss: 0.0
+	Train time: 1.7709839344024658
+Epoch: 259
+	Test loss: 0.0
+	Eval time: 0.11297249794006348
+	Train loss: 0.0
+	Train time: 1.7703514099121094
+Epoch: 260
+	Test loss: 0.0
+	Eval time: 0.111053466796875
+	Train loss: 0.0
+	Train time: 1.7587864398956299
+Epoch: 260
+Test Loss:        0.0
+Train Loss:       0.0
+
+
+Epoch: 261
+	Test loss: 0.0
+	Eval time: 0.1133880615234375
+	Train loss: 0.0
+	Train time: 1.7638797760009766
+Epoch: 262
+	Test loss: 0.0
+	Eval time: 0.11123895645141602
+	Train loss: 0.0
+	Train time: 1.768409252166748
+Epoch: 263
+	Test loss: 0.0
+	Eval time: 0.1111903190612793
+	Train loss: 0.0
+	Train time: 1.772751808166504
+Epoch: 264
+	Test loss: 0.0
+	Eval time: 0.11129212379455566
+	Train loss: 0.0
+	Train time: 1.769200325012207
+Epoch: 265
+	Test loss: 0.0
+	Eval time: 0.11167788505554199
+	Train loss: 0.0
+	Train time: 1.973954439163208
+Epoch: 266
+	Test loss: 0.0
+	Eval time: 0.11142134666442871
+	Train loss: 0.0
+	Train time: 2.0186359882354736
+Epoch: 267
+	Test loss: 0.0
+	Eval time: 0.11064386367797852
+	Train loss: 0.0
+	Train time: 1.767427682876587
+Epoch: 268
+	Test loss: 0.0
+	Eval time: 0.11058306694030762
+	Train loss: 0.0
+	Train time: 1.7705943584442139
+Epoch: 269
+	Test loss: 0.0
+	Eval time: 0.11090707778930664
+	Train loss: 0.0
+	Train time: 1.9465277194976807
+Epoch: 270
+	Test loss: 0.0
+	Eval time: 0.11370396614074707
+	Train loss: 0.0
+	Train time: 1.845787763595581
+Epoch: 270
+Test Loss:        0.0
+Train Loss:       0.0
+
+
+Epoch: 271
+	Test loss: 0.0
+	Eval time: 0.1141202449798584
+	Train loss: 0.0
+	Train time: 1.7960896492004395
+Epoch: 272
+	Test loss: 0.0
+	Eval time: 0.11360001564025879
+	Train loss: 0.0
+	Train time: 1.7778644561767578
+Epoch: 273
+	Test loss: 0.0
+	Eval time: 0.1129603385925293
+	Train loss: 0.0
+	Train time: 1.7693934440612793
+Epoch: 274
+	Test loss: 0.0
+	Eval time: 0.11338591575622559
+	Train loss: 0.0
+	Train time: 1.7812941074371338
+Epoch: 275
+	Test loss: 0.0
+	Eval time: 0.11369585990905762
+	Train loss: 0.0
+	Train time: 1.7727735042572021
+Epoch: 276
+	Test loss: 0.0
+	Eval time: 0.11290860176086426
+	Train loss: 0.0
+	Train time: 1.7662920951843262
+Epoch: 277
+	Test loss: 0.0
+	Eval time: 0.11273312568664551
+	Train loss: 0.0
+	Train time: 1.7743868827819824
+Epoch: 278
+	Test loss: 0.0
+	Eval time: 0.11288237571716309
+	Train loss: 0.0
+	Train time: 1.8524727821350098
+Epoch: 279
+	Test loss: 0.0
+	Eval time: 0.11268734931945801
+	Train loss: 0.0
+	Train time: 1.876765251159668
+Epoch: 280
+	Test loss: 0.0
+	Eval time: 0.09991908073425293
+	Train loss: 0.0
+	Train time: 1.743391513824463
+Epoch: 280
+Test Loss:        0.0
+Train Loss:       0.0
+
+
+Epoch: 281
+	Test loss: 0.0
+	Eval time: 0.09987235069274902
+	Train loss: 0.0
+	Train time: 1.6987121105194092
+Epoch: 282
+	Test loss: 0.0
+	Eval time: 0.10005903244018555
+	Train loss: 0.0
+	Train time: 1.7507798671722412
+Epoch: 283
+	Test loss: 0.0
+	Eval time: 0.11322188377380371
+	Train loss: 0.0
+	Train time: 1.831291675567627
+Epoch: 284
+	Test loss: 0.0
+	Eval time: 0.11210370063781738
+	Train loss: 0.0
+	Train time: 1.7884280681610107
+Epoch: 285
+	Test loss: 0.0
+	Eval time: 0.11121892929077148
+	Train loss: 0.0
+	Train time: 1.7810919284820557
+Epoch: 286
+	Test loss: 0.0
+	Eval time: 0.11173057556152344
+	Train loss: 0.0
+	Train time: 1.769286870956421
+Epoch: 287
+	Test loss: 0.0
+	Eval time: 0.11179447174072266
+	Train loss: 0.0
+	Train time: 1.7851676940917969
+Epoch: 288
+	Test loss: 0.0
+	Eval time: 0.11147308349609375
+	Train loss: 0.0
+	Train time: 1.7683219909667969
+Epoch: 289
+	Test loss: 0.0
+	Eval time: 0.11112666130065918
+	Train loss: 0.0
+	Train time: 1.7914855480194092
+Epoch: 290
+	Test loss: 0.0
+	Eval time: 0.11274218559265137
+	Train loss: 0.0
+	Train time: 1.7616543769836426
+Epoch: 290
+Test Loss:        0.0
+Train Loss:       0.0
+
+
+Epoch: 291
+	Test loss: 0.0
+	Eval time: 0.11270880699157715
+	Train loss: 0.0
+	Train time: 1.7718563079833984
+Epoch: 292
+	Test loss: 0.0
+	Eval time: 0.11223816871643066
+	Train loss: 0.0
+	Train time: 1.7766995429992676
+Epoch: 293
+	Test loss: 0.0
+	Eval time: 0.1111752986907959
+	Train loss: 0.0
+	Train time: 1.7725467681884766
+Epoch: 294
+	Test loss: 0.0
+	Eval time: 0.11167383193969727
+	Train loss: 0.0
+	Train time: 1.779097557067871
+Epoch: 295
+	Test loss: 0.0
+	Eval time: 0.11135339736938477
+	Train loss: 0.0
+	Train time: 1.777947187423706
+Epoch: 296
+	Test loss: 0.0
+	Eval time: 0.11127066612243652
+	Train loss: 0.0
+	Train time: 1.783353567123413
+Epoch: 297
+	Test loss: 0.0
+	Eval time: 0.11279463768005371
+	Train loss: 0.0
+	Train time: 1.7811098098754883
+Epoch: 298
+	Test loss: 0.0
+	Eval time: 0.11200356483459473
+	Train loss: 0.0
+	Train time: 1.7714154720306396
+Epoch: 299
+	Test loss: 0.0
+	Eval time: 0.11220955848693848
+	Train loss: 0.0
+	Train time: 1.7822096347808838
+Epoch: 300
+	Test loss: 0.0
+	Eval time: 0.11172103881835938
+	Train loss: 0.0
+	Train time: 1.7696988582611084
+Epoch: 300
+Test Loss:        0.0
+Train Loss:       0.0
+
+
+Epoch: 301
+	Test loss: 0.0
+	Eval time: 0.11238503456115723
+	Train loss: 0.0
+	Train time: 1.7871968746185303
+Epoch: 302
+	Test loss: 0.0
+	Eval time: 0.11237001419067383

@@ -10,6 +10,29 @@ def worker_init_fn(worker_id):
     np.random.seed(numpy_seed)
 
 
+def build_prices_data_filename(env, n_envs, config, mode):
+    """
+    Builds the filename for the prices data.
+    Mode is either 0: train, 1: test, 2: eval.
+    """
+    filename_template = 'datasets/trajs_{}.pkl'
+    filename = env
+    filename += '_envs' + str(n_envs)
+    if mode != 2:
+        filename += '_hists' + str(config['n_hists'])
+        filename += '_samples' + str(config['n_samples'])
+    filename += '_H' + str(config['horizon'])
+    filename += '_d' + str(config['dim'])
+    filename += '_var' + str(config['var'])
+    filename += '_cov' + str(config['cov'])
+    if mode == 0:
+        filename += '_train'
+    elif mode == 1:
+        filename += '_test'
+    elif mode == 2:
+        filename += '_eval'
+    return filename_template.format(filename)
+
 
 def build_bandit_data_filename(env, n_envs, config, mode):
     """

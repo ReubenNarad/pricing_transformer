@@ -21,7 +21,9 @@ from utils import convert_to_tensor
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
+
 def deploy_online(env, controller, horizon):
+    print(env)
     context_states = torch.zeros((1, horizon, env.dx)).float().to(device)
     context_actions = torch.zeros((1, horizon, env.du)).float().to(device)
     context_next_states = torch.zeros((1, horizon, env.dx)).float().to(device)

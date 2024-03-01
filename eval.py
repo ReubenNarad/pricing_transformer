@@ -7,7 +7,7 @@ import torch
 from IPython import embed
 
 import common_args
-from evals import eval_bandit
+from evals import eval_bandit, eval_prices
 from net import Transformer, ImageTransformer
 from utils import (
     build_bandit_data_filename,
@@ -81,7 +81,15 @@ if __name__ == '__main__':
         'dim': dim,
         'seed': seed,
     }
-    if envname == 'bandit':
+    
+    if envname == 'prices':
+        state_dim = 1
+
+        model_config.update({'var': var, 'cov': cov})
+        filename = build_bandit_model_filename(envname, model_config)
+        bandit_type = 'uniform'
+    
+    elif envname == 'bandit':
         state_dim = 1
 
         model_config.update({'var': var, 'cov': cov})
@@ -148,7 +156,14 @@ if __name__ == '__main__':
         'horizon': horizon,
         'dim': dim,
     }
-    if envname in ['bandit', 'bandit_bernoulli']:
+    
+    if envname == 'prices':
+        dataset_config.update({'var': var, 'cov': cov, 'type': 'uniform'})
+        eval_filepath = build_bandit_data_filename(
+            envname, n_eval, dataset_config, mode=2)
+        save_filename = f'{filename}_testcov{test_cov}_hor{horizon}.pkl'
+    
+    elif envname in ['bandit', 'bandit_bernoulli']:
         dataset_config.update({'var': var, 'cov': cov, 'type': 'uniform'})
         eval_filepath = build_bandit_data_filename(
             envname, n_eval, dataset_config, mode=2)
@@ -189,6 +204,33 @@ if __name__ == '__main__':
         os.makedirs(f'figs/{evals_filename}/graph', exist_ok=True)
 
     # Online and offline evaluation.
+    
+    if envname == 'prices':
+        config = {
+            'horizon': horizon,
+            'var': var,
+            'n_eval': n_eval,
+            'bandit_type': bandit_type,
+        }
+        eval_bandit.online(eval_trajs, model, **config)
+        plt.savefig(f'figs/{evals_filename}/online/{save_filename}.png')
+        print(f"Saved figs/{evals_filename}/online/{save_filename}.png")
+        plt.clf()
+        plt.cla()
+        plt.close()
+
+        eval_bandit.offline(eval_trajs, model, **config)
+        plt.savefig(f'figs/{evals_filename}/bar/{save_filename}_bar.png')
+        print(f"Saved figs/{evals_filename}/bar/{save_filename}_bar.png")
+
+        plt.clf()
+
+        eval_bandit.offline_graph(eval_trajs, model, **config)
+        plt.savefig(f'figs/{evals_filename}/graph/{save_filename}_graph.png')
+        print(f"Saved figs/{evals_filename}/graph/{save_filename}_graph.png")
+        plt.clf()
+    
+    
     if envname == 'bandit' or envname == 'bandit_bernoulli':
         config = {
             'horizon': horizon,
@@ -209,6 +251,7 @@ if __name__ == '__main__':
         eval_bandit.offline_graph(eval_trajs, model, **config)
         plt.savefig(f'figs/{evals_filename}/graph/{save_filename}_graph.png')
         plt.clf()
+        
         
     elif envname == 'linear_bandit':
         config = {
@@ -232,59 +275,4 @@ if __name__ == '__main__':
 
         eval_linear_bandit.offline_graph(eval_trajs, model, **config)
         plt.savefig(f'figs/{evals_filename}/graph/{save_filename}_graph.png')
-        plt.clf()
-
-
-
-    elif envname in ['darkroom_heldout', 'darkroom_permuted']:
-        config = {
-            'Heps': 40,
-            'horizon': horizon,
-            'H': H,
-            'n_eval': min(20, n_eval),
-            'dim': dim,
-            'permuted': True if envname == 'darkroom_permuted' else False,
-        }
-        eval_darkroom.online(eval_trajs, model, **config)
-        plt.savefig(f'figs/{evals_filename}/online/{save_filename}.png')
-        plt.clf()
-
-        del config['Heps']
-        del config['horizon']
-        config['n_eval'] = n_eval
-        eval_darkroom.offline(eval_trajs, model, **config)
-        plt.savefig(f'figs/{evals_filename}/bar/{save_filename}_bar.png')
-        plt.clf()
-
-    elif envname == 'miniworld':
-        from evals import eval_miniworld
-        save_video = args['save_video']
-        filename_prefix = f'videos/{save_filename}/{evals_filename}/'
-        config = {
-            'Heps': 40,
-            'horizon': horizon,
-            'H': H,
-            'n_eval': min(20, n_eval),
-            'save_video': save_video,
-            'filename_template': filename_prefix + '{controller}_env{env_id}_ep{ep}_online.gif',
-        }
-
-        if save_video and not os.path.exists(f'videos/{save_filename}/{evals_filename}'):
-            os.makedirs(
-                f'videos/{save_filename}/{evals_filename}', exist_ok=True)
-
-        eval_miniworld.online(eval_trajs, model, **config)
-        plt.savefig(f'figs/{evals_filename}/online/{save_filename}.png')
-        plt.clf()
-
-        del config['Heps']
-        del config['horizon']
-        del config['H']
-        config['n_eval'] = n_eval
-        config['filename_template'] = filename_prefix + \
-            '{controller}_env{env_id}_offline.gif'
-        start_time = time.time()
-        eval_miniworld.offline(eval_trajs, model, **config)
-        print(f'Offline evaluation took {time.time() - start_time} seconds')
-        plt.savefig(f'figs/{evals_filename}/bar/{save_filename}_bar.png')
         plt.clf()

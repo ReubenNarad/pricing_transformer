@@ -1,0 +1,196 @@
+2024-02-28 20:19:04,408 INFO    StreamThr :2062435 [internal.py:wandb_internal():86] W&B internal server running at pid: 2062435, started at: 2024-02-28 20:19:04.407794
+2024-02-28 20:19:04,411 DEBUG   HandlerThread:2062435 [handler.py:handle_request():146] handle_request: status
+2024-02-28 20:19:04,415 INFO    WriterThread:2062435 [datastore.py:open_for_write():87] open: /home/jupyter-recommendations/pricing_transformer/wandb/run-20240228_201904-056hqaic/run-056hqaic.wandb
+2024-02-28 20:19:04,416 DEBUG   SenderThread:2062435 [sender.py:send():382] send: header
+2024-02-28 20:19:04,431 DEBUG   SenderThread:2062435 [sender.py:send():382] send: run
+2024-02-28 20:19:04,683 INFO    SenderThread:2062435 [dir_watcher.py:__init__():211] watching files in: /home/jupyter-recommendations/pricing_transformer/wandb/run-20240228_201904-056hqaic/files
+2024-02-28 20:19:04,684 INFO    SenderThread:2062435 [sender.py:_start_run_threads():1136] run started: 056hqaic with start time 1709180344.407375
+2024-02-28 20:19:04,697 DEBUG   HandlerThread:2062435 [handler.py:handle_request():146] handle_request: check_version
+2024-02-28 20:19:04,697 DEBUG   SenderThread:2062435 [sender.py:send_request():409] send_request: check_version
+2024-02-28 20:19:04,877 DEBUG   HandlerThread:2062435 [handler.py:handle_request():146] handle_request: run_start
+2024-02-28 20:19:04,889 DEBUG   HandlerThread:2062435 [system_info.py:__init__():27] System info init
+2024-02-28 20:19:04,889 DEBUG   HandlerThread:2062435 [system_info.py:__init__():42] System info init done
+2024-02-28 20:19:04,889 INFO    HandlerThread:2062435 [system_monitor.py:start():194] Starting system monitor
+2024-02-28 20:19:04,890 INFO    SystemMonitor:2062435 [system_monitor.py:_start():158] Starting system asset monitoring threads
+2024-02-28 20:19:04,891 INFO    HandlerThread:2062435 [system_monitor.py:probe():214] Collecting system info
+2024-02-28 20:19:04,891 INFO    SystemMonitor:2062435 [interfaces.py:start():190] Started cpu monitoring
+2024-02-28 20:19:04,892 INFO    SystemMonitor:2062435 [interfaces.py:start():190] Started disk monitoring
+2024-02-28 20:19:04,893 INFO    SystemMonitor:2062435 [interfaces.py:start():190] Started gpu monitoring
+2024-02-28 20:19:04,895 INFO    SystemMonitor:2062435 [interfaces.py:start():190] Started memory monitoring
+2024-02-28 20:19:04,895 INFO    SystemMonitor:2062435 [interfaces.py:start():190] Started network monitoring
+2024-02-28 20:19:04,944 DEBUG   HandlerThread:2062435 [system_info.py:probe():151] Probing system
+2024-02-28 20:19:04,952 DEBUG   HandlerThread:2062435 [system_info.py:_probe_git():136] Probing git
+2024-02-28 20:19:04,967 DEBUG   HandlerThread:2062435 [system_info.py:_probe_git():144] Probing git done
+2024-02-28 20:19:04,967 DEBUG   HandlerThread:2062435 [system_info.py:probe():199] Probing system done
+2024-02-28 20:19:04,967 DEBUG   HandlerThread:2062435 [system_monitor.py:probe():223] {'os': 'Linux-5.15.0-91-generic-x86_64-with-glibc2.31', 'python': '3.9.7', 'heartbeatAt': '2024-02-29T04:19:04.944107', 'startedAt': '2024-02-29T04:19:04.399819', 'docker': None, 'cuda': None, 'args': ('--env', 'bandit', '--envs', '10', '--H', '5', '--dim', '5', '--var', '0.3', '--cov', '0.0', '--lr', '0.0001', '--layer', '4', '--head', '4', '--shuffle', '--num_epochs', '3', '--seed', '1'), 'state': 'running', 'program': '/home/jupyter-recommendations/pricing_transformer/train.py', 'codePathLocal': 'train.py', 'codePath': 'train.py', 'git': {'remote': 'https://github.com/ReubenNarad/pricing_transformer.git', 'commit': '00c77ab51df0227d3c4a8359c822a381847b5a5a'}, 'email': 'reubenjnarad@gmail.com\\n', 'root': '/home/jupyter-recommendations/pricing_transformer', 'host': 'baker', 'username': 'jupyter-recommendations', 'executable': '/opt/tljh/user/bin/python3', 'cpu_count': 32, 'cpu_count_logical': 64, 'cpu_freq': {'current': 1270.220875, 'min': 1200.0, 'max': 3900.0}, 'cpu_freq_per_core': [{'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1300.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1400.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1300.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1486.903, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1500.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 3848.9, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}, {'current': 2100.0, 'min': 1200.0, 'max': 3900.0}, {'current': 1200.0, 'min': 1200.0, 'max': 3900.0}], 'disk': {'/': {'total': 228.0316047668457, 'used': 35.81388854980469}}, 'gpu': 'NVIDIA RTX A6000', 'gpu_count': 1, 'gpu_devices': [{'name': 'NVIDIA RTX A6000', 'memory_total': 51527024640}], 'memory': {'total': 754.5557899475098}}
+2024-02-28 20:19:04,967 INFO    HandlerThread:2062435 [system_monitor.py:probe():224] Finished collecting system info
+2024-02-28 20:19:04,967 INFO    HandlerThread:2062435 [system_monitor.py:probe():227] Publishing system info
+2024-02-28 20:19:04,967 DEBUG   HandlerThread:2062435 [system_info.py:_save_conda():208] Saving list of conda packages installed into the current environment
+2024-02-28 20:19:05,688 INFO    Thread-12 :2062435 [dir_watcher.py:_on_file_created():271] file/dir created: /home/jupyter-recommendations/pricing_transformer/wandb/run-20240228_201904-056hqaic/files/conda-environment.yaml
+2024-02-28 20:19:06,026 DEBUG   HandlerThread:2062435 [system_info.py:_save_conda():220] Saving conda packages done
+2024-02-28 20:19:06,028 INFO    HandlerThread:2062435 [system_monitor.py:probe():229] Finished publishing system info
+2024-02-28 20:19:06,033 DEBUG   SenderThread:2062435 [sender.py:send():382] send: files
+2024-02-28 20:19:06,034 INFO    SenderThread:2062435 [sender.py:_save_file():1403] saving file wandb-metadata.json with policy now
+2024-02-28 20:19:06,043 DEBUG   HandlerThread:2062435 [handler.py:handle_request():146] handle_request: python_packages
+2024-02-28 20:19:06,044 DEBUG   SenderThread:2062435 [sender.py:send_request():409] send_request: python_packages
+2024-02-28 20:19:06,045 DEBUG   SenderThread:2062435 [sender.py:send():382] send: telemetry
+2024-02-28 20:19:06,046 DEBUG   HandlerThread:2062435 [handler.py:handle_request():146] handle_request: stop_status
+2024-02-28 20:19:06,046 DEBUG   HandlerThread:2062435 [handler.py:handle_request():146] handle_request: internal_messages
+2024-02-28 20:19:06,047 DEBUG   SenderThread:2062435 [sender.py:send_request():409] send_request: stop_status
+2024-02-28 20:19:06,345 INFO    wandb-upload_0:2062435 [upload_job.py:push():131] Uploaded file /tmp/tmpzco2b_fewandb/wkn55t8t-wandb-metadata.json
+2024-02-28 20:19:06,685 INFO    Thread-12 :2062435 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/jupyter-recommendations/pricing_transformer/wandb/run-20240228_201904-056hqaic/files/conda-environment.yaml
+2024-02-28 20:19:06,686 INFO    Thread-12 :2062435 [dir_watcher.py:_on_file_created():271] file/dir created: /home/jupyter-recommendations/pricing_transformer/wandb/run-20240228_201904-056hqaic/files/wandb-metadata.json
+2024-02-28 20:19:06,686 INFO    Thread-12 :2062435 [dir_watcher.py:_on_file_created():271] file/dir created: /home/jupyter-recommendations/pricing_transformer/wandb/run-20240228_201904-056hqaic/files/requirements.txt
+2024-02-28 20:19:07,686 INFO    Thread-12 :2062435 [dir_watcher.py:_on_file_created():271] file/dir created: /home/jupyter-recommendations/pricing_transformer/wandb/run-20240228_201904-056hqaic/files/output.log
+2024-02-28 20:19:08,455 DEBUG   HandlerThread:2062435 [handler.py:handle_request():146] handle_request: partial_history
+2024-02-28 20:19:08,457 DEBUG   SenderThread:2062435 [sender.py:send():382] send: history
+2024-02-28 20:19:08,457 DEBUG   SenderThread:2062435 [sender.py:send_request():409] send_request: summary_record
+2024-02-28 20:19:08,461 INFO    SenderThread:2062435 [sender.py:_save_file():1403] saving file wandb-summary.json with policy end
+2024-02-28 20:19:08,487 DEBUG   HandlerThread:2062435 [handler.py:handle_request():146] handle_request: partial_history
+2024-02-28 20:19:08,488 DEBUG   SenderThread:2062435 [sender.py:send():382] send: history
+2024-02-28 20:19:08,489 DEBUG   SenderThread:2062435 [sender.py:send_request():409] send_request: summary_record
+2024-02-28 20:19:08,490 INFO    SenderThread:2062435 [sender.py:_save_file():1403] saving file wandb-summary.json with policy end
+2024-02-28 20:19:08,512 DEBUG   HandlerThread:2062435 [handler.py:handle_request():146] handle_request: partial_history
+2024-02-28 20:19:08,513 DEBUG   SenderThread:2062435 [sender.py:send():382] send: history
+2024-02-28 20:19:08,514 DEBUG   SenderThread:2062435 [sender.py:send_request():409] send_request: summary_record
+2024-02-28 20:19:08,514 INFO    SenderThread:2062435 [sender.py:_save_file():1403] saving file wandb-summary.json with policy end
+2024-02-28 20:19:08,574 DEBUG   SenderThread:2062435 [sender.py:send():382] send: telemetry
+2024-02-28 20:19:08,574 DEBUG   SenderThread:2062435 [sender.py:send():382] send: exit
+2024-02-28 20:19:08,574 INFO    SenderThread:2062435 [sender.py:send_exit():589] handling exit code: 0
+2024-02-28 20:19:08,575 INFO    SenderThread:2062435 [sender.py:send_exit():591] handling runtime: 3
+2024-02-28 20:19:08,575 INFO    SenderThread:2062435 [sender.py:_save_file():1403] saving file wandb-summary.json with policy end
+2024-02-28 20:19:08,575 INFO    SenderThread:2062435 [sender.py:send_exit():597] send defer
+2024-02-28 20:19:08,576 DEBUG   HandlerThread:2062435 [handler.py:handle_request():146] handle_request: defer
+2024-02-28 20:19:08,576 INFO    HandlerThread:2062435 [handler.py:handle_request_defer():172] handle defer: 0
+2024-02-28 20:19:08,576 DEBUG   SenderThread:2062435 [sender.py:send_request():409] send_request: defer
+2024-02-28 20:19:08,577 INFO    SenderThread:2062435 [sender.py:send_request_defer():613] handle sender defer: 0
+2024-02-28 20:19:08,577 INFO    SenderThread:2062435 [sender.py:transition_state():617] send defer: 1
+2024-02-28 20:19:08,577 DEBUG   HandlerThread:2062435 [handler.py:handle_request():146] handle_request: defer
+2024-02-28 20:19:08,577 INFO    HandlerThread:2062435 [handler.py:handle_request_defer():172] handle defer: 1
+2024-02-28 20:19:08,577 DEBUG   SenderThread:2062435 [sender.py:send_request():409] send_request: defer
+2024-02-28 20:19:08,577 INFO    SenderThread:2062435 [sender.py:send_request_defer():613] handle sender defer: 1
+2024-02-28 20:19:08,577 INFO    SenderThread:2062435 [sender.py:transition_state():617] send defer: 2
+2024-02-28 20:19:08,578 DEBUG   HandlerThread:2062435 [handler.py:handle_request():146] handle_request: defer
+2024-02-28 20:19:08,578 INFO    HandlerThread:2062435 [handler.py:handle_request_defer():172] handle defer: 2
+2024-02-28 20:19:08,578 INFO    HandlerThread:2062435 [system_monitor.py:finish():203] Stopping system monitor
+2024-02-28 20:19:08,578 INFO    HandlerThread:2062435 [interfaces.py:finish():202] Joined cpu monitor
+2024-02-28 20:19:08,579 DEBUG   SystemMonitor:2062435 [system_monitor.py:_start():172] Starting system metrics aggregation loop
+2024-02-28 20:19:08,579 DEBUG   SystemMonitor:2062435 [system_monitor.py:_start():179] Finished system metrics aggregation loop
+2024-02-28 20:19:08,579 DEBUG   SystemMonitor:2062435 [system_monitor.py:_start():183] Publishing last batch of metrics
+2024-02-28 20:19:08,582 INFO    HandlerThread:2062435 [interfaces.py:finish():202] Joined disk monitor
+2024-02-28 20:19:08,687 INFO    Thread-12 :2062435 [dir_watcher.py:_on_file_created():271] file/dir created: /home/jupyter-recommendations/pricing_transformer/wandb/run-20240228_201904-056hqaic/files/wandb-summary.json
+2024-02-28 20:19:08,700 INFO    HandlerThread:2062435 [interfaces.py:finish():202] Joined gpu monitor
+2024-02-28 20:19:08,700 INFO    HandlerThread:2062435 [interfaces.py:finish():202] Joined memory monitor
+2024-02-28 20:19:08,700 INFO    HandlerThread:2062435 [interfaces.py:finish():202] Joined network monitor
+2024-02-28 20:19:08,701 DEBUG   SenderThread:2062435 [sender.py:send_request():409] send_request: defer
+2024-02-28 20:19:08,701 INFO    SenderThread:2062435 [sender.py:send_request_defer():613] handle sender defer: 2
+2024-02-28 20:19:08,702 INFO    SenderThread:2062435 [sender.py:transition_state():617] send defer: 3
+2024-02-28 20:19:08,702 DEBUG   SenderThread:2062435 [sender.py:send():382] send: stats
+2024-02-28 20:19:08,703 DEBUG   HandlerThread:2062435 [handler.py:handle_request():146] handle_request: defer
+2024-02-28 20:19:08,703 INFO    HandlerThread:2062435 [handler.py:handle_request_defer():172] handle defer: 3
+2024-02-28 20:19:08,703 DEBUG   SenderThread:2062435 [sender.py:send_request():409] send_request: defer
+2024-02-28 20:19:08,703 INFO    SenderThread:2062435 [sender.py:send_request_defer():613] handle sender defer: 3
+2024-02-28 20:19:08,703 INFO    SenderThread:2062435 [sender.py:transition_state():617] send defer: 4
+2024-02-28 20:19:08,704 DEBUG   HandlerThread:2062435 [handler.py:handle_request():146] handle_request: defer
+2024-02-28 20:19:08,704 INFO    HandlerThread:2062435 [handler.py:handle_request_defer():172] handle defer: 4
+2024-02-28 20:19:08,704 DEBUG   SenderThread:2062435 [sender.py:send_request():409] send_request: defer
+2024-02-28 20:19:08,704 INFO    SenderThread:2062435 [sender.py:send_request_defer():613] handle sender defer: 4
+2024-02-28 20:19:08,704 INFO    SenderThread:2062435 [sender.py:transition_state():617] send defer: 5
+2024-02-28 20:19:08,705 DEBUG   HandlerThread:2062435 [handler.py:handle_request():146] handle_request: defer
+2024-02-28 20:19:08,705 INFO    HandlerThread:2062435 [handler.py:handle_request_defer():172] handle defer: 5
+2024-02-28 20:19:08,706 DEBUG   SenderThread:2062435 [sender.py:send():382] send: summary
+2024-02-28 20:19:08,706 INFO    SenderThread:2062435 [sender.py:_save_file():1403] saving file wandb-summary.json with policy end
+2024-02-28 20:19:08,707 DEBUG   SenderThread:2062435 [sender.py:send_request():409] send_request: defer
+2024-02-28 20:19:08,707 INFO    SenderThread:2062435 [sender.py:send_request_defer():613] handle sender defer: 5
+2024-02-28 20:19:08,707 INFO    SenderThread:2062435 [sender.py:transition_state():617] send defer: 6
+2024-02-28 20:19:08,707 DEBUG   HandlerThread:2062435 [handler.py:handle_request():146] handle_request: defer
+2024-02-28 20:19:08,707 INFO    HandlerThread:2062435 [handler.py:handle_request_defer():172] handle defer: 6
+2024-02-28 20:19:08,708 DEBUG   SenderThread:2062435 [sender.py:send_request():409] send_request: defer
+2024-02-28 20:19:08,708 INFO    SenderThread:2062435 [sender.py:send_request_defer():613] handle sender defer: 6
+2024-02-28 20:19:08,713 DEBUG   HandlerThread:2062435 [handler.py:handle_request():146] handle_request: status_report
+2024-02-28 20:19:08,820 INFO    SenderThread:2062435 [sender.py:transition_state():617] send defer: 7
+2024-02-28 20:19:08,820 DEBUG   HandlerThread:2062435 [handler.py:handle_request():146] handle_request: defer
+2024-02-28 20:19:08,820 INFO    HandlerThread:2062435 [handler.py:handle_request_defer():172] handle defer: 7
+2024-02-28 20:19:08,821 DEBUG   SenderThread:2062435 [sender.py:send_request():409] send_request: defer
+2024-02-28 20:19:08,821 INFO    SenderThread:2062435 [sender.py:send_request_defer():613] handle sender defer: 7
+2024-02-28 20:19:09,548 INFO    SenderThread:2062435 [sender.py:transition_state():617] send defer: 8
+2024-02-28 20:19:09,548 DEBUG   HandlerThread:2062435 [handler.py:handle_request():146] handle_request: defer
+2024-02-28 20:19:09,549 INFO    HandlerThread:2062435 [handler.py:handle_request_defer():172] handle defer: 8
+2024-02-28 20:19:09,549 DEBUG   SenderThread:2062435 [sender.py:send_request():409] send_request: defer
+2024-02-28 20:19:09,549 INFO    SenderThread:2062435 [sender.py:send_request_defer():613] handle sender defer: 8
+2024-02-28 20:19:09,549 INFO    SenderThread:2062435 [job_builder.py:build():296] Attempting to build job artifact
+2024-02-28 20:19:09,550 INFO    SenderThread:2062435 [job_builder.py:_get_source_type():426] is repo sourced job
+2024-02-28 20:19:09,575 DEBUG   HandlerThread:2062435 [handler.py:handle_request():146] handle_request: poll_exit
+2024-02-28 20:19:09,589 INFO    SenderThread:2062435 [job_builder.py:build():402] adding wandb-job metadata file
+2024-02-28 20:19:09,593 INFO    SenderThread:2062435 [sender.py:transition_state():617] send defer: 9
+2024-02-28 20:19:09,594 DEBUG   SenderThread:2062435 [sender.py:send_request():409] send_request: poll_exit
+2024-02-28 20:19:09,594 DEBUG   HandlerThread:2062435 [handler.py:handle_request():146] handle_request: defer
+2024-02-28 20:19:09,595 DEBUG   SenderThread:2062435 [sender.py:send():382] send: artifact
+2024-02-28 20:19:09,595 INFO    HandlerThread:2062435 [handler.py:handle_request_defer():172] handle defer: 9
+2024-02-28 20:19:09,687 INFO    Thread-12 :2062435 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/jupyter-recommendations/pricing_transformer/wandb/run-20240228_201904-056hqaic/files/output.log
+2024-02-28 20:19:09,688 INFO    Thread-12 :2062435 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/jupyter-recommendations/pricing_transformer/wandb/run-20240228_201904-056hqaic/files/wandb-summary.json
+2024-02-28 20:19:09,688 INFO    Thread-12 :2062435 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/jupyter-recommendations/pricing_transformer/wandb/run-20240228_201904-056hqaic/files/config.yaml
+2024-02-28 20:19:10,022 INFO    SenderThread:2062435 [sender.py:send_artifact():1494] sent artifact job-https___github.com_ReubenNarad_pricing_transformer.git_train.py - {'id': 'QXJ0aWZhY3Q6NzM1MDI2NDU3', 'state': 'COMMITTED', 'artifactSequence': {'id': 'QXJ0aWZhY3RDb2xsZWN0aW9uOjE0MjczODA1OA==', 'latestArtifact': {'id': 'QXJ0aWZhY3Q6NzM1MDI2NDU3', 'versionIndex': 3}}}
+2024-02-28 20:19:10,023 DEBUG   SenderThread:2062435 [sender.py:send_request():409] send_request: defer
+2024-02-28 20:19:10,023 INFO    SenderThread:2062435 [sender.py:send_request_defer():613] handle sender defer: 9
+2024-02-28 20:19:10,023 INFO    SenderThread:2062435 [dir_watcher.py:finish():358] shutting down directory watcher
+2024-02-28 20:19:10,575 DEBUG   HandlerThread:2062435 [handler.py:handle_request():146] handle_request: poll_exit
+2024-02-28 20:19:10,689 INFO    SenderThread:2062435 [dir_watcher.py:finish():388] scan: /home/jupyter-recommendations/pricing_transformer/wandb/run-20240228_201904-056hqaic/files
+2024-02-28 20:19:10,690 INFO    SenderThread:2062435 [dir_watcher.py:finish():402] scan save: /home/jupyter-recommendations/pricing_transformer/wandb/run-20240228_201904-056hqaic/files/wandb-summary.json wandb-summary.json
+2024-02-28 20:19:10,690 INFO    SenderThread:2062435 [dir_watcher.py:finish():402] scan save: /home/jupyter-recommendations/pricing_transformer/wandb/run-20240228_201904-056hqaic/files/conda-environment.yaml conda-environment.yaml
+2024-02-28 20:19:10,690 INFO    SenderThread:2062435 [dir_watcher.py:finish():402] scan save: /home/jupyter-recommendations/pricing_transformer/wandb/run-20240228_201904-056hqaic/files/config.yaml config.yaml
+2024-02-28 20:19:10,691 INFO    SenderThread:2062435 [dir_watcher.py:finish():402] scan save: /home/jupyter-recommendations/pricing_transformer/wandb/run-20240228_201904-056hqaic/files/requirements.txt requirements.txt
+2024-02-28 20:19:10,691 INFO    SenderThread:2062435 [dir_watcher.py:finish():402] scan save: /home/jupyter-recommendations/pricing_transformer/wandb/run-20240228_201904-056hqaic/files/wandb-metadata.json wandb-metadata.json
+2024-02-28 20:19:10,691 INFO    SenderThread:2062435 [dir_watcher.py:finish():402] scan save: /home/jupyter-recommendations/pricing_transformer/wandb/run-20240228_201904-056hqaic/files/output.log output.log
+2024-02-28 20:19:10,692 INFO    SenderThread:2062435 [sender.py:transition_state():617] send defer: 10
+2024-02-28 20:19:10,698 DEBUG   SenderThread:2062435 [sender.py:send_request():409] send_request: poll_exit
+2024-02-28 20:19:10,704 DEBUG   HandlerThread:2062435 [handler.py:handle_request():146] handle_request: defer
+2024-02-28 20:19:10,720 INFO    HandlerThread:2062435 [handler.py:handle_request_defer():172] handle defer: 10
+2024-02-28 20:19:10,721 DEBUG   SenderThread:2062435 [sender.py:send_request():409] send_request: defer
+2024-02-28 20:19:10,721 INFO    SenderThread:2062435 [sender.py:send_request_defer():613] handle sender defer: 10
+2024-02-28 20:19:10,721 INFO    SenderThread:2062435 [file_pusher.py:finish():172] shutting down file pusher
+2024-02-28 20:19:10,881 INFO    wandb-upload_0:2062435 [upload_job.py:push():131] Uploaded file /home/jupyter-recommendations/pricing_transformer/wandb/run-20240228_201904-056hqaic/files/wandb-summary.json
+2024-02-28 20:19:10,924 INFO    wandb-upload_1:2062435 [upload_job.py:push():131] Uploaded file /home/jupyter-recommendations/pricing_transformer/wandb/run-20240228_201904-056hqaic/files/conda-environment.yaml
+2024-02-28 20:19:10,961 INFO    wandb-upload_3:2062435 [upload_job.py:push():131] Uploaded file /home/jupyter-recommendations/pricing_transformer/wandb/run-20240228_201904-056hqaic/files/requirements.txt
+2024-02-28 20:19:10,962 INFO    wandb-upload_2:2062435 [upload_job.py:push():131] Uploaded file /home/jupyter-recommendations/pricing_transformer/wandb/run-20240228_201904-056hqaic/files/config.yaml
+2024-02-28 20:19:10,998 INFO    wandb-upload_4:2062435 [upload_job.py:push():131] Uploaded file /home/jupyter-recommendations/pricing_transformer/wandb/run-20240228_201904-056hqaic/files/output.log
+2024-02-28 20:19:11,198 INFO    Thread-11 :2062435 [sender.py:transition_state():617] send defer: 11
+2024-02-28 20:19:11,199 DEBUG   HandlerThread:2062435 [handler.py:handle_request():146] handle_request: defer
+2024-02-28 20:19:11,199 INFO    HandlerThread:2062435 [handler.py:handle_request_defer():172] handle defer: 11
+2024-02-28 20:19:11,200 DEBUG   SenderThread:2062435 [sender.py:send_request():409] send_request: defer
+2024-02-28 20:19:11,200 INFO    SenderThread:2062435 [sender.py:send_request_defer():613] handle sender defer: 11
+2024-02-28 20:19:11,200 INFO    SenderThread:2062435 [file_pusher.py:join():178] waiting for file pusher
+2024-02-28 20:19:11,200 INFO    SenderThread:2062435 [sender.py:transition_state():617] send defer: 12
+2024-02-28 20:19:11,201 DEBUG   HandlerThread:2062435 [handler.py:handle_request():146] handle_request: defer
+2024-02-28 20:19:11,201 INFO    HandlerThread:2062435 [handler.py:handle_request_defer():172] handle defer: 12
+2024-02-28 20:19:11,201 DEBUG   SenderThread:2062435 [sender.py:send_request():409] send_request: defer
+2024-02-28 20:19:11,202 INFO    SenderThread:2062435 [sender.py:send_request_defer():613] handle sender defer: 12
+2024-02-28 20:19:11,202 INFO    SenderThread:2062435 [file_stream.py:finish():595] file stream finish called
+2024-02-28 20:19:11,284 INFO    SenderThread:2062435 [file_stream.py:finish():599] file stream finish is done
+2024-02-28 20:19:11,284 INFO    SenderThread:2062435 [sender.py:transition_state():617] send defer: 13
+2024-02-28 20:19:11,284 DEBUG   HandlerThread:2062435 [handler.py:handle_request():146] handle_request: defer
+2024-02-28 20:19:11,285 INFO    HandlerThread:2062435 [handler.py:handle_request_defer():172] handle defer: 13
+2024-02-28 20:19:11,285 DEBUG   SenderThread:2062435 [sender.py:send_request():409] send_request: defer
+2024-02-28 20:19:11,285 INFO    SenderThread:2062435 [sender.py:send_request_defer():613] handle sender defer: 13
+2024-02-28 20:19:11,285 INFO    SenderThread:2062435 [sender.py:transition_state():617] send defer: 14
+2024-02-28 20:19:11,286 DEBUG   HandlerThread:2062435 [handler.py:handle_request():146] handle_request: defer
+2024-02-28 20:19:11,286 INFO    HandlerThread:2062435 [handler.py:handle_request_defer():172] handle defer: 14
+2024-02-28 20:19:11,287 DEBUG   SenderThread:2062435 [sender.py:send():382] send: final
+2024-02-28 20:19:11,287 DEBUG   SenderThread:2062435 [sender.py:send():382] send: footer
+2024-02-28 20:19:11,287 DEBUG   SenderThread:2062435 [sender.py:send_request():409] send_request: defer
+2024-02-28 20:19:11,287 INFO    SenderThread:2062435 [sender.py:send_request_defer():613] handle sender defer: 14
+2024-02-28 20:19:11,288 DEBUG   HandlerThread:2062435 [handler.py:handle_request():146] handle_request: poll_exit
+2024-02-28 20:19:11,289 DEBUG   SenderThread:2062435 [sender.py:send_request():409] send_request: poll_exit
+2024-02-28 20:19:11,291 DEBUG   HandlerThread:2062435 [handler.py:handle_request():146] handle_request: internal_messages
+2024-02-28 20:19:11,292 DEBUG   HandlerThread:2062435 [handler.py:handle_request():146] handle_request: server_info
+2024-02-28 20:19:11,293 DEBUG   SenderThread:2062435 [sender.py:send_request():409] send_request: server_info
+2024-02-28 20:19:11,334 DEBUG   HandlerThread:2062435 [handler.py:handle_request():146] handle_request: get_summary
+2024-02-28 20:19:11,335 DEBUG   HandlerThread:2062435 [handler.py:handle_request():146] handle_request: sampled_history
+2024-02-28 20:19:11,335 DEBUG   HandlerThread:2062435 [handler.py:handle_request():146] handle_request: job_info
+2024-02-28 20:19:11,360 DEBUG   SenderThread:2062435 [sender.py:send_request():409] send_request: job_info
+2024-02-28 20:19:11,379 DEBUG   HandlerThread:2062435 [handler.py:handle_request():146] handle_request: shutdown
+2024-02-28 20:19:11,379 INFO    HandlerThread:2062435 [handler.py:finish():869] shutting down handler
+2024-02-28 20:19:12,336 INFO    WriterThread:2062435 [datastore.py:close():296] close: /home/jupyter-recommendations/pricing_transformer/wandb/run-20240228_201904-056hqaic/run-056hqaic.wandb
+2024-02-28 20:19:12,361 INFO    SenderThread:2062435 [sender.py:finish():1572] shutting down sender
+2024-02-28 20:19:12,361 INFO    SenderThread:2062435 [file_pusher.py:finish():172] shutting down file pusher
+2024-02-28 20:19:12,361 INFO    SenderThread:2062435 [file_pusher.py:join():178] waiting for file pusher

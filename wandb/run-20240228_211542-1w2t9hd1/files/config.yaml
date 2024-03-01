@@ -1,0 +1,45 @@
+wandb_version: 1
+
+learning_rate:
+  desc: null
+  value: 0.0001
+architecture:
+  desc: null
+  value: Transformer
+dataset:
+  desc: null
+  value: Custom
+epochs:
+  desc: null
+  value: 3
+_wandb:
+  desc: null
+  value:
+    python_version: 3.9.7
+    cli_version: 0.16.3
+    framework: huggingface
+    huggingface_version: 4.5.1
+    is_jupyter_run: false
+    is_kaggle_kernel: false
+    start_time: 1709183742.064584
+    t:
+      1:
+      - 1
+      - 11
+      - 41
+      - 55
+      2:
+      - 1
+      - 11
+      - 41
+      - 55
+      3:
+      - 2
+      - 16
+      - 23
+      4: 3.9.7
+      5: 0.16.3
+      6: 4.5.1
+      8:
+      - 5
+      13: linux-x86_64
