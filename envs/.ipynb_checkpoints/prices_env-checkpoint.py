@@ -18,19 +18,20 @@ def sample(dim, H, var, type='uniform'):
     return env
 
 def sample_price_env(dim, H, var):
-    alpha = np.random.randint(1,11)
-    beta = np.random.randint(1,11) / -10
-    env = PricesEnv(alpha, beta, 1, H, var=var)
+    alpha = np.random.randint(2,11)
+    beta = np.random.randint(5,15) / -10
+    env = PricesEnv(alpha, beta, dim, H, var=var)
     return env
 
 class PricesEnv(BaseEnv):
-    def __init__(self, alpha, beta, sigma2, H, var=0.0, type='uniform'):
+    def __init__(self, alpha, beta, dim, H, var=0.0, type='uniform'):
         self.alpha = alpha
         self.beta = beta
-        self.sigma2 = sigma2
-        self.price_grid = np.linspace(0,5,10)
+        self.dim = dim
+        self.price_grid = np.linspace(1,5,self.dim)        
+        self.demands = np.maximum(alpha + beta * self.price_grid, 0)
+        self.means = self.demands * self.price_grid 
         
-        self.means = alpha + beta * self.price_grid
         self.opt_a_index = np.argmax(self.means)
         self.opt_a = np.zeros(self.means.shape)
         self.opt_a[self.opt_a_index] = 1.0
@@ -59,7 +60,7 @@ class PricesEnv(BaseEnv):
         a = np.argmax(u)
         
         # REWARD FUNCTION
-        r = max((self.means[a] + self.sigma2 * np.random.normal(0, self.var)) * (self.price_grid[a]), 0)
+        r = max((self.demands[a] + np.random.normal(0, self.var)) * (self.price_grid[a]), 0)
         return self.state.copy(), r
 
     def step(self, action):

@@ -97,19 +97,6 @@ if __name__ == '__main__':
         'seed': seed,
     }
     
-#     wandb.init(
-#         # set the wandb project where this run will be logged
-#         project="pricing_transformer",
-
-#         # track hyperparameters and run metadata
-#         config={
-#         "learning_rate": lr,
-#         "architecture": "Transformer",
-#         "dataset": "Custom",
-#         "epochs": num_epochs,
-#         }
-#     )
-    
     if env == 'prices':
         state_dim = 1
         

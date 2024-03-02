@@ -143,8 +143,6 @@ if __name__ == '__main__':
         model_path = f'models/{tmp_filename}.pt'
     else:
         model_path = f'models/{tmp_filename}_epoch{epoch}.pt'
-    
-    
 
     
     
@@ -212,20 +210,20 @@ if __name__ == '__main__':
             'n_eval': n_eval,
             'bandit_type': bandit_type,
         }
-        eval_bandit.online(eval_trajs, model, **config)
+        eval_prices.online(eval_trajs, model, **config)
         plt.savefig(f'figs/{evals_filename}/online/{save_filename}.png')
         print(f"Saved figs/{evals_filename}/online/{save_filename}.png")
         plt.clf()
         plt.cla()
         plt.close()
 
-        eval_bandit.offline(eval_trajs, model, **config)
+        eval_prices.offline(eval_trajs, model, **config)
         plt.savefig(f'figs/{evals_filename}/bar/{save_filename}_bar.png')
         print(f"Saved figs/{evals_filename}/bar/{save_filename}_bar.png")
 
         plt.clf()
 
-        eval_bandit.offline_graph(eval_trajs, model, **config)
+        eval_prices.offline_graph(eval_trajs, model, **config)
         plt.savefig(f'figs/{evals_filename}/graph/{save_filename}_graph.png')
         print(f"Saved figs/{evals_filename}/graph/{save_filename}_graph.png")
         plt.clf()

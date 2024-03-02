@@ -115,7 +115,7 @@ def online(eval_trajs, model, n_eval, horizon, var, bandit_type):
         traj = eval_trajs[i_eval]
         means = traj['means']
         
-        env = PricesEnv(means, horizon, var=var)
+        env = PricesEnv(traj['alpha'], traj['beta'], len(traj['prices']), horizon, var=var)
         envs.append(env)
 
     vec_env = BanditEnvVec(envs)
@@ -221,7 +221,7 @@ def offline(eval_trajs, model, n_eval, horizon, var, bandit_type):
 
     num_envs = len(eval_trajs)
 
-    tmp_env = PricesEnv(eval_trajs[0]['means'], horizon, var=var)
+    tmp_env = PricesEnv(eval_trajs[0]['alpha'], eval_trajs[0]['beta'], len(eval_trajs[0]['prices']), horizon, var=var)
     context_states = np.zeros((num_envs, horizon, tmp_env.dx))
     context_actions = np.zeros((num_envs, horizon, tmp_env.du))
     context_next_states = np.zeros((num_envs, horizon, tmp_env.dx))
@@ -237,7 +237,7 @@ def offline(eval_trajs, model, n_eval, horizon, var, bandit_type):
         traj = eval_trajs[i_eval]
         means = traj['means']
 
-        env = PricesEnv(means, horizon, var=var)
+        env = PricesEnv(traj['alpha'], traj['beta'], len(traj['prices']), horizon, var=var)
         envs.append(env)
 
         context_states[i_eval, :, :] = traj['context_states'][:horizon]
@@ -330,5 +330,5 @@ def offline_graph(eval_trajs, model, n_eval, horizon, var, bandit_type):
     plt.legend()
     plt.yscale('log')
     plt.xlabel('Dataset size')
-    plt.ylabel('Suboptimality')
+    plt.ylabel('Simple Regret')
     config['horizon'] = horizon
