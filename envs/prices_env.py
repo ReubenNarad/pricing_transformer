@@ -18,8 +18,8 @@ def sample(dim, H, var, type='uniform'):
     return env
 
 def sample_price_env(dim, H, var):
-    alpha = np.random.randint(2,11)
-    beta = np.random.randint(5,15) / -10
+    alpha = np.random.randint(20,110) / 10
+    beta = np.random.randint(50,150) / -100
     env = PricesEnv(alpha, beta, dim, H, var=var)
     return env
 
@@ -35,6 +35,9 @@ class PricesEnv(BaseEnv):
         self.opt_a_index = np.argmax(self.means)
         self.opt_a = np.zeros(self.means.shape)
         self.opt_a[self.opt_a_index] = 1.0
+        
+        self.opt_r = -(self.alpha**2)/(4 * self.beta)
+        
         self.dim = len(self.means)
         self.observation_space = gym.spaces.Box(low=1, high=1, shape=(1,))
         self.action_space = gym.spaces.Box(low=0, high=100, shape=(self.dim,))

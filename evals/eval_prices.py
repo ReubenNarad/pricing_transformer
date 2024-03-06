@@ -4,9 +4,9 @@ import numpy as np
 import scipy
 import torch
 from IPython import embed
+from tqdm import tqdm
 
-
-from ctrls.ctrl_bandit import (
+from ctrls.ctrl_prices import (
     BanditTransformerController,
     GreedyOptPolicy,
     EmpMeanPolicy,
@@ -23,6 +23,8 @@ from utils import convert_to_tensor
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def deploy_online(env, controller, horizon):
+    print("Regular")
+    
     context_states = torch.zeros((1, horizon, env.dx)).float().to(device)
     context_actions = torch.zeros((1, horizon, env.du)).float().to(device)
     context_next_states = torch.zeros((1, horizon, env.dx)).float().to(device)
@@ -55,6 +57,8 @@ def deploy_online(env, controller, horizon):
 
 
 def deploy_online_vec(vec_env, controller, horizon, include_meta=False):
+    print("Vector")
+    
     num_envs = vec_env.num_envs
     # context_states = torch.zeros((num_envs, horizon, vec_env.dx)).float().to(device)
     # context_actions = torch.zeros((num_envs, horizon, vec_env.du)).float().to(device)
@@ -106,12 +110,12 @@ def deploy_online_vec(vec_env, controller, horizon, include_meta=False):
 
 
 def online(eval_trajs, model, n_eval, horizon, var, bandit_type):
+    print("Starting Online ...")
 
     all_means = {}
 
     envs = []
-    for i_eval in range(n_eval):
-        print(f"Eval traj: {i_eval}")
+    for i_eval in tqdm(range(n_eval)):
         traj = eval_trajs[i_eval]
         means = traj['means']
         
@@ -227,10 +231,7 @@ def offline(eval_trajs, model, n_eval, horizon, var, bandit_type):
     context_next_states = np.zeros((num_envs, horizon, tmp_env.dx))
     context_rewards = np.zeros((num_envs, horizon, 1))
 
-
     envs = []
-
-    print(f"Evaling offline horizon: {horizon}")
 
     for i_eval in range(n_eval):
         # print(f"Eval traj: {i_eval}")
@@ -255,7 +256,7 @@ def offline(eval_trajs, model, n_eval, horizon, var, bandit_type):
     }
 
     opt_policy = OptPolicy(envs, batch_size=num_envs)
-    emp_policy = EmpMeanPolicy(envs[0], online=False, batch_size=num_envs)
+    # emp_policy = EmpMeanPolicy(envs[0], online=False, batch_size=num_envs)
     lnr_policy = BanditTransformerController(model, sample=False, batch_size=num_envs)
     thomp_policy = ThompsonSamplingPolicy(
         envs[0],
@@ -265,31 +266,31 @@ def offline(eval_trajs, model, n_eval, horizon, var, bandit_type):
         prior_var=1/12.0,
         warm_start=False,
         batch_size=num_envs)
-    lcb_policy = PessMeanPolicy(
-        envs[0],
-        const=.8,
-        batch_size=len(envs))
+    # lcb_policy = PessMeanPolicy(
+    #     envs[0],
+    #     const=.8,
+    #     batch_size=len(envs))
 
 
     opt_policy.set_batch_numpy_vec(batch)
-    emp_policy.set_batch_numpy_vec(batch)
+    # emp_policy.set_batch_numpy_vec(batch)
     thomp_policy.set_batch_numpy_vec(batch)
-    lcb_policy.set_batch_numpy_vec(batch)
+    # lcb_policy.set_batch_numpy_vec(batch)
     lnr_policy.set_batch_numpy_vec(batch)
     
     _, _, _, rs_opt = vec_env.deploy_eval(opt_policy)
-    _, _, _, rs_emp = vec_env.deploy_eval(emp_policy)
+    # _, _, _, rs_emp = vec_env.deploy_eval(emp_policy)
     _, _, _, rs_lnr = vec_env.deploy_eval(lnr_policy)
-    _, _, _, rs_lcb = vec_env.deploy_eval(lcb_policy)
+    # _, _, _, rs_lcb = vec_env.deploy_eval(lcb_policy)
     _, _, _, rs_thmp = vec_env.deploy_eval(thomp_policy)
 
 
     baselines = {
         'opt': np.array(rs_opt),
         'lnr': np.array(rs_lnr),
-        'emp': np.array(rs_emp),
+        # 'emp': np.array(rs_emp),
         'thmp': np.array(rs_thmp),
-        'lcb': np.array(rs_lcb),
+        # 'lcb': np.array(rs_lcb),
     }    
     baselines_means = {k: np.mean(v) for k, v in baselines.items()}
     colors = plt.cm.viridis(np.linspace(0, 1, len(baselines_means)))
@@ -305,7 +306,9 @@ def offline_graph(eval_trajs, model, n_eval, horizon, var, bandit_type):
 
     all_means = []
     all_sems = []
-    for h in horizons:
+    
+    print("Starting offline ...")
+    for h in tqdm(horizons):
         config = {
             'horizon': h,
             'var': var,

@@ -10,11 +10,11 @@ from IPython import embed
 
 import common_args
 from envs import bandit_env, prices_env
-from ctrls.ctrl_bandit import ThompsonSamplingPolicy
 from evals import eval_bandit
 from utils import build_bandit_data_filename
 
 from tqdm import tqdm
+from scipy.stats import multivariate_normal
                   
 
 def rollin_bandit(env, cov, orig=False):
@@ -143,30 +143,62 @@ def generate_linear_bandit_histories(n_envs, dim, lin_d, horizon, var, **kwargs)
 # PRICES
 ###########################################################################################
 
-def rollin_prices(env, cov, orig=False):
+def rollin_prices(env, cov, orig=False, thompson=False):
     H = env.H_context
     opt_a_index = env.opt_a_index
-    xs, us, xps, rs = [], [], [], []
-    cov = np.random.choice([0.0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1.0])
-    alpha = np.ones(env.dim)
-
-    for h in range(H):
-        x = np.array([1])
+    
+    # For logging trajectories
+    xs, us, xps, rs, regrets = [], [], [], [], []
+    
+    if thompson:
+        theta = np.array([5, -1])
+        cov = np.eye(2)
+        rtxt = np.zeros(2)
+        prices = []
+        rewards = []
+        sigma = .05
+        cum_regret = 0
+    
+    for t in range(H):
         u = np.zeros(env.dim)
-        i = np.random.choice(np.arange(env.dim))
         
-        u[i] = 1.0
-        xp, r = env.transit(x, u)
+        if thompson:
+            theta_draw = multivariate_normal(theta, np.linalg.inv(cov)).rvs()
+            revenues = [(theta_draw[0] + (price * theta_draw[1])) * price for price in env.price_grid]
 
+            i = np.argmax(revenues)
+            u[i] = 1.0 
+        else:
+            i = np.random.choice(np.arange(env.dim))
+            u[i] = 1.0 
+
+
+        x = np.array([1])
+        xp, r = env.transit(x, u)
+        
         xs.append(x)
         us.append(u)
         xps.append(xp)
         rs.append(r)
+        
+        # Update TS
+        if thompson:
+            pt = (-theta_draw[0] / (2 * theta_draw[1]))
+            prices.append(pt)
+            rt = env.alpha + pt * env.beta + np.random.rand() * sigma
+            
+            rewards.append(rt)
+            cum_regret += env.opt_r - (rt * pt)
+            regrets.append(cum_regret)
+            xt = np.array([1,pt])
+            cov += np.outer(xt,xt)
+            rtxt += rt*xt
+            theta = np.linalg.inv(cov)@rtxt  
 
     xs, us, xps, rs = np.array(xs), np.array(us), np.array(xps), np.array(rs)
-    return xs, us, xps, rs
+    return xs, us, xps, rs, regrets
 
-def generate_prices_histories_from_envs(envs, n_hists, n_samples, cov, type):
+def generate_prices_histories_from_envs(envs, n_hists, n_samples, cov, type, thompson):
     trajs = []
     for env in tqdm(envs):
         for j in range(n_hists):
@@ -175,7 +207,8 @@ def generate_prices_histories_from_envs(envs, n_hists, n_samples, cov, type):
                 context_actions,
                 context_next_states,
                 context_rewards,
-            ) = rollin_prices(env, cov=cov)
+                regrets
+            ) = rollin_prices(env, cov=cov, thompson=thompson)
             for k in range(n_samples):
                 query_state = np.array([1])
                 optimal_action = env.opt_a
@@ -187,6 +220,7 @@ def generate_prices_histories_from_envs(envs, n_hists, n_samples, cov, type):
                     'context_next_states': context_next_states,
                     'context_rewards': context_rewards,
                     'optimal_action': optimal_action,
+                    'regrets': regrets,
                     'prices': env.price_grid,
                     'means': env.means,
                     'demands': env.demands,
@@ -200,7 +234,7 @@ def generate_prices_histories(n_envs, dim, horizon, var, **kwargs):
     envs = [prices_env.sample_price_env(dim, horizon, var)
             for _ in range(n_envs)]
     print(envs[0])
-    trajs = generate_prices_histories_from_envs(envs, **kwargs)
+    trajs = generate_prices_histories_from_envs(envs, thompson=False, **kwargs)
     return trajs
 
 ###########################################################################################

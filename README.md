@@ -31,18 +31,34 @@ Research project, implementing Lee et. al.'s (https://arxiv.org/pdf/2306.14892.p
 
 
 ## Setting up environment:
-1. Be sure to have pytorch installed on your system (needs to elaborate)
 
-2. Install dependencies: `pip install -r requirements.txt`
+1. Install pytorch:
+`pip install pytorch=1.13.0 torchvision=0.14.0 cudatoolkit=11.7 -c pytorch -c nvidia`
+
+2. Install dependencies:
+`pip install -r requirements.txt`
 
 
 ## Example usage:
 
 1. Collect data:
-`python3 collect_data.py --env prices --envs 10000 --H 500 --dim 10 --var 0.3 --cov 0.0 --envs_eval 200`
+`python3 collect_data.py --env prices --envs 1000 --H 50 --dim 10 --var 0.3 --cov 0.0 --envs_eval 200`
 
 2. Train:
-`python3 train.py --env prices --envs 10000 --H 500 --dim 10 --var 0.3 --cov 0.0 --lr 0.0001 --layer 4 --head 4 --shuffle --num_epochs 100 --seed 1`
+`python3 train.py --env prices --envs 1000 --H 50 --dim 10 --var 0.3 --cov 0.0 --lr 0.0001 --layer 4 --head 4 --shuffle --num_epochs 100 --seed 1`
 
 3. Evaluate:
-`python3 eval.py --env prices --envs 10000 --H 500 --dim 10 --var 0.3 --cov 0.0 --lr 0.0001 --layer 4 --head 4 --shuffle --epoch 100 --n_eval 200 --seed 1`
+`python3 eval.py --env prices --envs 1000 --H 50 --dim 10 --var 0.3 --cov 0.0 --lr 0.0001 --layer 4 --head 4 --shuffle --epoch 100 --n_eval 1000 --seed 1`
+
+`
+python3 collect_data.py --env prices --envs 10000 --H 51 --dim 10 --var 0.3 --cov 0.0 --envs_eval 200 && \
+python3 train.py --env prices --envs 10000 --H 51 --dim 10 --var 0.3 --cov 0.0 --lr 0.0001 --layer 4 --head 4 --shuffle --num_epochs 100 --seed 1 && \
+python3 eval.py --env prices --envs 10000 --H 51 --dim 10 --var 0.3 --cov 0.0 --lr 0.0001 --layer 4 --head 4 --shuffle --epoch 100 --n_eval 200 --seed 1
+`
+
+NOTE TO SELF- H50 is thompson, H51 is uniform
+
+
+TODOS:
+- Implement *Parameterized* Thompson Sampling (baseline) -- can probably delete other baselines
+- Collect data via thompson sampling, not uniform

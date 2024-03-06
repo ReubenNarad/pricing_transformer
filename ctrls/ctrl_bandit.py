@@ -18,10 +18,6 @@ class Controller:
     def set_env(self, env):
         self.env = env
 
-        
-
-        
-        
 
 class OptPolicy(Controller):
     def __init__(self, env, batch_size=1):
@@ -375,7 +371,7 @@ class UCBPolicy(Controller):
 
         i = np.argmax(bounds, axis=-1)
         j = np.argmin(counts, axis=-1)
-        mask = (counts[np.arange(200), j] == 0)
+        mask = (counts[np.arange(counts.shape[0]), j] == 0)
         i[mask] = j[mask]
 
         a = np.zeros((self.batch_size, self.env.dim))
