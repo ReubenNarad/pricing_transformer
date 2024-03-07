@@ -4,23 +4,21 @@ import pickle
 import random
 
 import numpy as np
-from skimage.transform import resize
 from IPython import embed
 
 import common_args
-from envs import bandit_env, prices_env
-from evals import eval_bandit
-from utils import build_bandit_data_filename
+from envs import prices_env
+from utils import build_prices_data_filename
 
 from tqdm import tqdm
 from scipy.stats import multivariate_normal
 
-def rollin_prices(env, cov, orig=False, thompson=False, verbose=True):
+def rollin_prices(env, orig=False, thompson=False, verbose=True):
     H = env.H_context
     opt_a_index = env.opt_a_index
     
     # For logging trajectories
-    us, rs, regrets = [], [], []
+    us, rs, regrets, thetas = [], [], [], []
     
     if thompson:
         theta = np.array([5, -1])
@@ -36,7 +34,7 @@ def rollin_prices(env, cov, orig=False, thompson=False, verbose=True):
         
         if thompson:
             theta_draw = multivariate_normal(theta, np.linalg.inv(cov)).rvs()
-            r_hat = [(theta_draw[0] + (price * theta_draw[1])) * price for price in env.price_grid]
+            r_hat = [(theta_draw[0] + (price * theta_draw[1])) for price in env.price_grid]
             i = np.argmax(r_hat)
             u[i] = 1.0 
         else:
@@ -56,31 +54,34 @@ def rollin_prices(env, cov, orig=False, thompson=False, verbose=True):
             rewards.append(r)
             cum_regret += env.opt_r - (r * pt)
             regrets.append(cum_regret)
-        if verbose:
-            print()
-            print(f"act: {u}")
-            # print(f"means: {[round(num, 3) for num in env.means]}")
-            print(f"opt: {env.opt_a}")
-            print(f"opt_r: {round(env.opt_r, 3)}, act_r: {round(r * pt, 3)}, cum_regret: {round(cum_regret, 3)}")
-            print(f"a_hat: {round(theta[0], 3)}, a:{round(env.alpha, 3)}")
-            print(f"b_hat: {round(theta[1], 3)}, b:{round(env.beta, 3)}")
+            if verbose:
+                print()
+                print(f"act: {u}")
+                # print(f"means: {[round(num, 3) for num in env.means]}")
+                print(f"opt: {env.opt_a}")
+                print(f"opt_r: {round(env.opt_r, 3)}, act_r: {round(r * pt, 3)}, cum_regret: {round(cum_regret, 3)}")
+                print(f"a_hat: {round(theta[0], 3)}, a:{round(env.alpha, 3)}")
+                print(f"b_hat: {round(theta[1], 3)}, b:{round(env.beta, 3)}")
+
             xt = np.array([1,pt])
             cov += np.outer(xt,xt)
             rtxt += r*xt
-            theta = np.linalg.inv(cov)@rtxt  
+            thetas.append(theta)
+            theta = np.linalg.inv(cov)@rtxt
 
     us, rs = np.array(us), np.array(rs)
-    return us, rs, regrets
+    return us, rs, regrets, thetas
 
-def generate_prices_histories_from_envs(envs, n_hists, n_samples, cov, type, thompson):
+def generate_prices_histories_from_envs(envs, n_hists, n_samples, type, thompson):
     trajs = []
     for env in tqdm(envs):
         for j in range(n_hists):
             (
                 context_actions,
                 context_rewards,
-                regrets
-            ) = rollin_prices(env, cov=cov, thompson=thompson)
+                regrets,
+                thetas,
+            ) = rollin_prices(env, thompson=thompson)
             for k in range(n_samples):
                 optimal_action = env.opt_a
 
@@ -92,6 +93,7 @@ def generate_prices_histories_from_envs(envs, n_hists, n_samples, cov, type, tho
                     'prices': env.price_grid,
                     'means': env.means,
                     'demands': env.demands,
+                    'thetas' : thetas,
                     'alpha': env.alpha,
                     'beta': env.beta,
                 }
@@ -123,7 +125,6 @@ if __name__ == '__main__':
     horizon = args['H']
     dim = args['dim']
     var = args['var']
-    cov = args['cov']
     env_id_start = args['env_id_start']
     env_id_end = args['env_id_end']
     lin_d = args['lin_d']
@@ -140,15 +141,15 @@ if __name__ == '__main__':
     
     # Generate trajectories
     if env == 'prices':
-        config.update({'dim': dim, 'var': var, 'cov': cov, 'type': 'uniform'})
+        config.update({'dim': dim, 'var': var, 'type': 'uniform'})
 
         train_trajs = generate_prices_histories(n_train_envs, **config)
         test_trajs = generate_prices_histories(n_test_envs, **config)
         eval_trajs = generate_prices_histories(n_eval_envs, **config)
                         
-        train_filepath = build_bandit_data_filename(env, n_envs, config, mode=0)
-        test_filepath = build_bandit_data_filename(env, n_envs, config, mode=1)
-        eval_filepath = build_bandit_data_filename(env, n_eval_envs, config, mode=2)
+        train_filepath = build_prices_data_filename(env, n_envs, config, mode=0)
+        test_filepath = build_prices_data_filename(env, n_envs, config, mode=1)
+        eval_filepath = build_prices_data_filename(env, n_eval_envs, config, mode=2)
     else:
         raise NotImplementedError
 

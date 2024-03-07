@@ -5,16 +5,6 @@ try:
     from envs.base_env import BaseEnv
 except:
     from base_env import BaseEnv
-    
-def sample(dim, H, var, type='uniform'):
-    if type == 'uniform':
-        means = np.random.uniform(0, 1, dim)
-    elif type == 'bernoulli':
-        means = np.random.beta(1, 1, dim)
-    else:
-        raise NotImplementedError
-    env = BanditEnv(means, H, var=var, type=type)
-    return env
 
 def sample_price_env(dim, H, var):
     alpha = np.random.randint(20,110) / 10
@@ -39,12 +29,9 @@ class PricesEnv(BaseEnv):
         self.opt_r = np.max(self.means)
         
         self.dim = len(self.means)
-        self.state = np.array([1])
         self.var = var
         self.dx = 1
         self.du = self.dim
-        self.topk = False
-        self.type = type
 
         # some naming issue here
         self.H_context = H
@@ -55,7 +42,6 @@ class PricesEnv(BaseEnv):
 
     def reset(self):
         self.current_step = 0
-        return self.state
 
     def transit(self, u):
         a = np.argmax(u)
@@ -68,11 +54,11 @@ class PricesEnv(BaseEnv):
         if self.current_step >= self.H:
             raise ValueError("Episode has already ended")
 
-        _, r = self.transit(self.state, action)
+        r = self.transit(action)
         self.current_step += 1
         done = (self.current_step >= self.H)
 
-        return self.state.copy(), r, done, {}
+        return r, done, {}
 
     def deploy_eval(self, ctrl):
         # No variance during evaluation

@@ -3,7 +3,6 @@ Research project, implementing Lee et. al.'s (https://arxiv.org/pdf/2306.14892.p
 
 ## Notes:
 
-- We use OpenAI's Gym library for simulating environments
 - The base transformer model is GPT2 via 🤗 Transformers
 - We use wandb for tracking loss on runs
 
@@ -51,14 +50,10 @@ Research project, implementing Lee et. al.'s (https://arxiv.org/pdf/2306.14892.p
 `python3 eval.py --env prices --envs 1000 --H 50 --dim 10 --var 0.3 --cov 0.0 --lr 0.0001 --layer 4 --head 4 --shuffle --epoch 100 --n_eval 1000 --seed 1`
 
 `
-python3 collect_data.py --env prices --envs 1000 --H 10 --dim 10 --var 0.3 --cov 0.0 --envs_eval 20 && \
-python3 train.py --env prices --envs 10000 --H 51 --dim 10 --var 0.3 --cov 0.0 --lr 0.0001 --layer 4 --head 4 --shuffle --num_epochs 100 --seed 1 && \
-python3 eval.py --env prices --envs 10000 --H 51 --dim 10 --var 0.3 --cov 0.0 --lr 0.0001 --layer 4 --head 4 --shuffle --epoch 100 --n_eval 200 --seed 1
+python3 collect_data.py --env prices --envs 10 --H 100 --dim 10 --var 0.3 --envs_eval 20 && \
+python3 train.py --env prices --envs 10 --H 100 --dim 10 --var 0.3 --lr 0.0001 --layer 4 --head 4 --shuffle --num_epochs 100 --seed 1 && \
+python3 eval.py --env prices --envs 10 --H 100 --dim 10 --var 0.3 --lr 0.0001 --layer 4 --head 4 --shuffle --epoch 100 --n_eval 200 --seed 1
 `
-
-NOTE TO SELF- H50 is thompson, H51 is uniform
-
 
 TODOS:
 - Implement *Parameterized* Thompson Sampling (baseline) -- can probably delete other baselines
-- Collect data via thompson sampling, not uniform

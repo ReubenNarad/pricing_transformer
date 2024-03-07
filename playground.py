@@ -1,14 +1,15 @@
-from net import Transformer
+# For testing and inspecting
+
+# from net import Transformer
+# import torch
 import pickle
-import torch
 import matplotlib.pyplot as plt
 import numpy as np
-# For dissecting the model
 
-with open('datasets/trajs_prices_envs20_H100_d10_var0.3_cov0.0_eval.pkl', 'rb') as f:
+with open('datasets/trajs_prices_envs20_H500_d10_var0.3_eval.pkl', 'rb') as f:
     data = pickle.load(f)
 
-a = data[2]
+a = data[3]
 
 for i in range(min(len(a['context_actions']), 10)):
     print()
@@ -16,12 +17,37 @@ for i in range(min(len(a['context_actions']), 10)):
     print('actions:', [round(j, 3) for j in a['context_actions'][i]])
     print('reward:', round(a['context_rewards'][i], 3))
     print('cum_regret:', round(a['regrets'][i], 3))
+    print('theta:', [round(a['thetas'][i][0], 3), round(a['thetas'][i][1], 3)])
 print('true:', [round(a['alpha'], 3), round(a['beta'], 3)])
 
 regrets = [np.mean([b['regrets'][i] for b in data]) for i in range(len(data[0]['regrets']))]
-# Plot mean regrets
+
+# Plot mean regret
+plt.figure()
 plt.plot(regrets)
-plt.savefig('img.png')
+plt.xlabel('Time Step')
+plt.ylabel('Mean Regret')
+plt.savefig('mean_regret.png')
+plt.close()
+
+for i in range(3):
+    a = data[i]
+    thetas_0 = [a['thetas'][j][0] for j in range(len(a['thetas']))]
+    thetas_1 = [a['thetas'][j][1] for j in range(len(a['thetas']))]
+    alpha = a['alpha']
+    beta = a['beta']
+
+    plt.figure()
+    plt.plot(thetas_0, label='Theta 0')
+    plt.plot(thetas_1, label='Theta 1')
+    plt.plot([alpha] * len(a['thetas']), label='Alpha')
+    plt.plot([beta] * len(a['thetas']), label='Beta')
+    plt.xlabel('Time Step')
+    plt.ylabel('Value')
+    plt.legend()
+    plt.savefig(f'trajectory_{i+1}.png')
+    plt.close()
+
 
 # device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 

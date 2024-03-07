@@ -17,6 +17,7 @@ import numpy as np
 import scipy
 import time
 
+
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 
@@ -212,6 +213,7 @@ if __name__ == '__main__':
         plt.savefig(f'figs/{evals_filename}/graph/{save_filename}_graph.png')
         print(f"Saved figs/{evals_filename}/graph/{save_filename}_graph.png")
         plt.clf()
+
     
     
     if envname == 'bandit' or envname == 'bandit_bernoulli':
