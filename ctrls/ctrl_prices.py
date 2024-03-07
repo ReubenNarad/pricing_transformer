@@ -4,6 +4,7 @@ import numpy as np
 import scipy
 import torch
 from IPython import embed
+from scipy.stats import multivariate_normal
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -122,11 +123,11 @@ class ThompsonSamplingPolicy(Controller):
     def __init__(self, env, std=.1, sample=False, prior_mean=.5, prior_var=1/12.0, warm_start=False, batch_size=1):
         super().__init__()
         self.env = env
-        alpha = env.alpha
-        beta = env.beta
-        
-        print(env.price_grid)
-        
+        self.alpha = env.alpha
+        self.beta = env.beta
+        self.price_grid = env.price_grid
+
+        self.std = std
         self.variance = std**2
         self.prior_mean = prior_mean
         self.prior_variance = prior_var
@@ -138,10 +139,13 @@ class ThompsonSamplingPolicy(Controller):
 
     def reset(self):
         # Reset posteriors over alpha and beta
-        self.alpha_mean = 5
-        self.beta_mean = -.1
-        self.alpha_variance = self.beta_variance = self.prior_variance
+        self.thetas = np.array(self.batch_size, [5, -1])
+        self.cov = np.eye(2)
+        self.rtxt = np.zeros(2)
+        self.prices = []
+        self.rewards = []
         
+        # Old, from non-parametric TS
         if self.batch_size > 1:
             
             self.means = np.ones((self.batch_size, self.env.dim)) * self.prior_mean
@@ -163,6 +167,7 @@ class ThompsonSamplingPolicy(Controller):
             self.counts[np.arange(self.batch_size), c] += 1
 
         arm_means = np.zeros((self.batch_size, self.env.dim))
+        
         for idx in range(self.batch_size):
             actions_idx = np.argmax(actions[idx], axis=-1)
             rewards_idx = rewards[idx]
@@ -177,6 +182,7 @@ class ThompsonSamplingPolicy(Controller):
 
         self.update_posterior_all(arm_means)
         
+    
     def update_posterior_all(self, arm_means):
         prior_weight = self.variance / (self.variance + (self.counts * self.prior_variance))
         new_mean = prior_weight * self.prior_mean + (1 - prior_weight) * arm_means
@@ -187,14 +193,32 @@ class ThompsonSamplingPolicy(Controller):
         self.variances[mask] = new_variance[mask]
 
     def act_numpy_vec(self, x):
-        print("ACTING VEC")
+        print(f"Means length: {len(self.means)}")
+        print(f"Thetas": self.theta)
+        
         if self.sample:
+            theta_draw = multivariate_normal(self.theta, np.linalg.inv(self.cov)).rvs()
+            pt = -theta_draw[0]/(2*theta_draw[1])
+            rt = (self.alpha + pt*self.beta + np.random.rand() * self.std)
+            self.prices.append(pt)
+            self.rewards.append(rt)
+            xt = np.array([1,pt])
+            self.cov += np.outer(xt,xt)
+            self.rtxt += rt*xt
+            self.theta = np.linalg.inv(self.cov)@self.rtxt
+
+                
+            revenues = [(theta_draw[0] + (price * theta_draw[1])) * price for price in self.price_grid]
+            i = np.argmax(revenues)
+
+                
             values = np.random.normal(self.means, np.sqrt(self.variances))
             action_indices = np.argmax(values, axis=-1)
 
             actions = self.batch['context_actions']
             rewards = self.batch['context_rewards']
 
+        # What's going on here?
         else:
             values = np.stack([
                 np.random.normal(self.means, np.sqrt(self.variances))

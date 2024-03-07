@@ -1,4 +1,3 @@
-import gym
 import numpy as np
 import torch
 
@@ -29,6 +28,7 @@ class PricesEnv(BaseEnv):
         self.beta = beta
         self.dim = dim
         self.price_grid = np.linspace(1,5,self.dim)        
+        
         self.demands = np.maximum(alpha + beta * self.price_grid, 0)
         self.means = self.demands * self.price_grid 
         
@@ -36,11 +36,9 @@ class PricesEnv(BaseEnv):
         self.opt_a = np.zeros(self.means.shape)
         self.opt_a[self.opt_a_index] = 1.0
         
-        self.opt_r = -(self.alpha**2)/(4 * self.beta)
+        self.opt_r = np.max(self.means)
         
         self.dim = len(self.means)
-        self.observation_space = gym.spaces.Box(low=1, high=1, shape=(1,))
-        self.action_space = gym.spaces.Box(low=0, high=100, shape=(self.dim,))
         self.state = np.array([1])
         self.var = var
         self.dx = 1
@@ -59,12 +57,12 @@ class PricesEnv(BaseEnv):
         self.current_step = 0
         return self.state
 
-    def transit(self, x, u):
+    def transit(self, u):
         a = np.argmax(u)
         
         # REWARD FUNCTION
-        r = max((self.demands[a] + np.random.normal(0, self.var)) * (self.price_grid[a]), 0)
-        return self.state.copy(), r
+        r = max(self.demands[a] + np.random.normal(0, self.var), 0)
+        return r
 
     def step(self, action):
         if self.current_step >= self.H:

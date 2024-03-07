@@ -166,21 +166,6 @@ if __name__ == '__main__':
         eval_filepath = build_bandit_data_filename(
             envname, n_eval, dataset_config, mode=2)
         save_filename = f'{filename}_testcov{test_cov}_hor{horizon}.pkl'
-    elif envname in ['linear_bandit']:
-        dataset_config.update({'lin_d': lin_d, 'var': var, 'cov': cov})
-        eval_filepath = build_linear_bandit_data_filename(
-            envname, n_eval, dataset_config, mode=2)
-        save_filename = f'{filename}_testcov{test_cov}_hor{horizon}.pkl'
-    elif envname in ['darkroom_heldout', 'darkroom_permuted']:
-        dataset_config.update({'rollin_type': 'uniform'})
-        eval_filepath = build_darkroom_data_filename(
-            envname, n_eval, dataset_config, mode=2)
-        save_filename = f'{filename}_hor{horizon}.pkl'
-    elif envname == 'miniworld':
-        dataset_config.update({'rollin_type': 'uniform'})        
-        eval_filepath = build_miniworld_data_filename(
-            envname, 0, n_eval, dataset_config, mode=2)
-        save_filename = f'{filename}_hor{horizon}.pkl'
     else:
         raise ValueError(f'Environment {envname} not supported')
 
