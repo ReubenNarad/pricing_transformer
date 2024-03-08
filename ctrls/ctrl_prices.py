@@ -33,7 +33,7 @@ class OptPolicy(Controller):
         return self.env.opt_a
 
 
-    def act_numpy_vec(self, x):
+    def act_numpy_vec(self):
         opt_as = [ env.opt_a for env in self.env ]
         return np.stack(opt_as, axis=0)
         # return np.tile(self.env.opt_a, (self.batch_size, 1))
@@ -89,7 +89,7 @@ class EmpMeanPolicy(Controller):
         self.a = a
         return self.a
 
-    def act_numpy_vec(self, x):
+    def act_numpy_vec(self):
         actions = self.batch['context_actions']
         rewards = self.batch['context_rewards']
 
@@ -139,7 +139,7 @@ class ThompsonSamplingPolicy(Controller):
 
     def reset(self):
         # Reset posteriors over alpha and beta
-        self.thetas = np.array(self.batch_size, [5, -1])
+        self.thetas = np.tile([5, -1], (self.batch_size, 1))
         self.cov = np.eye(2)
         self.rtxt = np.zeros(2)
         self.prices = []
@@ -192,9 +192,9 @@ class ThompsonSamplingPolicy(Controller):
         self.means[mask] = new_mean[mask]
         self.variances[mask] = new_variance[mask]
 
-    def act_numpy_vec(self, x):
+    def act_numpy_vec(self):
         print(f"Means length: {len(self.means)}")
-        print(f"Thetas": self.theta)
+        print(f"Thetas: {self.thetas}")
         
         if self.sample:
             theta_draw = multivariate_normal(self.theta, np.linalg.inv(self.cov)).rvs()
@@ -232,58 +232,58 @@ class ThompsonSamplingPolicy(Controller):
         self.a = actions
         return self.a  
             
-#     def set_batch(self, batch):
-#         self.reset()
-#         self.batch = batch
-#         actions = self.batch['context_actions'].cpu().detach().numpy()[0]
-#         rewards = self.batch['context_rewards'].cpu().detach().numpy().flatten()
+    def set_batch(self, batch):
+        self.reset()
+        self.batch = batch
+        actions = self.batch['context_actions'].cpu().detach().numpy()[0]
+        rewards = self.batch['context_rewards'].cpu().detach().numpy().flatten()
 
-#         for i in range(len(actions)):
-#             c = np.argmax(actions[i])
-#             self.counts[c] += 1
+        for i in range(len(actions)):
+            c = np.argmax(actions[i])
+            self.counts[c] += 1
 
-#         for c in range(self.env.dim):
-#             arm_rewards = rewards[np.argmax(actions, axis=1) == c]
-#             self.update_posterior(c, arm_rewards)      
+        for c in range(self.env.dim):
+            arm_rewards = rewards[np.argmax(actions, axis=1) == c]
+            self.update_posterior(c, arm_rewards)      
 
-#     def update_posterior(self, c, arm_rewards):
-#         n = self.counts[c]
+    def update_posterior(self, c, arm_rewards):
+        n = self.counts[c]
 
-#         if n > 0:
-#             arm_mean = np.mean(arm_rewards)
-#             prior_weight = self.variance / (self.variance + (n * self.prior_variance))
-#             new_mean = prior_weight * self.prior_mean + (1 - prior_weight) * arm_mean
-#             new_variance = 1 / (1 / self.prior_variance + n / self.variance)
+        if n > 0:
+            arm_mean = np.mean(arm_rewards)
+            prior_weight = self.variance / (self.variance + (n * self.prior_variance))
+            new_mean = prior_weight * self.prior_mean + (1 - prior_weight) * arm_mean
+            new_variance = 1 / (1 / self.prior_variance + n / self.variance)
 
-#             self.means[c] = new_mean
-#             self.variances[c] = new_variance
-#     def act(self, x):
-#         print("ACTING")
-#         if self.sample:
-#             value = np.random.normal(self.means, np.sqrt(self.variances))
-#             i = np.argmax(values)
+            self.means[c] = new_mean
+            self.variances[c] = new_variance
+    def act(self, x):
+        print("ACTING")
+        if self.sample:
+            value = np.random.normal(self.means, np.sqrt(self.variances))
+            i = np.argmax(values)
 
-#             actions = self.batch['context_actions'].cpu().detach().numpy()[0]
-#             rewards = self.batch['context_rewards'].cpu().detach().numpy().flatten()
+            actions = self.batch['context_actions'].cpu().detach().numpy()[0]
+            rewards = self.batch['context_rewards'].cpu().detach().numpy().flatten()
 
-#             if self.warm_start:
-#                 counts = np.zeros(self.env.dim)
-#                 for j in range(len(actions)):
-#                     c = np.argmax(actions[j])
-#                     counts[c] += 1
-#                 j = np.argmin(counts)
-#                 if counts[j] == 0:
-#                     i = j
-#         else:
-#             values = np.random.normal(self.means, np.sqrt(self.variances), size=(100, self.env.dim))
-#             amax = np.argmax(values, axis=1)
-#             freqs = np.bincount(amax, minlength=self.env.dim)
-#             i = np.argmax(freqs)
-#         a = np.zeros(self.env.dim)
-#         a[i] = 1.0
-#         self.a = a
+            if self.warm_start:
+                counts = np.zeros(self.env.dim)
+                for j in range(len(actions)):
+                    c = np.argmax(actions[j])
+                    counts[c] += 1
+                j = np.argmin(counts)
+                if counts[j] == 0:
+                    i = j
+        else:
+            values = np.random.normal(self.means, np.sqrt(self.variances), size=(100, self.env.dim))
+            amax = np.argmax(values, axis=1)
+            freqs = np.bincount(amax, minlength=self.env.dim)
+            i = np.argmax(freqs)
+        a = np.zeros(self.env.dim)
+        a[i] = 1.0
+        self.a = a
 
-#         return self.a
+        return self.a
 
 
 
@@ -321,7 +321,7 @@ class PessMeanPolicy(Controller):
         return self.a
 
 
-    def act_numpy_vec(self, x):
+    def act_numpy_vec(self):
         actions = self.batch['context_actions']
         rewards = self.batch['context_rewards']
 
@@ -383,7 +383,7 @@ class UCBPolicy(Controller):
         self.a = a
         return self.a
 
-    def act_numpy_vec(self, x):
+    def act_numpy_vec(self):
         actions = self.batch['context_actions']
         rewards = self.batch['context_rewards']
 
@@ -435,11 +435,8 @@ class BanditTransformerController(Controller):
             new_batch[key] = torch.tensor(batch[key]).float().to(device)
         self.set_batch(new_batch)
 
-    def act(self, x):
+    def act(self):
         self.batch['zeros'] = self.zeros
-
-        states = torch.tensor(x)[None, :].float().to(device)
-        self.batch['query_states'] = states
 
         a = self.model(self.batch)
         a = a.cpu().detach().numpy()[0]
@@ -454,14 +451,8 @@ class BanditTransformerController(Controller):
         a[i] = 1.0
         return a
 
-    def act_numpy_vec(self, x):
+    def act_numpy_vec(self):
         self.batch['zeros'] = self.zeros
-
-        states = torch.tensor(np.array(x))
-        if self.batch_size == 1:
-            states = states[None,:]
-        states = states.float().to(device)
-        self.batch['query_states'] = states
 
         a = self.model(self.batch)
         a = a.cpu().detach().numpy()
@@ -523,7 +514,7 @@ class LinUCBPolicy(OptPolicy):
             self.a = hot_vector
             return hot_vector
 
-    def act_numpy_vec(self, x):
+    def act_numpy_vec(self):
         # TODO: parallelize this later
         actions_batch = self.batch['context_actions']
         rewards_batch = self.batch['context_rewards']
@@ -561,6 +552,4 @@ class LinUCBPolicy(OptPolicy):
             hot_vectors.append(hot_vector)
 
         return np.array(hot_vectors)
-
-
 

@@ -8,15 +8,14 @@ from IPython import embed
 
 import common_args
 from evals import eval_bandit, eval_prices
-from net import Transformer, ImageTransformer
+from net import Transformer
 from utils import (
-    build_bandit_data_filename,
-    build_bandit_model_filename
+    build_prices_data_filename,
+    build_prices_model_filename
 )
 import numpy as np
 import scipy
 import time
-
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -32,7 +31,6 @@ if __name__ == '__main__':
     print("Args: ", args)
 
     n_envs = args['envs']
-    n_hists = args['hists']
     n_samples = args['samples']
     H = args['H']
     dim = args['dim']
@@ -76,49 +74,14 @@ if __name__ == '__main__':
         'n_layer': n_layer,
         'n_head': n_head,
         'n_envs': n_envs,
-        'n_hists': n_hists,
         'n_samples': n_samples,
         'horizon': horizon,
         'dim': dim,
         'seed': seed,
     }
     
-    if envname == 'prices':
-        state_dim = 1
-
-        model_config.update({'var': var, 'cov': cov})
-        filename = build_bandit_model_filename(envname, model_config)
-        bandit_type = 'uniform'
-    
-    elif envname == 'bandit':
-        state_dim = 1
-
-        model_config.update({'var': var, 'cov': cov})
-        filename = build_bandit_model_filename(envname, model_config)
-        bandit_type = 'uniform'
-    elif envname == 'bandit_bernoulli':
-        state_dim = 1
-
-        model_config.update({'var': var, 'cov': cov})
-        filename = build_bandit_model_filename(envname, model_config)
-        bandit_type = 'bernoulli'
-    elif envname == 'linear_bandit':
-        state_dim = 1
-
-        model_config.update({'lin_d': lin_d, 'var': var, 'cov': cov})
-        filename = build_linear_bandit_model_filename(envname, model_config)
-    elif envname.startswith('darkroom'):
-        state_dim = 2
-        action_dim = 5
-
-        filename = build_darkroom_model_filename(envname, model_config)
-    elif envname == 'miniworld':
-        state_dim = 2
-        action_dim = 4
-
-        filename = build_miniworld_model_filename(envname, model_config)
-    else:
-        raise NotImplementedError
+    model_config.update({'var': var, 'cov': cov})
+    filename = build_prices_model_filename(envname, model_config)
 
     config = {
         'horizon': H,
@@ -133,11 +96,7 @@ if __name__ == '__main__':
 
     # Load network from saved file.
     # By default, load the final file, otherwise load specified epoch.
-    if envname == 'miniworld':
-        config.update({'image_size': 25})
-        model = ImageTransformer(config).to(device)
-    else:
-        model = Transformer(config).to(device)
+    model = Transformer(config).to(device)
     
     tmp_filename = filename
     if epoch < 0:
@@ -158,15 +117,10 @@ if __name__ == '__main__':
     
     if envname == 'prices':
         dataset_config.update({'var': var, 'cov': cov, 'type': 'uniform'})
-        eval_filepath = build_bandit_data_filename(
+        eval_filepath = build_prices_data_filename(
             envname, n_eval, dataset_config, mode=2)
         save_filename = f'{filename}_testcov{test_cov}_hor{horizon}.pkl'
-    
-    elif envname in ['bandit', 'bandit_bernoulli']:
-        dataset_config.update({'var': var, 'cov': cov, 'type': 'uniform'})
-        eval_filepath = build_bandit_data_filename(
-            envname, n_eval, dataset_config, mode=2)
-        save_filename = f'{filename}_testcov{test_cov}_hor{horizon}.pkl'
+
     else:
         raise ValueError(f'Environment {envname} not supported')
 
@@ -194,7 +148,6 @@ if __name__ == '__main__':
             'horizon': horizon,
             'var': var,
             'n_eval': n_eval,
-            'bandit_type': bandit_type,
         }
         eval_prices.online(eval_trajs, model, **config)
         plt.savefig(f'figs/{evals_filename}/online/{save_filename}.png')
@@ -213,32 +166,25 @@ if __name__ == '__main__':
         plt.savefig(f'figs/{evals_filename}/graph/{save_filename}_graph.png')
         print(f"Saved figs/{evals_filename}/graph/{save_filename}_graph.png")
         plt.clf()
-
-    
-    
-    if envname == 'bandit' or envname == 'bandit_bernoulli':
         config = {
             'horizon': horizon,
             'var': var,
             'n_eval': n_eval,
-            'bandit_type': bandit_type,
         }
-        eval_bandit.online(eval_trajs, model, **config)
+        eval_prices.online(eval_trajs, model, **config)
         plt.savefig(f'figs/{evals_filename}/online/{save_filename}.png')
         plt.clf()
         plt.cla()
         plt.close()
 
-        eval_bandit.offline(eval_trajs, model, **config)
+        eval_prices.offline(eval_trajs, model, **config)
         plt.savefig(f'figs/{evals_filename}/bar/{save_filename}_bar.png')
         plt.clf()
 
-        eval_bandit.offline_graph(eval_trajs, model, **config)
+        eval_prices.offline_graph(eval_trajs, model, **config)
         plt.savefig(f'figs/{evals_filename}/graph/{save_filename}_graph.png')
         plt.clf()
         
-        
-    elif envname == 'linear_bandit':
         config = {
             'horizon': horizon,
             'var': var,
@@ -248,16 +194,16 @@ if __name__ == '__main__':
         with open(eval_filepath, 'rb') as f:
             eval_trajs = pickle.load(f)
 
-        eval_linear_bandit.online(eval_trajs, model, **config)
-        plt.savefig(f'figs/{evals_filename}/online/{save_filename}.png')
-        plt.clf()
-        plt.cla()
-        plt.close()
+        # eval_linear_bandit.online(eval_trajs, model, **config)
+        # plt.savefig(f'figs/{evals_filename}/online/{save_filename}.png')
+        # plt.clf()
+        # plt.cla()
+        # plt.close()
 
-        eval_linear_bandit.offline(eval_trajs, model, **config)
-        plt.savefig(f'figs/{evals_filename}/bar/{save_filename}_bar.png')
-        plt.clf()
+        # eval_linear_bandit.offline(eval_trajs, model, **config)
+        # plt.savefig(f'figs/{evals_filename}/bar/{save_filename}_bar.png')
+        # plt.clf()
 
-        eval_linear_bandit.offline_graph(eval_trajs, model, **config)
-        plt.savefig(f'figs/{evals_filename}/graph/{save_filename}_graph.png')
-        plt.clf()
+        # eval_linear_bandit.offline_graph(eval_trajs, model, **config)
+        # plt.savefig(f'figs/{evals_filename}/graph/{save_filename}_graph.png')
+        # plt.clf()

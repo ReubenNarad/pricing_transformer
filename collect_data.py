@@ -23,7 +23,7 @@ def rollin_prices(env, orig=False, thompson=False, verbose=True):
     if thompson:
         theta = np.array([5, -1])
         cov = np.eye(2)
-        rtxt = np.zeros(2)
+        rtxt = 0
         prices = []
         rewards = []
         sigma = .05
@@ -34,24 +34,24 @@ def rollin_prices(env, orig=False, thompson=False, verbose=True):
         
         if thompson:
             theta_draw = multivariate_normal(theta, np.linalg.inv(cov)).rvs()
-            r_hat = [(theta_draw[0] + (price * theta_draw[1])) for price in env.price_grid]
+            r_hat = [(theta_draw[0] + (price * theta_draw[1])) * price for price in env.price_grid]
             i = np.argmax(r_hat)
-            u[i] = 1.0 
         else:
             i = np.random.choice(np.arange(env.dim))
-            u[i] = 1.0 
-
-        r = env.transit(u)
+        
+        u[i] = 1.0
+        pt = env.price_grid[i]
+        # pt = theta_draw[0] / (-2 * theta_draw[1])
+        r = env.alpha + pt * env.beta + np.random.randn() * sigma
         
         us.append(u)
         rs.append(r)
         
         # Update TS
         if thompson:
-            pt = env.price_grid[i]
             prices.append(pt)
-            
             rewards.append(r)
+            
             cum_regret += env.opt_r - (r * pt)
             regrets.append(cum_regret)
             if verbose:
@@ -72,32 +72,29 @@ def rollin_prices(env, orig=False, thompson=False, verbose=True):
     us, rs = np.array(us), np.array(rs)
     return us, rs, regrets, thetas
 
-def generate_prices_histories_from_envs(envs, n_hists, n_samples, type, thompson):
+def generate_prices_histories_from_envs(envs, n_samples, thompson):
     trajs = []
     for env in tqdm(envs):
-        for j in range(n_hists):
-            (
-                context_actions,
-                context_rewards,
-                regrets,
-                thetas,
-            ) = rollin_prices(env, thompson=thompson)
-            for k in range(n_samples):
-                optimal_action = env.opt_a
-
-                traj = {
-                    'context_actions': context_actions,
-                    'context_rewards': context_rewards,
-                    'optimal_action': optimal_action,
-                    'regrets': regrets,
-                    'prices': env.price_grid,
-                    'means': env.means,
-                    'demands': env.demands,
-                    'thetas' : thetas,
-                    'alpha': env.alpha,
-                    'beta': env.beta,
-                }
-                trajs.append(traj)
+        (
+            context_actions,
+            context_rewards,
+            regrets,
+            thetas,
+        ) = rollin_prices(env, thompson=thompson)
+        for k in range(n_samples):
+            optimal_action = env.opt_a
+            traj = {
+                'context_actions': context_actions,
+                'context_rewards': context_rewards,
+                'optimal_action': optimal_action,
+                'regrets': regrets,
+                'prices': env.price_grid,
+                'means': env.means,
+                'thetas' : thetas,
+                'alpha': env.alpha,
+                'beta': env.beta,
+            }
+            trajs.append(traj)
     return trajs
 
 def generate_prices_histories(n_envs, dim, horizon, var, **kwargs):
@@ -120,7 +117,6 @@ if __name__ == '__main__':
     env = args['env']
     n_envs = args['envs']
     n_eval_envs = args['envs_eval']
-    n_hists = args['hists']
     n_samples = args['samples']
     horizon = args['H']
     dim = args['dim']
@@ -134,24 +130,20 @@ if __name__ == '__main__':
     n_test_envs = n_envs - n_train_envs
 
     config = {
-        'n_hists': n_hists,
         'n_samples': n_samples,
         'horizon': horizon,
     }
     
     # Generate trajectories
-    if env == 'prices':
-        config.update({'dim': dim, 'var': var, 'type': 'uniform'})
+    config.update({'dim': dim, 'var': var})
 
-        train_trajs = generate_prices_histories(n_train_envs, **config)
-        test_trajs = generate_prices_histories(n_test_envs, **config)
-        eval_trajs = generate_prices_histories(n_eval_envs, **config)
-                        
-        train_filepath = build_prices_data_filename(env, n_envs, config, mode=0)
-        test_filepath = build_prices_data_filename(env, n_envs, config, mode=1)
-        eval_filepath = build_prices_data_filename(env, n_eval_envs, config, mode=2)
-    else:
-        raise NotImplementedError
+    train_trajs = generate_prices_histories(n_train_envs, **config)
+    test_trajs = generate_prices_histories(n_test_envs, **config)
+    eval_trajs = generate_prices_histories(n_eval_envs, **config)
+                    
+    train_filepath = build_prices_data_filename(env, n_envs, config, mode=0)
+    test_filepath = build_prices_data_filename(env, n_envs, config, mode=1)
+    eval_filepath = build_prices_data_filename(env, n_eval_envs, config, mode=2)
 
 
     # Save to /datasets

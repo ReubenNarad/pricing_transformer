@@ -96,13 +96,12 @@ class BanditEnvVec(BaseEnv):
         return [env.reset() for env in self._envs]
 
     def step(self, actions):
-        next_obs, rews, dones = [], [], []
+        rews, dones = [], []
         for action, env in zip(actions, self._envs):
-            next_ob, rew, done, _ = env.step(action)
-            next_obs.append(next_ob)
+            rew, done, _ = env.step(action)
             rews.append(rew)
             dones.append(done)
-        return next_obs, rews, dones, {}
+        return rews, dones, {}
 
     @property
     def num_envs(self):

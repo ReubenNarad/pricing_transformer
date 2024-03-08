@@ -7,7 +7,7 @@ except:
     from base_env import BaseEnv
 
 def sample_price_env(dim, H, var):
-    alpha = np.random.randint(20,110) / 10
+    alpha = np.random.randint(20,80) / 10
     beta = np.random.randint(50,150) / -100
     env = PricesEnv(alpha, beta, dim, H, var=var)
     return env
@@ -67,3 +67,66 @@ class PricesEnv(BaseEnv):
         res = self.deploy(ctrl)
         self.var = tmp
         return res
+
+
+class BanditEnvVec(BaseEnv):
+    """
+    Vectorized bandit environment.
+    """
+    def __init__(self, envs):
+        self._envs = envs
+        self._num_envs = len(envs)
+        self.dx = envs[0].dx
+        self.du = envs[0].du
+
+    def reset(self):
+        return [env.reset() for env in self._envs]
+
+    def step(self, actions):
+        rews, dones = [], []
+        for action, env in zip(actions, self._envs):
+            rew, done, _ = env.step(action)
+            rews.append(rew)
+            dones.append(done)
+        return rews, dones, {}
+
+    @property
+    def num_envs(self):
+        return self._num_envs
+
+    @property
+    def envs(self):
+        return self._envs
+
+    def deploy_eval(self, ctrl):
+        # No variance during evaluation
+        tmp = [env.var for env in self._envs]
+        for env in self._envs:
+            env.var = 0.0
+        res = self.deploy(ctrl)
+        for env, var in zip(self._envs, tmp):
+            env.var = var
+        return res
+
+    def deploy(self, ctrl):
+        us = []
+        rs = []
+        done = False
+
+        while not done:
+            u = ctrl.act_numpy_vec()
+
+            us.append(u)
+
+            r, done, _ = self.step(u)
+            done = all(done)
+
+            rs.append(r)
+
+        us = np.concatenate(us)
+        rs = np.concatenate(rs)
+        return us, rs
+
+    def get_arm_value(self, us):
+        values = [np.sum(env.means * u) for env, u in zip(self._envs, us)]
+        return np.array(values)

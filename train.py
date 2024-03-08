@@ -15,12 +15,11 @@ import numpy as np
 import common_args
 import random
 import wandb
-from dataset import Dataset, ImageDataset
-from net import Transformer, ImageTransformer
+from dataset import Dataset
+from net import Transformer
 from utils import (
-    build_bandit_data_filename,
-    build_bandit_model_filename,
-    worker_init_fn,
+    build_prices_data_filename,
+    build_prices_model_filename,
 )
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -44,7 +43,6 @@ if __name__ == '__main__':
 
     env = args['env']
     n_envs = args['envs']
-    n_hists = args['hists']
     n_samples = args['samples']
     horizon = args['H']
     dim = args['dim']
@@ -77,7 +75,6 @@ if __name__ == '__main__':
     random.seed(tmp_seed)
 
     dataset_config = {
-        'n_hists': n_hists,
         'n_samples': n_samples,
         'horizon': horizon,
         'dim': dim,
@@ -90,65 +87,20 @@ if __name__ == '__main__':
         'n_layer': n_layer,
         'n_head': n_head,
         'n_envs': n_envs,
-        'n_hists': n_hists,
         'n_samples': n_samples,
         'horizon': horizon,
         'dim': dim,
         'seed': seed,
     }
     
-    if env == 'prices':
-        state_dim = 1
-        
-        dataset_config.update({'var': var, 'cov': cov, 'type': 'uniform'})
-        path_train = build_bandit_data_filename(
-            env, n_envs, dataset_config, mode=0)
-        path_test = build_bandit_data_filename(
-            env, n_envs, dataset_config, mode=1)
+    dataset_config.update({'var': var, 'cov': cov, 'type': 'uniform'})
+    path_train = build_prices_data_filename(
+        env, n_envs, dataset_config, mode=0)
+    path_test = build_prices_data_filename(
+        env, n_envs, dataset_config, mode=1)
 
-        model_config.update({'var': var, 'cov': cov})
-        filename = build_bandit_model_filename(env, model_config)
-
-    
-    elif env == 'bandit':
-        state_dim = 1
-        
-
-        dataset_config.update({'var': var, 'cov': cov, 'type': 'uniform'})
-        path_train = build_bandit_data_filename(
-            env, n_envs, dataset_config, mode=0)
-        path_test = build_bandit_data_filename(
-            env, n_envs, dataset_config, mode=1)
-
-        model_config.update({'var': var, 'cov': cov})
-        filename = build_bandit_model_filename(env, model_config)
-
-    elif env == 'bandit_thompson':
-        state_dim = 1
-
-        dataset_config.update({'var': var, 'cov': cov, 'type': 'bernoulli'})
-        path_train = build_bandit_data_filename(
-            env, n_envs, dataset_config, mode=0)
-        path_test = build_bandit_data_filename(
-            env, n_envs, dataset_config, mode=1)
-
-        model_config.update({'var': var, 'cov': cov})
-        filename = build_bandit_model_filename(env, model_config)
-
-    elif env == 'linear_bandit':
-        state_dim = 1
-
-        dataset_config.update({'lin_d': lin_d, 'var': var, 'cov': cov})
-        path_train = build_linear_bandit_data_filename(
-            env, n_envs, dataset_config, mode=0)
-        path_test = build_linear_bandit_data_filename(
-            env, n_envs, dataset_config, mode=1)
-
-        model_config.update({'lin_d': lin_d, 'var': var, 'cov': cov})
-        filename = build_linear_bandit_model_filename(env, model_config)
-
-    else:
-        raise NotImplementedError
+    model_config.update({'var': var, 'cov': cov})
+    filename = build_prices_model_filename(env, model_config)
 
     config = {
         'horizon': horizon,
@@ -222,10 +174,6 @@ if __name__ == '__main__':
         end_time = time.time()
         printw(f"\tTest loss: {test_loss[-1]}")
         printw(f"\tEval time: {end_time - start_time}")
-        
-        # wandb.log({"Test Loss": test_loss[-1]})
-
-
 
         # TRAINING
         epoch_train_loss = 0.0
@@ -234,13 +182,9 @@ if __name__ == '__main__':
         for i, batch in enumerate(train_loader):
             print(f"Batch {i} of {len(train_loader)}", end='\r')
             batch = {k: v.to(device) for k, v in batch.items()}
-            
-            # print(f"CONTEXT STATES: {batch['context_states']}, \n CONTEXT ACTIONS: {batch['context_actions']}")
-            
+                
             true_actions = batch['optimal_actions']
             pred_actions = model(batch)
-            
-            # print(f"PRED: {pred_actions} \n TRUE: {true_actions}")
             
             true_actions = true_actions.unsqueeze(
                 1).repeat(1, pred_actions.shape[1], 1)
@@ -257,7 +201,6 @@ if __name__ == '__main__':
         end_time = time.time()
         printw(f"\tTrain loss: {train_loss[-1]}")
         printw(f"\tTrain time: {end_time - start_time}")
-
 
         # LOGGING
         if (epoch + 1) % 50 == 0 or (env == 'linear_bandit' and (epoch + 1) % 10 == 0):

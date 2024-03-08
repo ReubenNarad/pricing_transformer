@@ -15,8 +15,7 @@ from ctrls.ctrl_prices import (
     ThompsonSamplingPolicy,
     UCBPolicy,
 )
-from envs.bandit_env import BanditEnv, BanditEnvVec
-from envs.prices_env import PricesEnv
+from envs.prices_env import PricesEnv, BanditEnvVec
 
 from utils import convert_to_tensor
 
@@ -25,27 +24,21 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 def deploy_online(env, controller, horizon):
     print("Regular")
     
-    context_states = torch.zeros((1, horizon, env.dx)).float().to(device)
     context_actions = torch.zeros((1, horizon, env.du)).float().to(device)
-    context_next_states = torch.zeros((1, horizon, env.dx)).float().to(device)
     context_rewards = torch.zeros((1, horizon, 1)).float().to(device)
 
     cum_means = []
     for h in range(horizon):
         batch = {
-            'context_states': context_states[:, :h, :],
             'context_actions': context_actions[:, :h, :],
-            'context_next_states': context_next_states[:, :h, :],
             'context_rewards': context_rewards[:, :h, :],
         }
 
         controller.set_batch(batch)
-        states_lnr, actions_lnr, next_states_lnr, rewards_lnr = env.deploy(
+        actions_lnr, rewards_lnr = env.deploy(
             controller)
 
-        context_states[0, h, :] = convert_to_tensor(states_lnr[0])
         context_actions[0, h, :] = convert_to_tensor(actions_lnr[0])
-        context_next_states[0, h, :] = convert_to_tensor(next_states_lnr[0])
         context_rewards[0, h, :] = convert_to_tensor(rewards_lnr[0])
 
         actions = actions_lnr.flatten()
@@ -65,29 +58,22 @@ def deploy_online_vec(vec_env, controller, horizon, include_meta=False):
     # context_next_states = torch.zeros((num_envs, horizon, vec_env.dx)).float().to(device)
     # context_rewards = torch.zeros((num_envs, horizon, 1)).float().to(device)
 
-    context_states = np.zeros((num_envs, horizon, vec_env.dx))
     context_actions = np.zeros((num_envs, horizon, vec_env.du))
-    context_next_states = np.zeros((num_envs, horizon, vec_env.dx))
     context_rewards = np.zeros((num_envs, horizon, 1))
 
     cum_means = []
     print("Deplying online vectorized...")
     for h in range(horizon):
         batch = {
-            'context_states': context_states[:, :h, :],
             'context_actions': context_actions[:, :h, :],
-            'context_next_states': context_next_states[:, :h, :],
             'context_rewards': context_rewards[:, :h, :],
         }
 
         controller.set_batch_numpy_vec(batch)
 
-        states_lnr, actions_lnr, next_states_lnr, rewards_lnr = vec_env.deploy(
-            controller)
+        actions_lnr, rewards_lnr = vec_env.deploy(controller)
 
-        context_states[:, h, :] = states_lnr
         context_actions[:, h, :] = actions_lnr
-        context_next_states[:, h, :] = next_states_lnr
         context_rewards[:, h, :] = rewards_lnr[:,None]
 
         mean = vec_env.get_arm_value(actions_lnr)
@@ -100,16 +86,13 @@ def deploy_online_vec(vec_env, controller, horizon, include_meta=False):
         return cum_means
     else:
         meta = {
-            'context_states': context_states,
             'context_actions': context_actions,
-            'context_next_states': context_next_states,
             'context_rewards': context_rewards,
         }
         return cum_means, meta
 
 
-
-def online(eval_trajs, model, n_eval, horizon, var, bandit_type):
+def online(eval_trajs, model, n_eval, horizon, var):
     print("Starting Online ...")
 
     all_means = {}
@@ -157,17 +140,17 @@ def online(eval_trajs, model, n_eval, horizon, var, bandit_type):
     assert cum_means.shape[0] == n_eval
     all_means['UCB1.0'] = cum_means
 
-    controller = ThompsonSamplingPolicy(
-        envs[0],
-        std=var,
-        sample=True,
-        prior_mean=0.5,
-        prior_var=1/12.0,
-        warm_start=False,
-        batch_size=len(envs))
-    cum_means = deploy_online_vec(vec_env, controller, horizon).T
-    assert cum_means.shape[0] == n_eval
-    all_means['Thomp'] = cum_means
+    # controller = ThompsonSamplingPolicy(
+    #     envs[0],
+    #     std=var,
+    #     sample=True,
+    #     prior_mean=0.5,
+    #     prior_var=1/12.0,
+    #     warm_start=False,
+    #     batch_size=len(envs))
+    # cum_means = deploy_online_vec(vec_env, controller, horizon).T
+    # assert cum_means.shape[0] == n_eval
+    # all_means['Thomp'] = cum_means
 
 
     all_means = {k: np.array(v) for k, v in all_means.items()}
@@ -215,7 +198,7 @@ def online(eval_trajs, model, n_eval, horizon, var, bandit_type):
 
 
 
-def offline(eval_trajs, model, n_eval, horizon, var, bandit_type):
+def offline(eval_trajs, model, n_eval, horizon, var):
     all_rs_lnr = []
     all_rs_greedy = []
     all_rs_opt = []
@@ -226,9 +209,7 @@ def offline(eval_trajs, model, n_eval, horizon, var, bandit_type):
     num_envs = len(eval_trajs)
 
     tmp_env = PricesEnv(eval_trajs[0]['alpha'], eval_trajs[0]['beta'], len(eval_trajs[0]['prices']), horizon, var=var)
-    context_states = np.zeros((num_envs, horizon, tmp_env.dx))
     context_actions = np.zeros((num_envs, horizon, tmp_env.du))
-    context_next_states = np.zeros((num_envs, horizon, tmp_env.dx))
     context_rewards = np.zeros((num_envs, horizon, 1))
 
     envs = []
@@ -241,17 +222,13 @@ def offline(eval_trajs, model, n_eval, horizon, var, bandit_type):
         env = PricesEnv(traj['alpha'], traj['beta'], len(traj['prices']), horizon, var=var)
         envs.append(env)
 
-        context_states[i_eval, :, :] = traj['context_states'][:horizon]
         context_actions[i_eval, :, :] = traj['context_actions'][:horizon]
-        context_next_states[i_eval, :, :] = traj['context_next_states'][:horizon]
         context_rewards[i_eval, :, :] = traj['context_rewards'][:horizon,None]
 
 
     vec_env = BanditEnvVec(envs)
     batch = {
-        'context_states': context_states,
         'context_actions': context_actions,
-        'context_next_states': context_next_states,
         'context_rewards': context_rewards,
     }
 
@@ -278,18 +255,18 @@ def offline(eval_trajs, model, n_eval, horizon, var, bandit_type):
     # lcb_policy.set_batch_numpy_vec(batch)
     lnr_policy.set_batch_numpy_vec(batch)
     
-    _, _, _, rs_opt = vec_env.deploy_eval(opt_policy)
+    _, rs_opt = vec_env.deploy_eval(opt_policy)
     # _, _, _, rs_emp = vec_env.deploy_eval(emp_policy)
-    _, _, _, rs_lnr = vec_env.deploy_eval(lnr_policy)
+    _, rs_lnr = vec_env.deploy_eval(lnr_policy)
     # _, _, _, rs_lcb = vec_env.deploy_eval(lcb_policy)
-    _, _, _, rs_thmp = vec_env.deploy_eval(thomp_policy)
+    # _, rs_thmp = vec_env.deploy_eval(thomp_policy)
 
 
     baselines = {
         'opt': np.array(rs_opt),
         'lnr': np.array(rs_lnr),
         # 'emp': np.array(rs_emp),
-        'thmp': np.array(rs_thmp),
+        # 'thmp': np.array(rs_thmp),
         # 'lcb': np.array(rs_lcb),
     }    
     baselines_means = {k: np.mean(v) for k, v in baselines.items()}
@@ -301,7 +278,7 @@ def offline(eval_trajs, model, n_eval, horizon, var, bandit_type):
     return baselines
 
 
-def offline_graph(eval_trajs, model, n_eval, horizon, var, bandit_type):
+def offline_graph(eval_trajs, model, n_eval, horizon, var):
     horizons = np.linspace(1, horizon, 50, dtype=int)
 
     all_means = []
@@ -313,7 +290,6 @@ def offline_graph(eval_trajs, model, n_eval, horizon, var, bandit_type):
             'horizon': h,
             'var': var,
             'n_eval': n_eval,
-            'bandit_type': bandit_type,
         }
         config['horizon'] = h
         baselines = offline(eval_trajs, model, **config)
