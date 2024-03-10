@@ -6,12 +6,12 @@ import pickle
 import matplotlib.pyplot as plt
 import numpy as np
 
-with open('datasets/trajs_prices_envs5_samples1_H5000_d10_var0.0_test.pkl', 'rb') as f:
+with open('datasets/trajs_prices_envs20_H500_d10_var0.3_eval.pkl', 'rb') as f:
     data = pickle.load(f)
 
-a = data[0]
+a = data[5]
 
-for i in range(min(len(a['context_actions']), 10)):
+for i in range(min(len(a['context_actions']), 100)):
     print()
     print('means   :', [round(j, 3) for j in a['means']])
     print('actions:', [round(j, 3) for j in a['context_actions'][i]])
@@ -30,7 +30,7 @@ plt.ylabel('Mean Regret')
 plt.savefig('mean_regret.png')
 plt.close()
 
-for i in range(1):
+for i in range(5):
     a = data[i]
     thetas_0 = [a['thetas'][j][0] for j in range(len(a['thetas']))]
     thetas_1 = [a['thetas'][j][1] for j in range(len(a['thetas']))]
@@ -45,7 +45,7 @@ for i in range(1):
     plt.xlabel('Time Step')
     plt.ylabel('Value')
     plt.legend()
-    plt.savefig(f'trajectory_{i+1}.png')
+    plt.savefig(f'trajectory_{i}.png')
     plt.close()
 
 

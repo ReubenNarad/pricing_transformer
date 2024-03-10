@@ -3,7 +3,6 @@ import itertools
 import numpy as np
 import scipy
 import torch
-from IPython import embed
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 

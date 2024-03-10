@@ -4,7 +4,6 @@ import pickle
 import random
 
 import numpy as np
-from IPython import embed
 
 import common_args
 from envs import prices_env
@@ -13,7 +12,8 @@ from utils import build_prices_data_filename
 from tqdm import tqdm
 from scipy.stats import multivariate_normal
 
-def rollin_prices(env, orig=False, thompson=False, verbose=True):
+def rollin_prices(env, orig=False, thompson=False, verbose=False):
+    lambda_0 = .01
     H = env.H_context
     opt_a_index = env.opt_a_index
     
@@ -21,8 +21,8 @@ def rollin_prices(env, orig=False, thompson=False, verbose=True):
     us, rs, regrets, thetas = [], [], [], []
     
     if thompson:
-        theta = np.array([5, -1])
-        cov = np.eye(2)
+        theta = np.array([5,-1.5])
+        cov = np.eye(2) * lambda_0
         rtxt = 0
         prices = []
         rewards = []
@@ -34,21 +34,20 @@ def rollin_prices(env, orig=False, thompson=False, verbose=True):
         
         if thompson:
             theta_draw = multivariate_normal(theta, np.linalg.inv(cov)).rvs()
+
             r_hat = [(theta_draw[0] + (price * theta_draw[1])) * price for price in env.price_grid]
             i = np.argmax(r_hat)
         else:
             i = np.random.choice(np.arange(env.dim))
         
         u[i] = 1.0
-        pt = env.price_grid[i]
-        # pt = theta_draw[0] / (-2 * theta_draw[1])
-        r = env.alpha + pt * env.beta + np.random.randn() * sigma
-        
+        r, done, _ = env.step(u)
         us.append(u)
         rs.append(r)
         
         # Update TS
         if thompson:
+            pt = env.price_grid[i]
             prices.append(pt)
             rewards.append(r)
             
@@ -65,10 +64,10 @@ def rollin_prices(env, orig=False, thompson=False, verbose=True):
 
             xt = np.array([1,pt])
             cov += np.outer(xt,xt)
-            rtxt += r*xt
+            rtxt += r * xt
             thetas.append(theta)
             theta = np.linalg.inv(cov)@rtxt
-
+            
     us, rs = np.array(us), np.array(rs)
     return us, rs, regrets, thetas
 

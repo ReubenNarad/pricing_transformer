@@ -5,11 +5,9 @@ if mp.get_start_method(allow_none=True) is None:
 import argparse
 import os
 import time
-from IPython import embed
 
 import matplotlib.pyplot as plt
 import torch
-from torchvision.transforms import transforms
 
 import numpy as np
 import common_args

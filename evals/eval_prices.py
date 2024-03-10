@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import scipy
 import torch
-from IPython import embed
 from tqdm import tqdm
 
 from ctrls.ctrl_prices import (
@@ -15,15 +14,14 @@ from ctrls.ctrl_prices import (
     ThompsonSamplingPolicy,
     UCBPolicy,
 )
-from envs.prices_env import PricesEnv, BanditEnvVec
+from envs.prices_env import PricesEnv, PricesEnvVec
 
 from utils import convert_to_tensor
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-def deploy_online(env, controller, horizon):
-    print("Regular")
-    
+
+def deploy_online(env, controller, horizon):    
     context_actions = torch.zeros((1, horizon, env.du)).float().to(device)
     context_rewards = torch.zeros((1, horizon, 1)).float().to(device)
 
@@ -50,16 +48,10 @@ def deploy_online(env, controller, horizon):
 
 
 def deploy_online_vec(vec_env, controller, horizon, include_meta=False):
-    print("Vector")
-    
     num_envs = vec_env.num_envs
-    # context_states = torch.zeros((num_envs, horizon, vec_env.dx)).float().to(device)
-    # context_actions = torch.zeros((num_envs, horizon, vec_env.du)).float().to(device)
-    # context_next_states = torch.zeros((num_envs, horizon, vec_env.dx)).float().to(device)
-    # context_rewards = torch.zeros((num_envs, horizon, 1)).float().to(device)
-
     context_actions = np.zeros((num_envs, horizon, vec_env.du))
     context_rewards = np.zeros((num_envs, horizon, 1))
+    envs = vec_env._envs
 
     cum_means = []
     print("Deplying online vectorized...")
@@ -67,19 +59,20 @@ def deploy_online_vec(vec_env, controller, horizon, include_meta=False):
         batch = {
             'context_actions': context_actions[:, :h, :],
             'context_rewards': context_rewards[:, :h, :],
+            'envs': envs
         }
-
         controller.set_batch_numpy_vec(batch)
-
         actions_lnr, rewards_lnr = vec_env.deploy(controller)
 
         context_actions[:, h, :] = actions_lnr
         context_rewards[:, h, :] = rewards_lnr[:,None]
 
-        mean = vec_env.get_arm_value(actions_lnr)
-        cum_means.append(mean)
+        action_indices = np.argmax(actions_lnr, axis=1)
+        revenues = rewards_lnr * np.array([env.price_grid[a] for env, a in zip(envs, action_indices)])
 
-    print("Deplyed online vectorized")
+        cum_means.append(revenues)
+
+    print("Depolyed online vectorized")
     
     cum_means = np.array(cum_means)
     if not include_meta:
@@ -98,6 +91,7 @@ def online(eval_trajs, model, n_eval, horizon, var):
     all_means = {}
 
     envs = []
+    print("Creating envs ...")
     for i_eval in tqdm(range(n_eval)):
         traj = eval_trajs[i_eval]
         means = traj['means']
@@ -105,52 +99,36 @@ def online(eval_trajs, model, n_eval, horizon, var):
         env = PricesEnv(traj['alpha'], traj['beta'], len(traj['prices']), horizon, var=var)
         envs.append(env)
 
-    vec_env = BanditEnvVec(envs)
+    vec_env = PricesEnvVec(envs)
     
     controller = OptPolicy(
         envs,
         batch_size=len(envs))
+    print("Deploying online opt ...")
     cum_means = deploy_online_vec(vec_env, controller, horizon).T    
     assert cum_means.shape[0] == n_eval
     all_means['opt'] = cum_means
-
 
     controller = BanditTransformerController(
         model,
         sample=True,
         batch_size=len(envs))
+    print("Deploying online transformer ...")
     cum_means = deploy_online_vec(vec_env, controller, horizon).T
     assert cum_means.shape[0] == n_eval
-    all_means['Lnr'] = cum_means
+    all_means['Transformer'] = cum_means
 
-
-    controller = EmpMeanPolicy(
+    controller = ThompsonSamplingPolicy(
         envs[0],
-        online=True,
+        std=var,
+        theta_0=[5, -1.5],
+        cov_0=np.eye(2),
+        warm_start=False,
         batch_size=len(envs))
+    print("Deploying online Thompson ...")
     cum_means = deploy_online_vec(vec_env, controller, horizon).T
     assert cum_means.shape[0] == n_eval
-    all_means['Emp'] = cum_means
-
-    controller = UCBPolicy(
-        envs[0],
-        const=1.0,
-        batch_size=len(envs))
-    cum_means = deploy_online_vec(vec_env, controller, horizon).T
-    assert cum_means.shape[0] == n_eval
-    all_means['UCB1.0'] = cum_means
-
-    # controller = ThompsonSamplingPolicy(
-    #     envs[0],
-    #     std=var,
-    #     sample=True,
-    #     prior_mean=0.5,
-    #     prior_var=1/12.0,
-    #     warm_start=False,
-    #     batch_size=len(envs))
-    # cum_means = deploy_online_vec(vec_env, controller, horizon).T
-    # assert cum_means.shape[0] == n_eval
-    # all_means['Thomp'] = cum_means
+    all_means['Thomp'] = cum_means
 
 
     all_means = {k: np.array(v) for k, v in all_means.items()}
@@ -158,7 +136,6 @@ def online(eval_trajs, model, n_eval, horizon, var):
 
     means = {k: np.mean(v, axis=0) for k, v in all_means_diff.items()}
     sems = {k: scipy.stats.sem(v, axis=0) for k, v in all_means_diff.items()}
-
 
     cumulative_regret = {k: np.cumsum(v, axis=1) for k, v in all_means_diff.items()}
     regret_means = {k: np.mean(v, axis=0) for k, v in cumulative_regret.items()}
@@ -195,9 +172,6 @@ def online(eval_trajs, model, n_eval, horizon, var):
     ax2.set_title('Regret Over Time')
     ax2.legend()
 
-
-
-
 def offline(eval_trajs, model, n_eval, horizon, var):
     all_rs_lnr = []
     all_rs_greedy = []
@@ -226,7 +200,7 @@ def offline(eval_trajs, model, n_eval, horizon, var):
         context_rewards[i_eval, :, :] = traj['context_rewards'][:horizon,None]
 
 
-    vec_env = BanditEnvVec(envs)
+    vec_env = PricesEnvVec(envs)
     batch = {
         'context_actions': context_actions,
         'context_rewards': context_rewards,
@@ -259,14 +233,14 @@ def offline(eval_trajs, model, n_eval, horizon, var):
     # _, _, _, rs_emp = vec_env.deploy_eval(emp_policy)
     _, rs_lnr = vec_env.deploy_eval(lnr_policy)
     # _, _, _, rs_lcb = vec_env.deploy_eval(lcb_policy)
-    # _, rs_thmp = vec_env.deploy_eval(thomp_policy)
+    _, rs_thmp = vec_env.deploy_eval(thomp_policy)
 
 
     baselines = {
         'opt': np.array(rs_opt),
-        'lnr': np.array(rs_lnr),
-        # 'emp': np.array(rs_emp),
-        # 'thmp': np.array(rs_thmp),
+        'transformer': np.array(rs_lnr),
+        # 'greedy': np.array(rs_emp),
+        'Parameterized TS': np.array(rs_thmp),
         # 'lcb': np.array(rs_lcb),
     }    
     baselines_means = {k: np.mean(v) for k, v in baselines.items()}

@@ -3,8 +3,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import scipy
 import torch
-from IPython import embed
-
 
 from ctrls.ctrl_bandit import (
     BanditTransformerController,

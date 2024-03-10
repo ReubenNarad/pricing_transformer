@@ -4,10 +4,9 @@ import pickle
 
 import matplotlib.pyplot as plt
 import torch
-from IPython import embed
 
 import common_args
-from evals import eval_bandit, eval_prices
+from evals import eval_prices
 from net import Transformer
 from utils import (
     build_prices_data_filename,
@@ -105,7 +104,6 @@ if __name__ == '__main__':
         model_path = f'models/{tmp_filename}_epoch{epoch}.pt'
 
     
-    
     checkpoint = torch.load(model_path)
     model.load_state_dict(checkpoint)
     model.eval()
@@ -114,15 +112,11 @@ if __name__ == '__main__':
         'horizon': horizon,
         'dim': dim,
     }
-    
-    if envname == 'prices':
-        dataset_config.update({'var': var, 'cov': cov, 'type': 'uniform'})
-        eval_filepath = build_prices_data_filename(
-            envname, n_eval, dataset_config, mode=2)
-        save_filename = f'{filename}_testcov{test_cov}_hor{horizon}.pkl'
 
-    else:
-        raise ValueError(f'Environment {envname} not supported')
+    dataset_config.update({'var': var, 'cov': cov, 'type': 'uniform'})
+    eval_filepath = build_prices_data_filename(
+        envname, n_eval, dataset_config, mode=2)
+    save_filename = f'{filename}_testcov{test_cov}_hor{horizon}.pkl'
 
 
     with open(eval_filepath, 'rb') as f:
@@ -156,34 +150,35 @@ if __name__ == '__main__':
         plt.cla()
         plt.close()
 
-        eval_prices.offline(eval_trajs, model, **config)
-        plt.savefig(f'figs/{evals_filename}/bar/{save_filename}_bar.png')
-        print(f"Saved figs/{evals_filename}/bar/{save_filename}_bar.png")
+        # eval_prices.offline(eval_trajs, model, **config)
+        # plt.savefig(f'figs/{evals_filename}/bar/{save_filename}_bar.png')
+        # print(f"Saved figs/{evals_filename}/bar/{save_filename}_bar.png")
 
-        plt.clf()
+        # plt.clf()
 
-        eval_prices.offline_graph(eval_trajs, model, **config)
-        plt.savefig(f'figs/{evals_filename}/graph/{save_filename}_graph.png')
-        print(f"Saved figs/{evals_filename}/graph/{save_filename}_graph.png")
-        plt.clf()
-        config = {
-            'horizon': horizon,
-            'var': var,
-            'n_eval': n_eval,
-        }
-        eval_prices.online(eval_trajs, model, **config)
-        plt.savefig(f'figs/{evals_filename}/online/{save_filename}.png')
-        plt.clf()
-        plt.cla()
-        plt.close()
+        # eval_prices.offline_graph(eval_trajs, model, **config)
+        # plt.savefig(f'figs/{evals_filename}/graph/{save_filename}_graph.png')
+        # print(f"Saved figs/{evals_filename}/graph/{save_filename}_graph.png")
+        # plt.clf()
+        
+        # config = {
+        #     'horizon': horizon,
+        #     'var': var,
+        #     'n_eval': n_eval,
+        # }
+        # eval_prices.online(eval_trajs, model, **config)
+        # plt.savefig(f'figs/{evals_filename}/online/{save_filename}.png')
+        # plt.clf()
+        # plt.cla()
+        # plt.close()
 
-        eval_prices.offline(eval_trajs, model, **config)
-        plt.savefig(f'figs/{evals_filename}/bar/{save_filename}_bar.png')
-        plt.clf()
+        # eval_prices.offline(eval_trajs, model, **config)
+        # plt.savefig(f'figs/{evals_filename}/bar/{save_filename}_bar.png')
+        # plt.clf()
 
-        eval_prices.offline_graph(eval_trajs, model, **config)
-        plt.savefig(f'figs/{evals_filename}/graph/{save_filename}_graph.png')
-        plt.clf()
+        # eval_prices.offline_graph(eval_trajs, model, **config)
+        # plt.savefig(f'figs/{evals_filename}/graph/{save_filename}_graph.png')
+        # plt.clf()
         
         config = {
             'horizon': horizon,

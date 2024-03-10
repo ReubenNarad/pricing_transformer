@@ -8,7 +8,7 @@ except:
 
 def sample_price_env(dim, H, var):
     alpha = np.random.randint(20,80) / 10
-    beta = np.random.randint(50,150) / -100
+    beta = np.random.randint(50,150) / -100 
     env = PricesEnv(alpha, beta, dim, H, var=var)
     return env
 
@@ -19,7 +19,7 @@ class PricesEnv(BaseEnv):
         self.dim = dim
         self.price_grid = np.linspace(1,5,self.dim)        
         
-        self.demands = np.maximum(alpha + beta * self.price_grid, 0)
+        self.demands = alpha + beta * self.price_grid
         self.means = self.demands * self.price_grid 
         
         self.opt_a_index = np.argmax(self.means)
@@ -30,12 +30,13 @@ class PricesEnv(BaseEnv):
         
         self.dim = len(self.means)
         self.var = var
-        self.dx = 1
         self.du = self.dim
 
         # some naming issue here
         self.H_context = H
         self.H = 1
+        
+        self.current_step = 0
 
     def get_arm_value(self, u):
         return np.sum(self.means * u)
@@ -45,19 +46,15 @@ class PricesEnv(BaseEnv):
 
     def transit(self, u):
         a = np.argmax(u)
-        
+        pt = self.price_grid[a]
         # REWARD FUNCTION
-        r = max(self.demands[a] + np.random.normal(0, self.var), 0)
+        r = self.alpha + pt * self.beta + np.random.randn() * self.var
         return r
 
     def step(self, action):
-        if self.current_step >= self.H:
-            raise ValueError("Episode has already ended")
-
         r = self.transit(action)
         self.current_step += 1
         done = (self.current_step >= self.H)
-
         return r, done, {}
 
     def deploy_eval(self, ctrl):
@@ -69,14 +66,13 @@ class PricesEnv(BaseEnv):
         return res
 
 
-class BanditEnvVec(BaseEnv):
+class PricesEnvVec(BaseEnv):
     """
-    Vectorized bandit environment.
+    Vectorized prices environment.
     """
     def __init__(self, envs):
         self._envs = envs
         self._num_envs = len(envs)
-        self.dx = envs[0].dx
         self.du = envs[0].du
 
     def reset(self):
@@ -109,24 +105,34 @@ class BanditEnvVec(BaseEnv):
         return res
 
     def deploy(self, ctrl):
+        # Print if the controller is of class BanditTransformerController
         us = []
         rs = []
         done = False
 
+        if 'BanditTransformerController' in str(ctrl.__class__):
+            name = 'BanditTransformerController'
+        elif 'ThompsonSamplingPolicy' in str(ctrl.__class__):
+            name = 'ThompsonSamplingPolicy'
+        if 'OptPolicy' in str(ctrl.__class__):
+            name = 'OptPolicy'
+
+        price_grid = ctrl.envs[0].price_grid
+
         while not done:
             u = ctrl.act_numpy_vec()
-
-            us.append(u)
-
+            env = ctrl.envs[-1]
+            print(env.alpha, env.beta)
             r, done, _ = self.step(u)
-            done = all(done)
 
+            done = all(done)
+            us.append(u)
             rs.append(r)
 
+        print(name)
+        print(us[-1][-1])
+        print(rs[-1][-1])
         us = np.concatenate(us)
         rs = np.concatenate(rs)
         return us, rs
 
-    def get_arm_value(self, us):
-        values = [np.sum(env.means * u) for env, u in zip(self._envs, us)]
-        return np.array(values)
