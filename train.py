@@ -178,7 +178,7 @@ if __name__ == '__main__':
         start_time = time.time()
 
         for i, batch in enumerate(train_loader):
-            print(f"Batch {i} of {len(train_loader)}", end='\r')
+            print(f"Batch {i} of {len(train_loader)}", end='\n\r')
             batch = {k: v.to(device) for k, v in batch.items()}
                 
             true_actions = batch['optimal_actions']

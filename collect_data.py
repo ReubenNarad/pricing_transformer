@@ -73,27 +73,28 @@ def rollin_prices(env, orig=False, thompson=False, verbose=False):
 
 def generate_prices_histories_from_envs(envs, n_samples, thompson):
     trajs = []
-    for env in tqdm(envs):
-        (
-            context_actions,
-            context_rewards,
-            regrets,
-            thetas,
-        ) = rollin_prices(env, thompson=thompson)
-        for k in range(n_samples):
-            optimal_action = env.opt_a
-            traj = {
-                'context_actions': context_actions,
-                'context_rewards': context_rewards,
-                'optimal_action': optimal_action,
-                'regrets': regrets,
-                'prices': env.price_grid,
-                'means': env.means,
-                'thetas' : thetas,
-                'alpha': env.alpha,
-                'beta': env.beta,
-            }
-            trajs.append(traj)
+    for thomp in True, False:
+        for env in tqdm(envs):
+            (
+                context_actions,
+                context_rewards,
+                regrets,
+                thetas,
+            ) = rollin_prices(env, thompson=thomp)
+            for k in range(n_samples):
+                optimal_action = env.opt_a
+                traj = {
+                    'context_actions': context_actions,
+                    'context_rewards': context_rewards,
+                    'optimal_action': optimal_action,
+                    'regrets': regrets,
+                    'prices': env.price_grid,
+                    'means': env.means,
+                    'thetas' : thetas,
+                    'alpha': env.alpha,
+                    'beta': env.beta,
+                }
+                trajs.append(traj)
     return trajs
 
 def generate_prices_histories(n_envs, dim, horizon, var, **kwargs):

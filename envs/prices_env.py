@@ -132,6 +132,7 @@ class PricesEnvVec(BaseEnv):
         print(name)
         print(us[-1][-1])
         print(rs[-1][-1])
+        print()
         us = np.concatenate(us)
         rs = np.concatenate(rs)
         return us, rs

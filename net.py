@@ -50,6 +50,12 @@ class Transformer(nn.Module):
         transformer_outputs = self.transformer(inputs_embeds=stacked_inputs)
         preds = self.pred_actions(transformer_outputs['last_hidden_state'])
 
+        # print("FORWARD:")
+        # print("action_seq:", action_seq[-1])
+        # print("reward_seq:", reward_seq[-1])
+        # print("preds:", preds[-1])
+
+
         if self.test:
             return preds[:, -1, :]
         return preds[:, 1:, :]

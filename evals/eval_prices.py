@@ -89,6 +89,7 @@ def online(eval_trajs, model, n_eval, horizon, var):
     print("Starting Online ...")
 
     all_means = {}
+    metas = {}
 
     envs = []
     print("Creating envs ...")
@@ -105,18 +106,22 @@ def online(eval_trajs, model, n_eval, horizon, var):
         envs,
         batch_size=len(envs))
     print("Deploying online opt ...")
-    cum_means = deploy_online_vec(vec_env, controller, horizon).T    
+    cum_means, meta = deploy_online_vec(vec_env, controller, horizon, include_meta=True)
+    cum_means = cum_means.T 
     assert cum_means.shape[0] == n_eval
     all_means['opt'] = cum_means
+    metas['opt'] = meta
 
     controller = BanditTransformerController(
         model,
         sample=True,
         batch_size=len(envs))
     print("Deploying online transformer ...")
-    cum_means = deploy_online_vec(vec_env, controller, horizon).T
+    cum_means, meta = deploy_online_vec(vec_env, controller, horizon, include_meta=True)
+    cum_means = cum_means.T
     assert cum_means.shape[0] == n_eval
-    all_means['Transformer'] = cum_means
+    all_means['transformer'] = cum_means
+    metas['transformer'] = meta
 
     controller = ThompsonSamplingPolicy(
         envs[0],
@@ -126,9 +131,16 @@ def online(eval_trajs, model, n_eval, horizon, var):
         warm_start=False,
         batch_size=len(envs))
     print("Deploying online Thompson ...")
-    cum_means = deploy_online_vec(vec_env, controller, horizon).T
+    cum_means, meta = deploy_online_vec(vec_env, controller, horizon, include_meta=True)
+    cum_means = cum_means.T
     assert cum_means.shape[0] == n_eval
-    all_means['Thomp'] = cum_means
+    all_means['thompson'] = cum_means
+    metas['thompson'] = meta
+
+    # Pickle meta
+    import pickle
+    with open('meta.pkl', 'wb') as f:
+        pickle.dump(metas, f)
 
 
     all_means = {k: np.array(v) for k, v in all_means.items()}
@@ -156,8 +168,8 @@ def online(eval_trajs, model, n_eval, horizon, var):
 
     ax1.set_yscale('log')
     ax1.set_xlabel('Episodes')
-    ax1.set_ylabel('Suboptimality')
-    ax1.set_title('Online Evaluation')
+    ax1.set_ylabel('Simple Regret')
+    ax1.set_title(f'Online Evaluation, mean of {n_eval} trajectories')
     ax1.legend()
 
 
@@ -169,7 +181,7 @@ def online(eval_trajs, model, n_eval, horizon, var):
     # ax2.set_yscale('log')
     ax2.set_xlabel('Episodes')
     ax2.set_ylabel('Cumulative Regret')
-    ax2.set_title('Regret Over Time')
+    ax2.set_title(f'Cumuative regret, H={horizon}')
     ax2.legend()
 
 def offline(eval_trajs, model, n_eval, horizon, var):
