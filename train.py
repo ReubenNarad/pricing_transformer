@@ -164,6 +164,9 @@ if __name__ == '__main__':
                     1).repeat(1, pred_actions.shape[1], 1)
                 true_actions = true_actions.reshape(-1, action_dim)
                 pred_actions = pred_actions.reshape(-1, action_dim)
+                
+                print("true_actions:", true_actions[-1])
+                print("pred_actions:", pred_actions[-1])
 
                 loss = loss_fn(pred_actions, true_actions)
                 epoch_test_loss += loss.item() / horizon
@@ -178,7 +181,7 @@ if __name__ == '__main__':
         start_time = time.time()
 
         for i, batch in enumerate(train_loader):
-            print(f"Batch {i} of {len(train_loader)}", end='\n\r')
+            print(f"Batch {i} of {len(train_loader)}", end='\r')
             batch = {k: v.to(device) for k, v in batch.items()}
                 
             true_actions = batch['optimal_actions']
@@ -194,6 +197,7 @@ if __name__ == '__main__':
             loss.backward()
             optimizer.step()
             epoch_train_loss += loss.item() / horizon
+        print()
 
         train_loss.append(epoch_train_loss / len(train_dataset))
         end_time = time.time()
@@ -218,6 +222,7 @@ if __name__ == '__main__':
             plt.legend()
             plt.savefig(f"figs/loss/{filename}_train_loss.png")
             plt.clf()
+        
 
     torch.save(model.state_dict(), f'models/{filename}.pt')
     print("Done.")

@@ -6,18 +6,24 @@ try:
 except:
     from base_env import BaseEnv
 
-def sample_price_env(dim, H, var):
-    alpha = np.random.randint(20,80) / 10
-    beta = np.random.randint(50,150) / -100 
-    env = PricesEnv(alpha, beta, dim, H, var=var)
+def sample_price_env(dim, H, var, opt_a_index=None, lower_price=5, upper_price=10, test=False):
+    prices = np.linspace(lower_price, upper_price, dim)
+    if False: 
+        price = prices[opt_a_index]
+        alpha = np.random.normal(7.5, 2)
+        beta = - alpha / (2 * price)
+    else:
+        alpha = np.random.randint(50,100) / 10
+        beta = np.random.randint(50,100) / -100 
+    env = PricesEnv(alpha, beta, dim, H, var=var, lower_price=lower_price, upper_price=upper_price)
     return env
 
 class PricesEnv(BaseEnv):
-    def __init__(self, alpha, beta, dim, H, var=0.0, type='uniform'):
+    def __init__(self, alpha, beta, dim, H, lower_price, upper_price, var=0.0, type='uniform'):
         self.alpha = alpha
         self.beta = beta
         self.dim = dim
-        self.price_grid = np.linspace(1,5,self.dim)        
+        self.price_grid = np.linspace(lower_price, upper_price, dim)   
         
         self.demands = alpha + beta * self.price_grid
         self.means = self.demands * self.price_grid 
@@ -38,6 +44,9 @@ class PricesEnv(BaseEnv):
         
         self.current_step = 0
 
+        self.normalization_factor = np.sqrt(alpha**2 + beta**2)
+
+
     def get_arm_value(self, u):
         return np.sum(self.means * u)
 
@@ -48,7 +57,7 @@ class PricesEnv(BaseEnv):
         a = np.argmax(u)
         pt = self.price_grid[a]
         # REWARD FUNCTION
-        r = self.alpha + pt * self.beta + np.random.randn() * self.var
+        r = (self.alpha + pt * self.beta + np.random.randn() * self.var) / self.normalization_factor
         return r
 
     def step(self, action):
@@ -116,6 +125,8 @@ class PricesEnvVec(BaseEnv):
             name = 'ThompsonSamplingPolicy'
         if 'OptPolicy' in str(ctrl.__class__):
             name = 'OptPolicy'
+        elif 'UCB' in str(ctrl.__class__):
+            name = 'UCB'
 
         price_grid = ctrl.envs[0].price_grid
 

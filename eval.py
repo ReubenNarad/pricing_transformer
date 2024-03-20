@@ -116,7 +116,7 @@ if __name__ == '__main__':
     dataset_config.update({'var': var, 'cov': cov, 'type': 'uniform'})
     eval_filepath = build_prices_data_filename(
         envname, n_eval, dataset_config, mode=2)
-    save_filename = f'{filename}_testcov{test_cov}_hor{horizon}.pkl'
+    save_filename = f'{filename}_hor{horizon}.pkl'
 
 
     with open(eval_filepath, 'rb') as f:

@@ -11,8 +11,9 @@ from ctrls.ctrl_prices import (
     EmpMeanPolicy,
     OptPolicy,
     PessMeanPolicy,
-    ThompsonSamplingPolicy,
+    ParaThompsonSamplingPolicy,
     UCBPolicy,
+    LinUCBPolicy
 )
 from envs.prices_env import PricesEnv, PricesEnvVec
 
@@ -97,7 +98,7 @@ def online(eval_trajs, model, n_eval, horizon, var):
         traj = eval_trajs[i_eval]
         means = traj['means']
         
-        env = PricesEnv(traj['alpha'], traj['beta'], len(traj['prices']), horizon, var=var)
+        env = PricesEnv(traj['alpha'], traj['beta'], len(traj['prices']), horizon, var=var, lower_price=5, upper_price=10)
         envs.append(env)
 
     vec_env = PricesEnvVec(envs)
@@ -107,7 +108,7 @@ def online(eval_trajs, model, n_eval, horizon, var):
         batch_size=len(envs))
     print("Deploying online opt ...")
     cum_means, meta = deploy_online_vec(vec_env, controller, horizon, include_meta=True)
-    cum_means = cum_means.T 
+    cum_means = cum_means.T
     assert cum_means.shape[0] == n_eval
     all_means['opt'] = cum_means
     metas['opt'] = meta
@@ -120,10 +121,10 @@ def online(eval_trajs, model, n_eval, horizon, var):
     cum_means, meta = deploy_online_vec(vec_env, controller, horizon, include_meta=True)
     cum_means = cum_means.T
     assert cum_means.shape[0] == n_eval
-    all_means['transformer'] = cum_means
-    metas['transformer'] = meta
+    all_means['Transformer'] = cum_means
+    metas['Transformer'] = meta
 
-    controller = ThompsonSamplingPolicy(
+    controller = ParaThompsonSamplingPolicy(
         envs[0],
         std=var,
         theta_0=[5, -1.5],
@@ -134,14 +135,37 @@ def online(eval_trajs, model, n_eval, horizon, var):
     cum_means, meta = deploy_online_vec(vec_env, controller, horizon, include_meta=True)
     cum_means = cum_means.T
     assert cum_means.shape[0] == n_eval
-    all_means['thompson'] = cum_means
-    metas['thompson'] = meta
+    all_means['ParamThomp'] = cum_means
+    metas['ParamThomp'] = meta
+
+    controller = UCBPolicy(
+        envs[0],
+        const=1.0,
+        batch_size=len(envs))
+    cum_means = deploy_online_vec(vec_env, controller, horizon).T
+    assert cum_means.shape[0] == n_eval
+    all_means['UCB'] = cum_means
+    metas['UCB'] = meta
+
+    controller = LinUCBPolicy(
+        envs[0],
+        const=1.0,
+        batch_size=len(envs)
+    )
+    cum_means = deploy_online_vec(vec_env, controller, horizon).T
+    assert cum_means.shape[0] == n_eval
+    all_means['LinearUCB'] = cum_means
+    metas['LinearUCB'] = meta
 
     # Pickle meta
     import pickle
-    with open('meta.pkl', 'wb') as f:
-        pickle.dump(metas, f)
+    import os
 
+    if not os.path.exists('metas'):
+        os.makedirs('metas')
+
+    with open(f'metas/H_{horizon}_dim_{envs[0].dim}_meta.pkl', 'wb') as f:
+        pickle.dump(metas, f)  # Fixed the closing parenthesis
 
     all_means = {k: np.array(v) for k, v in all_means.items()}
     all_means_diff = {k: all_means['opt'] - v for k, v in all_means.items()}
@@ -221,7 +245,7 @@ def offline(eval_trajs, model, n_eval, horizon, var):
     opt_policy = OptPolicy(envs, batch_size=num_envs)
     # emp_policy = EmpMeanPolicy(envs[0], online=False, batch_size=num_envs)
     lnr_policy = BanditTransformerController(model, sample=False, batch_size=num_envs)
-    thomp_policy = ThompsonSamplingPolicy(
+    thomp_policy = ParaThompsonSamplingPolicy(
         envs[0],
         std=var,
         sample=False,
@@ -229,22 +253,22 @@ def offline(eval_trajs, model, n_eval, horizon, var):
         prior_var=1/12.0,
         warm_start=False,
         batch_size=num_envs)
-    # lcb_policy = PessMeanPolicy(
-    #     envs[0],
-    #     const=.8,
-    #     batch_size=len(envs))
+    lcb_policy = PessMeanPolicy(
+        envs[0],
+        const=.8,
+        batch_size=len(envs))
 
 
     opt_policy.set_batch_numpy_vec(batch)
     # emp_policy.set_batch_numpy_vec(batch)
     thomp_policy.set_batch_numpy_vec(batch)
-    # lcb_policy.set_batch_numpy_vec(batch)
+    lcb_policy.set_batch_numpy_vec(batch)
     lnr_policy.set_batch_numpy_vec(batch)
     
     _, rs_opt = vec_env.deploy_eval(opt_policy)
     # _, _, _, rs_emp = vec_env.deploy_eval(emp_policy)
     _, rs_lnr = vec_env.deploy_eval(lnr_policy)
-    # _, _, _, rs_lcb = vec_env.deploy_eval(lcb_policy)
+    _, rs_lcb = vec_env.deploy_eval(lcb_policy)
     _, rs_thmp = vec_env.deploy_eval(thomp_policy)
 
 
@@ -253,7 +277,7 @@ def offline(eval_trajs, model, n_eval, horizon, var):
         'transformer': np.array(rs_lnr),
         # 'greedy': np.array(rs_emp),
         'Parameterized TS': np.array(rs_thmp),
-        # 'lcb': np.array(rs_lcb),
+        'lcb': np.array(rs_lcb),
     }    
     baselines_means = {k: np.mean(v) for k, v in baselines.items()}
     colors = plt.cm.viridis(np.linspace(0, 1, len(baselines_means)))

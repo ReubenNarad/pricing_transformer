@@ -73,7 +73,7 @@ def rollin_prices(env, orig=False, thompson=False, verbose=False):
 
 def generate_prices_histories_from_envs(envs, n_samples, thompson):
     trajs = []
-    for thomp in True, False:
+    for thomp in False, False, False:
         for env in tqdm(envs):
             (
                 context_actions,
@@ -98,8 +98,10 @@ def generate_prices_histories_from_envs(envs, n_samples, thompson):
     return trajs
 
 def generate_prices_histories(n_envs, dim, horizon, var, **kwargs):
-    envs = [prices_env.sample_price_env(dim, horizon, var)
-            for _ in range(n_envs)]
+    envs = []
+    for _ in range(int(n_envs / dim)):
+        for a in range(dim):
+            envs.append(prices_env.sample_price_env(dim, horizon, var, opt_a_index=a))
     print(envs[0])
     trajs = generate_prices_histories_from_envs(envs, thompson=True, **kwargs)
     return trajs

@@ -31,10 +31,12 @@ class Transformer(nn.Module):
             attn_pdrop=self.dropout,
             use_cache=False,
         )
-        self.transformer = GPT2Model(config)
 
         self.embed_transition = nn.Linear(
             self.action_dim + 1, self.n_embd)
+        
+        self.transformer = GPT2Model(config)
+        
         self.pred_actions = nn.Linear(self.n_embd, self.action_dim)
 
     def forward(self, x):
@@ -46,8 +48,12 @@ class Transformer(nn.Module):
 
         seq = torch.cat(
             [action_seq, reward_seq], dim=2)
+        
+        
         stacked_inputs = self.embed_transition(seq)
+
         transformer_outputs = self.transformer(inputs_embeds=stacked_inputs)
+
         preds = self.pred_actions(transformer_outputs['last_hidden_state'])
 
         # print("FORWARD:")
