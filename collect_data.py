@@ -154,16 +154,16 @@ if __name__ == '__main__':
     eval_filepath = build_prices_data_filename(env, n_eval_envs, config, mode=2)
 
 
-    # # Save to /datasets
-    # if not os.path.exists('datasets'):
-    #     os.makedirs('datasets', exist_ok=True)
-    # with open(train_filepath, 'wb') as file:
-    #     pickle.dump(train_trajs, file)
-    # with open(test_filepath, 'wb') as file:
-    #     pickle.dump(test_trajs, file)
-    # with open(eval_filepath, 'wb') as file:
-    #     pickle.dump(eval_trajs, file)
+    # Save to /datasets
+    if not os.path.exists('datasets'):
+        os.makedirs('datasets', exist_ok=True)
+    with open(train_filepath, 'wb') as file:
+        pickle.dump(train_trajs, file)
+    with open(test_filepath, 'wb') as file:
+        pickle.dump(test_trajs, file)
+    with open(eval_filepath, 'wb') as file:
+        pickle.dump(eval_trajs, file)
 
-    # print(f"Saved to {train_filepath}.")
-    # print(f"Saved to {test_filepath}.")
-    # print(f"Saved to {eval_filepath}.")
+    print(f"Saved to {train_filepath}.")
+    print(f"Saved to {test_filepath}.")
+    print(f"Saved to {eval_filepath}.")

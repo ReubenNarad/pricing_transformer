@@ -8,11 +8,13 @@ except:
 
 def sample_price_env(dim, H, var, opt_a_index=None, lower_price=5, upper_price=10, test=False):
     prices = np.linspace(lower_price, upper_price, dim)
-    if False: 
+    if True:
+        # Draws envs with uniformly distributed optimal actions
         price = prices[opt_a_index]
         alpha = np.random.normal(7.5, 2)
         beta = - alpha / (2 * price)
     else:
+        # Draws envs with uniformly distributed alpha and beta
         alpha = np.random.randint(50,100) / 10
         beta = np.random.randint(50,100) / -100 
     env = PricesEnv(alpha, beta, dim, H, var=var, lower_price=lower_price, upper_price=upper_price)
