@@ -118,7 +118,6 @@ if __name__ == '__main__':
         envname, n_eval, dataset_config, mode=2)
     save_filename = f'{filename}_hor{horizon}.pkl'
 
-
     with open(eval_filepath, 'rb') as f:
         eval_trajs = pickle.load(f)
 

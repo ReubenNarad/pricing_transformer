@@ -49,8 +49,17 @@ Research project, implementing Lee et. al.'s (https://arxiv.org/pdf/2306.14892.p
 3. Evaluate:
 `python3 eval.py --env prices --envs 1000 --H 50 --dim 10 --var 0.3 --cov 0.0 --lr 0.0001 --layer 4 --head 4 --shuffle --epoch 100 --n_eval 1000 --seed 1`
 
+
+TESTING MULTI PRODUCT
 `
-python3 collect_data.py --env prices --envs 1000 --H 200 --dim 10 --var 0.3 --envs_eval 200 && \
-python3 train.py --env prices --envs 1000 --H 200 --dim 10 --var 0.3 --lr 0.0001 --layer 4 --head 4 --shuffle --num_epochs 50 --seed 1 && \
-python3 eval.py --env prices --envs 1000 --H 200  --dim 10 --var 0.3 --lr 0.0001 --layer 4 --head 4 --shuffle --epoch 50 --n_eval 200 --seed 1
+python3 collect_data.py --env multi_prices --envs 1000 --H 200 --dim 10 --var 0.3 --envs_eval 200 && \
+python3 train.py --env multi_prices --envs 1000 --H 200 --dim 10 --var 0.3 --lr 0.0001 --layer 4 --head 4 --shuffle --num_epochs 50 --seed 1 && \
+python3 eval.py --env multi_prices --envs 1000 --H 200  --dim 10 --var 0.3 --lr 0.0001 --layer 4 --head 4 --shuffle --epoch 50 --n_eval 200 --seed 1
 `
+
+# Swtiching to multi-product todos
+- Collect data needs to take --env arguments again (for env multi_prices)
+- Create multi_prices_env.py
+- Create eval_multi_prices
+- Create baseline controller (param thomp, LinUCB)
+
