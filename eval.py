@@ -149,35 +149,6 @@ if __name__ == '__main__':
         plt.cla()
         plt.close()
 
-        # eval_prices.offline(eval_trajs, model, **config)
-        # plt.savefig(f'figs/{evals_filename}/bar/{save_filename}_bar.png')
-        # print(f"Saved figs/{evals_filename}/bar/{save_filename}_bar.png")
-
-        # plt.clf()
-
-        # eval_prices.offline_graph(eval_trajs, model, **config)
-        # plt.savefig(f'figs/{evals_filename}/graph/{save_filename}_graph.png')
-        # print(f"Saved figs/{evals_filename}/graph/{save_filename}_graph.png")
-        # plt.clf()
-        
-        # config = {
-        #     'horizon': horizon,
-        #     'var': var,
-        #     'n_eval': n_eval,
-        # }
-        # eval_prices.online(eval_trajs, model, **config)
-        # plt.savefig(f'figs/{evals_filename}/online/{save_filename}.png')
-        # plt.clf()
-        # plt.cla()
-        # plt.close()
-
-        # eval_prices.offline(eval_trajs, model, **config)
-        # plt.savefig(f'figs/{evals_filename}/bar/{save_filename}_bar.png')
-        # plt.clf()
-
-        # eval_prices.offline_graph(eval_trajs, model, **config)
-        # plt.savefig(f'figs/{evals_filename}/graph/{save_filename}_graph.png')
-        # plt.clf()
         
         config = {
             'horizon': horizon,
@@ -187,17 +158,3 @@ if __name__ == '__main__':
 
         with open(eval_filepath, 'rb') as f:
             eval_trajs = pickle.load(f)
-
-        # eval_linear_bandit.online(eval_trajs, model, **config)
-        # plt.savefig(f'figs/{evals_filename}/online/{save_filename}.png')
-        # plt.clf()
-        # plt.cla()
-        # plt.close()
-
-        # eval_linear_bandit.offline(eval_trajs, model, **config)
-        # plt.savefig(f'figs/{evals_filename}/bar/{save_filename}_bar.png')
-        # plt.clf()
-
-        # eval_linear_bandit.offline_graph(eval_trajs, model, **config)
-        # plt.savefig(f'figs/{evals_filename}/graph/{save_filename}_graph.png')
-        # plt.clf()

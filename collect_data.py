@@ -29,6 +29,7 @@ def rollin_prices(env, orig=False, verbose=False):
         r, done, _ = env.step(u)
         us.append(u)
         rs.append(r)
+        
             
     us, rs = np.array(us), np.array(rs)
     return us, rs, regrets, thetas
@@ -87,6 +88,7 @@ def generate_multi_prices_histories_from_envs(envs, n_samples):
             traj = {
                 'context_actions': context_actions,
                 'context_rewards': context_rewards,
+
                 'optimal_action': optimal_action,
                 'regrets': regrets,
                 'prices': env.price_grid,

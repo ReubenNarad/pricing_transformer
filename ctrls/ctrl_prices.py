@@ -18,136 +18,6 @@ class Controller:
     def set_env(self, env):
         self.env = env
 
-class ThompsonSamplingPolicy(Controller):
-    def __init__(self, env, std=.1, sample=False, prior_mean=.5, prior_var=1/12.0, warm_start=False, batch_size=1):
-        super().__init__()
-        self.env = env
-        self.variance = std**2
-        self.prior_mean = prior_mean
-        self.prior_variance = prior_var
-        self.batch_size = batch_size
-
-        self.reset()
-        self.sample = sample
-        self.warm_start = warm_start
-
-    def reset(self):
-        if self.batch_size > 1:
-            self.means = np.ones((self.batch_size, self.env.dim)) * self.prior_mean
-            self.variances = np.ones((self.batch_size, self.env.dim)) * self.prior_variance
-            self.counts = np.zeros((self.batch_size, self.env.dim))
-        else:
-            self.means = np.ones(self.env.dim) * self.prior_mean
-            self.variances = np.ones(self.env.dim) * self.prior_variance
-            self.counts = np.zeros(self.env.dim)
-
-    def set_batch(self, batch):
-        self.reset()
-        self.batch = batch
-        actions = self.batch['context_actions'].cpu().detach().numpy()[0]
-        rewards = self.batch['context_rewards'].cpu().detach().numpy().flatten()
-
-        for i in range(len(actions)):
-            c = np.argmax(actions[i])
-            self.counts[c] += 1
-
-        for c in range(self.env.dim):
-            arm_rewards = rewards[np.argmax(actions, axis=1) == c]
-            self.update_posterior(c, arm_rewards)
-
-    def set_batch_numpy_vec(self, batch):
-        self.reset()
-        self.batch = batch
-        actions = self.batch['context_actions']
-        rewards = self.batch['context_rewards'][:, :, 0]
-
-        for i in range(len(actions[0])):
-            c = np.argmax(actions[:, i], axis=-1)
-            self.counts[np.arange(self.batch_size), c] += 1
-
-        arm_means = np.zeros((self.batch_size, self.env.dim))
-        for idx in range(self.batch_size):
-            actions_idx = np.argmax(actions[idx], axis=-1)
-            rewards_idx = rewards[idx]
-            for c in range(self.env.dim):
-                arm_rewards = rewards_idx[actions_idx == c]
-                if self.counts[idx, c] > 0:
-                    arm_mean = np.mean(arm_rewards)
-                    arm_means[idx, c] = arm_mean
-
-        assert arm_means.shape[0] == self.batch_size
-        assert arm_means.shape[1] == self.env.dim
-
-        self.update_posterior_all(arm_means)
-
-    def update_posterior(self, c, arm_rewards):
-        n = self.counts[c]
-
-        if n > 0:
-            arm_mean = np.mean(arm_rewards)
-            prior_weight = self.variance / (self.variance + (n * self.prior_variance))
-            new_mean = prior_weight * self.prior_mean + (1 - prior_weight) * arm_mean
-            new_variance = 1 / (1 / self.prior_variance + n / self.variance)
-
-            self.means[c] = new_mean
-            self.variances[c] = new_variance
-
-    def update_posterior_all(self, arm_means):
-        prior_weight = self.variance / (self.variance + (self.counts * self.prior_variance))
-        new_mean = prior_weight * self.prior_mean + (1 - prior_weight) * arm_means
-        new_variance = 1 / (1 / self.prior_variance + self.counts / self.variance)
-
-        mask = (self.counts > 0)
-        self.means[mask] = new_mean[mask]
-        self.variances[mask] = new_variance[mask]
-
-    def act(self, x):
-        if self.sample:
-            values = np.random.normal(self.means, np.sqrt(self.variances))
-            i = np.argmax(values)
-
-            actions = self.batch['context_actions'].cpu().detach().numpy()[0]
-            rewards = self.batch['context_rewards'].cpu().detach().numpy().flatten()
-
-            if self.warm_start:
-                counts = np.zeros(self.env.dim)
-                for j in range(len(actions)):
-                    c = np.argmax(actions[j])
-                    counts[c] += 1
-                j = np.argmin(counts)
-                if counts[j] == 0:
-                    i = j
-        else:
-            values = np.random.normal(self.means, np.sqrt(self.variances), size=(100, self.env.dim))
-            amax = np.argmax(values, axis=1)
-            freqs = np.bincount(amax, minlength=self.env.dim)
-            i = np.argmax(freqs)
-        a = np.zeros(self.env.dim)
-        a[i] = 1.0
-        self.a = a
-
-        return self.a
-
-    def act_numpy_vec(self, x):
-        if self.sample:
-            values = np.random.normal(self.means, np.sqrt(self.variances))
-            action_indices = np.argmax(values, axis=-1)
-
-            actions = self.batch['context_actions']
-            rewards = self.batch['context_rewards']
-
-        else:
-            values = np.stack([
-                np.random.normal(self.means, np.sqrt(self.variances))
-                for _ in range(100)], axis=1)
-            amax = np.argmax(values, axis=-1)
-            freqs = np.array([np.bincount(am, minlength=self.env.dim) for am in amax])
-            action_indices = np.argmax(freqs, axis=-1)
-
-        actions = np.zeros((self.batch_size, self.env.dim))
-        actions[np.arange(self.batch_size), action_indices] = 1.0
-        self.a = actions
-        return self.a
 
 
 
@@ -170,26 +40,25 @@ class OptPolicy(Controller):
     
 
 class ParaThompsonSamplingPolicy(Controller):
-    def __init__(self, env, std=.1, theta_0=[5, -1.5], cov_0=np.eye(2), warm_start=False, batch_size=1):
+    def __init__(self, env, std=.1, theta_0=[0, 0], cov_0=np.eye(2), warm_start=False, batch_size=1):
         super().__init__()
         self.price_grid = env.price_grid
-
         self.std = std
         self.variance = std**2
         self.theta_0 = theta_0
-        self.cov_0 = cov_0
+        self.cov_0 = cov_0*self.variance
         self.batch_size = batch_size
         self.reset()
 
     def reset(self):
         # Reset posteriors over alpha and beta
-        self.thetas = np.tile(self.theta_0, (self.batch_size, 1))
-        self.covs = np.tile(self.cov_0/100, (self.batch_size, 1, 1))
+        self.thetas = np.zeros((self.batch_size, 2))
+        self.covs = np.tile(self.cov_0, (self.batch_size, 1, 1))
         self.rtxts = [np.zeros(2) for _ in range(self.batch_size)]
         self.prices = [[] for _ in range(self.batch_size)] 
         self.rewards = [[] for _ in range(self.batch_size)]
 
-    def set_batch_numpy_vec(self, batch):
+    def set_batch_numpy_vec(self, batch):       
         self.reset()
         self.batch = batch
         actions = self.batch['context_actions']
@@ -204,19 +73,15 @@ class ParaThompsonSamplingPolicy(Controller):
             a = np.argmax(actions[t])
             price = self.envs[idx].price_grid[a]
             reward = rewards[t]
-
             xt = np.array([1, price])
             self.covs[idx] += np.outer(xt, xt)
             self.rtxts[idx] += reward * xt
             self.thetas[idx] = np.linalg.inv(self.covs[idx]) @ self.rtxts[idx]
-        
 
-    def act_numpy_vec(self):
+    def act_numpy_vec(self, a=1):
         actions = np.zeros((self.batch_size, self.envs[0].dim))
-
         for idx in range(self.batch_size):
-            theta_draw = multivariate_normal(self.thetas[idx], np.linalg.inv(self.covs[idx])).rvs()
-
+            theta_draw = multivariate_normal(self.thetas[idx], a*np.linalg.inv(self.covs[idx])).rvs()
             r_hat = [(theta_draw[0] + (price * theta_draw[1])) * price for price in self.envs[idx].price_grid]            
             opt_a_index = np.argmax(r_hat)
             actions[idx, opt_a_index] = 1.0
@@ -246,17 +111,20 @@ class BanditTransformerController(Controller):
         self.set_batch(new_batch)
 
 
-    def act_numpy_vec(self):
+    def act_numpy_vec(self, opt_as=None):
         self.batch['zeros'] = self.zeros
 
         a = self.model(self.batch)
+        print(f"ACTION: {a}")
         a = a.cpu().detach().numpy()
 
         action_indices = np.argmax(a, axis=-1)
+        print(f"OPT AS:\n{opt_as}")
 
         actions = np.zeros((self.batch_size, self.du))
         actions[np.arange(self.batch_size), action_indices] = 1.0
-        # print(actions[-1])
+
+        print(f"ACTIONS:\n {actions}")
         return actions
 
 

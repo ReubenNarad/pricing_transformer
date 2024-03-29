@@ -137,11 +137,14 @@ if __name__ == '__main__':
     train_dataset = Dataset(path_train, config)
     test_dataset = Dataset(path_test, config)
 
+    print(train_dataset[0].keys())
+
     train_loader = torch.utils.data.DataLoader(train_dataset, **params)
     test_loader = torch.utils.data.DataLoader(test_dataset, **params)
 
     optimizer = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=1e-4)
     loss_fn = torch.nn.CrossEntropyLoss(reduction='sum')
+    loss_hits = torch.nn.MSELoss(reduction='sum')
 
     test_loss = []
     train_loss = []
@@ -194,6 +197,7 @@ if __name__ == '__main__':
 
             optimizer.zero_grad()
             loss = loss_fn(pred_actions, true_actions)
+
             loss.backward()
             optimizer.step()
             epoch_train_loss += loss.item() / horizon

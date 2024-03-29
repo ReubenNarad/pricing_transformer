@@ -8,22 +8,29 @@ except:
 
 def sample_price_env(dim, H, var, opt_a_index=None, lower_price=5, upper_price=10, test=False):
     prices = np.linspace(lower_price, upper_price, dim)
-    if True:
+    if False:
         # Draws envs with uniformly distributed optimal actions
         price = prices[opt_a_index]
-        alpha = np.random.normal(7.5, 2)
+        alpha = np.random.randint(55, 95) / 10
         beta = - alpha / (2 * price)
     else:
         # Draws envs with uniformly distributed alpha and beta
         alpha = np.random.randint(50,100) / 10
         beta = np.random.randint(50,100) / -100 
+
+        # Draws envs with normally distributed alpha and beta
+        # alpha = np.random.normal(0.5, 0.1)
+        # beta = np.random.normal(-0.5, 0.1)
+        
     env = PricesEnv(alpha, beta, dim, H, var=var, lower_price=lower_price, upper_price=upper_price)
     return env
 
 class PricesEnv(BaseEnv):
     def __init__(self, alpha, beta, dim, H, lower_price, upper_price, var=0.0, type='uniform'):
-        self.alpha = alpha
-        self.beta = beta
+        self.normalization_factor = np.sqrt(alpha**2 + beta**2)
+        self.alpha = alpha/self.normalization_factor
+        self.beta = beta/self.normalization_factor
+        
         self.dim = dim
         self.price_grid = np.linspace(lower_price, upper_price, dim)   
         
@@ -33,7 +40,7 @@ class PricesEnv(BaseEnv):
         self.opt_a_index = np.argmax(self.means)
         self.opt_a = np.zeros(self.means.shape)
         self.opt_a[self.opt_a_index] = 1.0
-        
+        self.opt_price = self.price_grid[self.opt_a_index]
         self.opt_r = np.max(self.means)
         
         self.dim = len(self.means)
@@ -46,7 +53,7 @@ class PricesEnv(BaseEnv):
         
         self.current_step = 0
 
-        self.normalization_factor = np.sqrt(alpha**2 + beta**2)
+       
 
 
     def get_arm_value(self, u):
@@ -59,7 +66,7 @@ class PricesEnv(BaseEnv):
         a = np.argmax(u)
         pt = self.price_grid[a]
         # REWARD FUNCTION
-        r = (self.alpha + pt * self.beta + np.random.randn() * self.var) / self.normalization_factor
+        r = (self.alpha + pt * self.beta ) / self.normalization_factor + np.random.randn() * self.var
         return r
 
     def step(self, action):
@@ -121,32 +128,21 @@ class PricesEnvVec(BaseEnv):
         rs = []
         done = False
 
-        if 'BanditTransformerController' in str(ctrl.__class__):
-            name = 'BanditTransformerController'
-        elif 'ThompsonSamplingPolicy' in str(ctrl.__class__):
-            name = 'ThompsonSamplingPolicy'
-        if 'OptPolicy' in str(ctrl.__class__):
-            name = 'OptPolicy'
-        elif 'UCB' in str(ctrl.__class__):
-            name = 'UCB'
-
-        price_grid = ctrl.envs[0].price_grid
+        opt_as = np.array([env.opt_a for env in self._envs])
 
         while not done:
-            u = ctrl.act_numpy_vec()
-            env = ctrl.envs[-1]
-            print(env.alpha, env.beta)
+            u = ctrl.act_numpy_vec(opt_as)
             r, done, _ = self.step(u)
-
             done = all(done)
             us.append(u)
             rs.append(r)
 
-        print(name)
-        print(us[-1][-1])
-        print(rs[-1][-1])
-        print()
         us = np.concatenate(us)
         rs = np.concatenate(rs)
+        
+        print(opt_as[-1])
+        print(us[-1])
+        print(rs[-1])
+        print()
         return us, rs
 
