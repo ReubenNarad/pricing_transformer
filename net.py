@@ -32,8 +32,10 @@ class Transformer(nn.Module):
             use_cache=False,
         )
 
+        #shape of action_seq: (batch_size, seq_len, action_dim)
         self.embed_transition = nn.Linear(
             self.action_dim + 1, self.n_embd)
+
         
         self.transformer = GPT2Model(config)
         
