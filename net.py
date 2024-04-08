@@ -42,6 +42,21 @@ class Transformer(nn.Module):
         self.pred_actions = nn.Linear(self.n_embd, self.action_dim)
 
     def forward(self, x):
+        '''
+        Forward pass of the pricing transformer network.
+        
+        Args:
+            x (dict): Input data dictionary containing the following keys:
+                - 'zeros' (torch.Tensor): Tensor of shape (batch_size, sequence_length, feature_dim) representing zeros.
+                - 'context_actions' (torch.Tensor): Tensor of shape (batch_size, context_length, action_dim) representing context actions.
+                - 'context_rewards' (torch.Tensor): Tensor of shape (batch_size, context_length, 1) representing context rewards.
+        
+        Returns:
+            torch.Tensor: Predicted actions tensor of shape (batch_size, sequence_length - 1, action_dim) if self.test is False,
+                          or tensor of shape (batch_size, 1, action_dim) if self.test is True.
+        '''
+        # See deploy_online_vec in evals/eval_prices.py
+        # envs(=batch size) x horizon x actions (dim)
         zeros = x['zeros'][:, None, :]
 
         action_seq = torch.cat(
@@ -50,19 +65,13 @@ class Transformer(nn.Module):
 
         seq = torch.cat(
             [action_seq, reward_seq], dim=2)
-        
-        
+
+
         stacked_inputs = self.embed_transition(seq)
 
         transformer_outputs = self.transformer(inputs_embeds=stacked_inputs)
 
         preds = self.pred_actions(transformer_outputs['last_hidden_state'])
-
-        # print("FORWARD:")
-        # print("action_seq:", action_seq[-1])
-        # print("reward_seq:", reward_seq[-1])
-        # print("preds:", preds[-1])
-
 
         if self.test:
             return preds[:, -1, :]

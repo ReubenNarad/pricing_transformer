@@ -30,31 +30,24 @@ class PricesEnv(BaseEnv):
         self.normalization_factor = np.sqrt(alpha**2 + beta**2)
         self.alpha = alpha/self.normalization_factor
         self.beta = beta/self.normalization_factor
-        
         self.dim = dim
         self.price_grid = np.linspace(lower_price, upper_price, dim)   
         
         self.demands = alpha + beta * self.price_grid
         self.means = self.demands * self.price_grid 
-        
+        self.du = dim
         self.opt_a_index = np.argmax(self.means)
         self.opt_a = np.zeros(self.means.shape)
         self.opt_a[self.opt_a_index] = 1.0
         self.opt_price = self.price_grid[self.opt_a_index]
         self.opt_r = np.max(self.means)
         
-        self.dim = len(self.means)
         self.var = var
-        self.du = self.dim
 
         # some naming issue here
         self.H_context = H
         self.H = 1
-        
-        self.current_step = 0
-
-       
-
+        self.current_step = 0       
 
     def get_arm_value(self, u):
         return np.sum(self.means * u)
@@ -63,6 +56,16 @@ class PricesEnv(BaseEnv):
         self.current_step = 0
 
     def transit(self, u):
+        """
+        Takes an action and computes the reward.
+
+        Parameters:
+        - u: A one-hot numpy array representing the action.
+
+        Returns:
+        - r: The calculated reward.
+
+        """
         a = np.argmax(u)
         pt = self.price_grid[a]
         # REWARD FUNCTION
@@ -70,6 +73,7 @@ class PricesEnv(BaseEnv):
         return r
 
     def step(self, action):
+        print('stepping', self.current_step)
         r = self.transit(action)
         self.current_step += 1
         done = (self.current_step >= self.H)
@@ -123,15 +127,16 @@ class PricesEnvVec(BaseEnv):
         return res
 
     def deploy(self, ctrl):
-        # Print if the controller is of class BanditTransformerController
         us = []
         rs = []
         done = False
-
         opt_as = np.array([env.opt_a for env in self._envs])
-
+        # for 
         while not done:
+            # calls the model on the batch
+            # returns env x actions (one hot)
             u = ctrl.act_numpy_vec(opt_as)
+            # takes the action and returns the reward
             r, done, _ = self.step(u)
             done = all(done)
             us.append(u)
@@ -140,9 +145,5 @@ class PricesEnvVec(BaseEnv):
         us = np.concatenate(us)
         rs = np.concatenate(rs)
         
-        print(opt_as[-1])
-        print(us[-1])
-        print(rs[-1])
-        print()
         return us, rs
 

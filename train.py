@@ -92,6 +92,9 @@ if __name__ == '__main__':
     }
     
     dataset_config.update({'var': var, 'cov': cov, 'type': 'uniform'})
+    '''
+    TODO: Naming stuff: to be fixed
+    '''
     path_train = build_prices_data_filename(
         env, n_envs, dataset_config, mode=0)
     path_test = build_prices_data_filename(

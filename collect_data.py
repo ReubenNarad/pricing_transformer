@@ -74,7 +74,7 @@ def generate_prices_histories(n_envs, dim, horizon, var, env_type='prices', **kw
                 'context_actions': context_actions,
                 'context_rewards': context_rewards,
                 'optimal_action': env.opt_a,
-                'prices': env.price_grid,
+                'price_grid': env.price_grid,
                 'means': env.means,
                 'alpha': env.alpha,
                 'beta': env.beta,

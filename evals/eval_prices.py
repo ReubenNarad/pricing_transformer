@@ -9,25 +9,18 @@ import os
 
 from ctrls.ctrl_prices import (
     BanditTransformerController,
-    GreedyOptPolicy,
-    EmpMeanPolicy,
-    OptPolicy,
-    PessMeanPolicy,
     ParaThompsonSamplingPolicy,
-    UCBPolicy,
-    LinUCBPolicy
 )
 from envs.prices_env import PricesEnv, PricesEnvVec
 
 from utils import convert_to_tensor
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-
-
 def deploy_online_vec(vec_env, controller, horizon, include_meta=False):
     num_envs = vec_env.num_envs
+    # horizon x actions for each env since actions are one hot
     context_actions = np.zeros((num_envs, horizon, vec_env.du))
+    # horizon x 1 for each env 
     context_rewards = np.zeros((num_envs, horizon, 1))
     envs = vec_env._envs
 
@@ -39,6 +32,7 @@ def deploy_online_vec(vec_env, controller, horizon, include_meta=False):
             'context_rewards': context_rewards[:, :h, :],
             'envs': envs
         }
+        # converts batch to tensor, puts it in controller
         controller.set_batch_numpy_vec(batch)
         #gets result at time h
         actions_lnr, rewards_lnr = vec_env.deploy(controller)
@@ -72,9 +66,8 @@ def online(eval_trajs, model, n_eval, horizon, var):
     print("Creating envs ...")
     for i_eval in tqdm(range(n_eval)):
         traj = eval_trajs[i_eval]
-        means = traj['means']
-        
-        env = PricesEnv(traj['alpha'], traj['beta'], len(traj['prices']), 
+        # Note traj['price_grid'] is a list of prices
+        env = PricesEnv(traj['alpha'], traj['beta'], len(traj['price_grid']), 
                         horizon, var=var, lower_price=5, upper_price=10)
         envs.append(env)
     vec_env = PricesEnvVec(envs)
