@@ -4,6 +4,7 @@ import pickle
 
 import matplotlib.pyplot as plt
 import torch
+import numpy as np
 
 import common_args
 from evals import eval_prices
@@ -12,9 +13,7 @@ from utils import (
     build_prices_data_filename,
     build_prices_model_filename
 )
-import numpy as np
-import scipy
-import time
+
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 

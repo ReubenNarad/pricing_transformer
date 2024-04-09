@@ -1,6 +1,7 @@
 import pickle
 import numpy as np
 import torch
+
 from utils import convert_to_tensor
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')

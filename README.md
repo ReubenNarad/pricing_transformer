@@ -32,7 +32,7 @@ Research project, implementing Lee et. al.'s (https://arxiv.org/pdf/2306.14892.p
 ## Setting up environment:
 
 1. Install pytorch:
-`pip install pytorch=1.13.0 torchvision=0.14.0 cudatoolkit=11.7 -c pytorch -c nvidia`
+`pip install pytorch=1.13.0 cudatoolkit=11.7 -c pytorch -c nvidia`
 
 2. Install dependencies:
 `pip install -r requirements.txt`

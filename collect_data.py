@@ -10,9 +10,9 @@ from envs import prices_env
 from utils import build_prices_data_filename
 
 
-def generate_uniform_trajectory(env, orig=False, verbose=False): 
+def generate_uniform_trajectory(env): 
     '''
-   Create a trajectory of actions and rewards for a given environment. We are doing uniform.
+    Create a trajectory of actions and rewards for a given environment. We are doing uniform.
 
     Input: 
     env: PricesEnv object
