@@ -32,7 +32,6 @@ class PricesEnv(BaseEnv):
         self.beta = beta/self.normalization_factor
         self.dim = dim
         self.price_grid = np.linspace(lower_price, upper_price, dim)   
-        
         self.demands = alpha + beta * self.price_grid
         self.means = self.demands * self.price_grid 
         self.du = dim
@@ -41,11 +40,11 @@ class PricesEnv(BaseEnv):
         self.opt_a[self.opt_a_index] = 1.0
         self.opt_price = self.price_grid[self.opt_a_index]
         self.opt_r = np.max(self.means)
-        
         self.var = var
 
         # some naming issue here
         self.H_context = H
+        #FIXME what is this??
         self.H = 1
         self.current_step = 0       
 
@@ -54,8 +53,6 @@ class PricesEnv(BaseEnv):
 
     def reset(self):
         self.current_step = 0
-
-
 
 
     def step(self, action):
@@ -69,14 +66,13 @@ class PricesEnv(BaseEnv):
         - r: The calculated reward.
 
         """
-        a = np.argmax(u)
+        a = np.argmax(action)
         pt = self.price_grid[a]
         # REWARD FUNCTION
         r = (self.alpha + pt * self.beta ) / self.normalization_factor + np.random.randn() * self.var
         
         self.current_step += 1
         done = (self.current_step >= self.H)
-        print('checking step', self.current_step, self.H, done)
         return r, done, {}
 
     def deploy_eval(self, ctrl):
@@ -130,22 +126,15 @@ class PricesEnvVec(BaseEnv):
         us = []
         rs = []
         done = False
-        opt_as = np.array([env.opt_a for env in self._envs])
-        i = 0
         while not done:
             # calls the model on the batch
             # returns env x actions (one hot)
-            u = ctrl.act_numpy_vec(opt_as)
+            u = ctrl.act_numpy_vec()
             # takes the action and returns the reward
             r, done, _ = self.step(u)
-            print('done', done, all(done))
-            # after one step this returns done=[False]*len(envs)
-            # so the next line is equivalent to done = False
             done = all(done)
             us.append(u)
             rs.append(r)
-            i +=1
-        print('done steps', i)
         us = np.concatenate(us)
         rs = np.concatenate(rs)
         
