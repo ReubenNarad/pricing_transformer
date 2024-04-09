@@ -93,16 +93,16 @@ class BanditTransformerController(Controller):
         self.batch['zeros'] = self.zeros
 
         a = self.model(self.batch)
-        print(f"ACTION: {a}")
+        #print(f"ACTION: {a}")
         a = a.cpu().detach().numpy()
 
         action_indices = np.argmax(a, axis=-1)
-        print(f"OPT AS:\n{opt_as}")
+        #print(f"OPT AS:\n{opt_as}")
 
         actions = np.zeros((self.batch_size, self.du))
         actions[np.arange(self.batch_size), action_indices] = 1.0
 
-        print(f"ACTIONS:\n {actions}")
+        #print(f"ACTIONS:\n {actions}")
         return actions
 
 

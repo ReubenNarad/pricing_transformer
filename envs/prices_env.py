@@ -55,7 +55,10 @@ class PricesEnv(BaseEnv):
     def reset(self):
         self.current_step = 0
 
-    def transit(self, u):
+
+
+
+    def step(self, action):
         """
         Takes an action and computes the reward.
 
@@ -70,13 +73,10 @@ class PricesEnv(BaseEnv):
         pt = self.price_grid[a]
         # REWARD FUNCTION
         r = (self.alpha + pt * self.beta ) / self.normalization_factor + np.random.randn() * self.var
-        return r
-
-    def step(self, action):
-        print('stepping', self.current_step)
-        r = self.transit(action)
+        
         self.current_step += 1
         done = (self.current_step >= self.H)
+        print('checking step', self.current_step, self.H, done)
         return r, done, {}
 
     def deploy_eval(self, ctrl):
@@ -131,17 +131,21 @@ class PricesEnvVec(BaseEnv):
         rs = []
         done = False
         opt_as = np.array([env.opt_a for env in self._envs])
-        # for 
+        i = 0
         while not done:
             # calls the model on the batch
             # returns env x actions (one hot)
             u = ctrl.act_numpy_vec(opt_as)
             # takes the action and returns the reward
             r, done, _ = self.step(u)
+            print('done', done, all(done))
+            # after one step this returns done=[False]*len(envs)
+            # so the next line is equivalent to done = False
             done = all(done)
             us.append(u)
             rs.append(r)
-
+            i +=1
+        print('done steps', i)
         us = np.concatenate(us)
         rs = np.concatenate(rs)
         
