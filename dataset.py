@@ -14,10 +14,9 @@ class Dataset(torch.utils.data.Dataset):
         self.store_gpu = config['store_gpu']
         self.config = config
 
-        # if path is not a list
+        # load data from paths
         if not isinstance(path, list):
             path = [path]
-
         self.trajs = []
         for p in path:
             with open(p, 'rb') as f:
@@ -27,6 +26,9 @@ class Dataset(torch.utils.data.Dataset):
         context_rewards = []
         optimal_actions = []
 
+        # context_actions: (n_samples, horizon, dim)
+        # context_rewards: (n_samples, horizon, 1)
+        # optimal_actions: (n_samples, 1)
         for traj in self.trajs:
             context_actions.append(traj['context_actions'])
             context_rewards.append(traj['context_rewards'])
@@ -46,7 +48,6 @@ class Dataset(torch.utils.data.Dataset):
 
         self.zeros = np.zeros(
             config['action_dim'] + 1
-            
         )
         self.zeros = convert_to_tensor(self.zeros, store_gpu=self.store_gpu)
 
@@ -63,9 +64,9 @@ class Dataset(torch.utils.data.Dataset):
             'zeros': self.zeros,
         }
 
-        if self.shuffle:
-            perm = torch.randperm(self.horizon)
-            res['context_actions'] = res['context_actions'][perm]
-            res['context_rewards'] = res['context_rewards'][perm]
+        # if self.shuffle:
+        #     perm = torch.randperm(self.horizon)
+        #     res['context_actions'] = res['context_actions'][perm]
+        #     res['context_rewards'] = res['context_rewards'][perm]
 
         return res

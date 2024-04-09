@@ -23,9 +23,12 @@ def deploy_online_vec(vec_env, controller, horizon, include_meta=False):
     # horizon x 1 for each env 
     context_rewards = np.zeros((num_envs, horizon, 1))
     envs = vec_env._envs
-
+    opt_prices = [env.opt_price for env in envs]
     cum_means = np.zeros((num_envs, horizon))
     print("Deplying online vectorized...")
+
+    # play random prices and rewards for the first action
+    
     for h in range(horizon):
         batch = {
             'context_actions': context_actions[:, :h, :],
@@ -35,14 +38,18 @@ def deploy_online_vec(vec_env, controller, horizon, include_meta=False):
         # converts batch to tensor, puts it in controller
         controller.set_batch_numpy_vec(batch)
         #gets result at time h
+        # actions_lnr: envs x actions
+        # rewards_lnr: envs x 1
         actions_lnr, rewards_lnr = vec_env.deploy(controller)
-
         context_actions[:, h, :] = actions_lnr
         context_rewards[:, h, :] = rewards_lnr[:,None]
 
         action_indices = np.argmax(actions_lnr, axis=1)
-        revenues = rewards_lnr * np.array([env.price_grid[a] for env, a in zip(envs, action_indices)])
+        prices = np.array([env.price_grid[a] for env, a in zip(envs, action_indices)])
+        print('time step', h, 'accuracy', sum(prices==opt_prices)/len(prices))
+        revenues = rewards_lnr * prices
         cum_means[:, h] = revenues
+
 
     print("Depolyed online vectorized")
     
@@ -68,7 +75,7 @@ def online(eval_trajs, model, n_eval, horizon, var):
         traj = eval_trajs[i_eval]
         # Note traj['price_grid'] is a list of prices
         env = PricesEnv(traj['alpha'], traj['beta'], len(traj['price_grid']), 
-                        horizon, var=var, lower_price=5, upper_price=10)
+                        horizon, var=var, lower_price=1, upper_price=10)
         envs.append(env)
     vec_env = PricesEnvVec(envs)
     
@@ -90,40 +97,21 @@ def online(eval_trajs, model, n_eval, horizon, var):
     all_means['Transformer'] = cum_means
     metas['Transformer'] = meta
 
-    # controller = ParaThompsonSamplingPolicy(
-    #     envs[0],
-    #     std=var,
-    #     theta_0=[0, 0],
-    #     cov_0=np.eye(2),
-    #     warm_start=False,
-    #     batch_size=len(envs))
-    # print("Deploying online Thompson ...")
-    # cum_means, meta = deploy_online_vec(vec_env, controller, horizon, include_meta=True)
-    # assert cum_means.shape[0] == n_eval
-    # all_means['ParamThomp'] = cum_means
-    # metas['ParamThomp'] = meta
+    controller = ParaThompsonSamplingPolicy(
+        envs[0],
+        std=var,
+        theta_0=[0, 0],
+        cov_0=np.eye(2),
+        warm_start=False,
+        batch_size=len(envs))
+    print("Deploying online Thompson ...")
+    cum_means, meta = deploy_online_vec(vec_env, controller, horizon, include_meta=True)
+    assert cum_means.shape[0] == n_eval
+    all_means['ParamThomp'] = cum_means
+    metas['ParamThomp'] = meta
 
-    # controller = UCBPolicy(
-    #     envs[0],
-    #     const=1.0,
-    #     batch_size=len(envs))
-    # cum_means = deploy_online_vec(vec_env, controller, horizon).T
-    # assert cum_means.shape[0] == n_eval
-    # all_means['UCB'] = cum_means
-    # metas['UCB'] = meta
 
-    # controller = LinUCBPolicy(
-    #     envs[0],
-    #     const=1.0,
-    #     batch_size=len(envs)
-    # )
-    # cum_means = deploy_online_vec(vec_env, controller, horizon).T
-    # assert cum_means.shape[0] == n_eval
-    # all_means['LinearUCB'] = cum_means
-    # metas['LinearUCB'] = meta
-
-    # Pickle meta
-    
+    # Pickle meta    
     if not os.path.exists('metas'):
         os.makedirs('metas')
 
@@ -170,3 +158,12 @@ def online(eval_trajs, model, n_eval, horizon, var):
     ax2.set_ylabel('Cumulative Regret')
     ax2.set_title(f'Cumuative regret, H={horizon}')
     ax2.legend()
+
+
+        # if np.random.rand() < 0.0/np.sqrt(h+1):
+        #     eye = np.eye(vec_env.du)
+        #     actions = [np.random.randint(vec_env.du) for i in range(num_envs)]
+        #     rewards = [env.alpha + env.beta*env.price_grid[a] for env, a in zip(envs, actions)]
+        #     context_actions[:, h, :] = np.array([eye[a] for a in actions])
+        #     context_rewards[:, h, :] = np.array(rewards)[:,None]
+        # else:

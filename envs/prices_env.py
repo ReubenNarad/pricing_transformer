@@ -6,30 +6,33 @@ try:
 except:
     from base_env import BaseEnv
 
-def sample_price_env(dim, H, var, opt_a_index=None, lower_price=5, upper_price=10, test=False):
+def sample_price_env(dim, H, var, opt_a_index=None, lower_price=1, upper_price=10, test=False):
     prices = np.linspace(lower_price, upper_price, dim)
-    if False:
-        # Draws envs with uniformly distributed optimal actions
-        price = prices[opt_a_index]
-        alpha = np.random.randint(55, 95) / 10
-        beta = - alpha / (2 * price)
-    else:
-        # Draws envs with uniformly distributed alpha and beta
-        alpha = np.random.randint(50,100) / 10
-        beta = np.random.randint(50,100) / -100 
+    # if False:
+    #     # Draws envs with uniformly distributed optimal actions
+    #     price = prices[opt_a_index]
+    #     alpha = np.random.randint(55, 95) / 10
+    #     beta = - alpha / (2 * price)
+    # else:
+    #     # Draws envs with uniformly distributed alpha and beta
+    #     alpha = np.random.randint(50,100) / 10
+    #     beta = np.random.randint(50,100) / -100 
 
-        # Draws envs with normally distributed alpha and beta
-        # alpha = np.random.normal(0.5, 0.1)
-        # beta = np.random.normal(-0.5, 0.1)
+    #     # Draws envs with normally distributed alpha and beta
+    #     # alpha = np.random.normal(0.5, 0.1)
+    #     # beta = np.random.normal(-0.5, 0.1)
+    choice = np.random.randint(4)
+    alpha = [10., 6.66, 5., 3.5]
+    beta = [-2.5, -1., -.4375, -.2]
         
-    env = PricesEnv(alpha, beta, dim, H, var=var, lower_price=lower_price, upper_price=upper_price)
+    env = PricesEnv(alpha[choice], beta[choice], dim, H, var=var, 
+                    lower_price=lower_price, upper_price=upper_price)
     return env
 
 class PricesEnv(BaseEnv):
     def __init__(self, alpha, beta, dim, H, lower_price, upper_price, var=0.0, type='uniform'):
-        self.normalization_factor = np.sqrt(alpha**2 + beta**2)
-        self.alpha = alpha/self.normalization_factor
-        self.beta = beta/self.normalization_factor
+        self.alpha = alpha
+        self.beta = beta
         self.dim = dim
         self.price_grid = np.linspace(lower_price, upper_price, dim)   
         self.demands = alpha + beta * self.price_grid
@@ -69,7 +72,7 @@ class PricesEnv(BaseEnv):
         a = np.argmax(action)
         pt = self.price_grid[a]
         # REWARD FUNCTION
-        r = (self.alpha + pt * self.beta ) / self.normalization_factor + np.random.randn() * self.var
+        r = self.alpha + pt * self.beta  + np.random.randn() * self.var
         
         self.current_step += 1
         done = (self.current_step >= self.H)

@@ -106,15 +106,12 @@ if __name__ == '__main__':
     n_train_envs = int(.8 * n_envs)
     n_test_envs = n_envs - n_train_envs
 
+    # Generate trajectories
     config = {
         'n_samples': n_samples,
         'horizon': horizon,
     }
-    
-    # Generate trajectories
     config.update({'dim': dim, 'var': var})
-
-
     train_trajs = generate_prices_histories(n_train_envs, **config)
     test_trajs = generate_prices_histories(n_test_envs, **config)
     eval_trajs = generate_prices_histories(n_eval_envs, **config)
