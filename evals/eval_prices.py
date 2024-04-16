@@ -41,8 +41,15 @@ def deploy_online_vec(vec_env, controller, horizon, include_meta=False):
         # actions_lnr: envs x actions
         # rewards_lnr: envs x 1
         actions_lnr, rewards_lnr = vec_env.deploy(controller)
-        context_actions[:, h, :] = actions_lnr
-        context_rewards[:, h, :] = rewards_lnr[:,None]
+        if np.random.rand() < 1:#1/np.sqrt(h+1):
+            eye = np.eye(vec_env.du)
+            actions = [np.random.randint(vec_env.du) for i in range(num_envs)]
+            rewards = [env.alpha + env.beta*env.price_grid[a] for env, a in zip(envs, actions)]
+            context_actions[:, h, :] = np.array([eye[a] for a in actions])
+            context_rewards[:, h, :] = np.array(rewards)[:,None]
+        else:
+            context_actions[:, h, :] = actions_lnr
+            context_rewards[:, h, :] = rewards_lnr[:,None]
 
         action_indices = np.argmax(actions_lnr, axis=1)
         prices = np.array([env.price_grid[a] for env, a in zip(envs, action_indices)])
@@ -160,10 +167,4 @@ def online(eval_trajs, model, n_eval, horizon, var):
     ax2.legend()
 
 
-        # if np.random.rand() < 0.0/np.sqrt(h+1):
-        #     eye = np.eye(vec_env.du)
-        #     actions = [np.random.randint(vec_env.du) for i in range(num_envs)]
-        #     rewards = [env.alpha + env.beta*env.price_grid[a] for env, a in zip(envs, actions)]
-        #     context_actions[:, h, :] = np.array([eye[a] for a in actions])
-        #     context_rewards[:, h, :] = np.array(rewards)[:,None]
-        # else:
+  

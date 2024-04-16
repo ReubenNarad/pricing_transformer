@@ -6,27 +6,37 @@ try:
 except:
     from base_env import BaseEnv
 
-def sample_price_env(dim, H, var, opt_a_index=None, lower_price=1, upper_price=10, test=False):
-    prices = np.linspace(lower_price, upper_price, dim)
-    # if False:
-    #     # Draws envs with uniformly distributed optimal actions
-    #     price = prices[opt_a_index]
-    #     alpha = np.random.randint(55, 95) / 10
-    #     beta = - alpha / (2 * price)
-    # else:
-    #     # Draws envs with uniformly distributed alpha and beta
-    #     alpha = np.random.randint(50,100) / 10
-    #     beta = np.random.randint(50,100) / -100 
+def sample_price_env(dim, H, var, lower_price=1, upper_price=10, test=False):
+    '''
+    Creates an instance of the PricesEnv class with the specified parameters.
 
-    #     # Draws envs with normally distributed alpha and beta
-    #     # alpha = np.random.normal(0.5, 0.1)
-    #     # beta = np.random.normal(-0.5, 0.1)
-    choice = np.random.randint(4)
-    alpha = [10., 6.66, 5., 3.5]
-    beta = [-2.5, -1., -.4375, -.2]
+    Parameters:
+    - dim (int): The dimension of the environment.
+    - H (float): The value of H parameter.
+    - var (float): The value of var parameter.
+    - lower_price (int, optional): The lower bound of the price range. Defaults to 1.
+    - upper_price (int, optional): The upper bound of the price range. Defaults to 10.
+    - test (bool, optional): Flag indicating whether to add noise to alpha and beta. Defaults to False.
+
+    Returns:
+    - env (PricesEnv): An instance of the PricesEnv class.'''
+
+    choice = np.random.randint(10)
+    alpha = [30., 10., 6.5, 5., 3.5, 6., 3., 1.9, 1.6, 1.2]
+    beta = [-14.5, -1.6, -.67, -.4, -.2, -1.5, -.36, -.14, -.1, -.06]
+    
+    # if test, add noise to the alpha and beta
+    if test:
+        alpha[choice] += np.random.normal(0, .1)
+        beta[choice] += np.random.normal(0, 0.01)
+    
         
     env = PricesEnv(alpha[choice], beta[choice], dim, H, var=var, 
                     lower_price=lower_price, upper_price=upper_price)
+                    
+    print(f"Env: {env.alpha}, {env.beta}")
+    print(f"Optimal price: {env.opt_a_index}")
+
     return env
 
 class PricesEnv(BaseEnv):

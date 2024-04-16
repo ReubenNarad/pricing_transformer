@@ -4,6 +4,7 @@ import pickle
 import numpy as np
 import argparse
 from tqdm import tqdm
+import matplotlib.pyplot as plt
 
 import common_args
 from envs import prices_env
@@ -40,7 +41,7 @@ def generate_uniform_trajectory(env):
     return us, rs
 
 
-def generate_prices_histories(n_envs, dim, horizon, var, env_type='prices', **kwargs):
+def generate_prices_histories(n_envs, dim, horizon, var, env_type='prices', test=False, **kwargs):
     """
     Generate price histories for multiple environments.
 
@@ -57,9 +58,8 @@ def generate_prices_histories(n_envs, dim, horizon, var, env_type='prices', **kw
 
     """
     envs = []
-    for _ in range(int(n_envs / dim)):
-        for a in range(dim):
-            envs.append(prices_env.sample_price_env(dim, horizon, var, opt_a_index=a))
+    for _ in range(n_envs):
+        envs.append(prices_env.sample_price_env(dim, horizon, var, test=test))
    
 
     trajs = []
@@ -80,6 +80,15 @@ def generate_prices_histories(n_envs, dim, horizon, var, env_type='prices', **kw
                 'beta': env.beta,
             }
             trajs.append(traj)
+
+    # Plot histogram of opt_a's
+    opt_a_values = [np.argmax(traj['optimal_action']) for traj in trajs]
+    plt.hist(opt_a_values, bins=10)
+    plt.xlabel('opt_a')
+    plt.ylabel('Frequency')
+    plt.title('Histogram of opt_a')
+    plt.savefig('opt_a_hist.png')
+
     return trajs
 
 
@@ -113,8 +122,8 @@ if __name__ == '__main__':
     }
     config.update({'dim': dim, 'var': var})
     train_trajs = generate_prices_histories(n_train_envs, **config)
-    test_trajs = generate_prices_histories(n_test_envs, **config)
-    eval_trajs = generate_prices_histories(n_eval_envs, **config)
+    test_trajs = generate_prices_histories(n_test_envs, test=True, **config)
+    eval_trajs = generate_prices_histories(n_eval_envs, test=True, **config)
 
     train_filepath = build_prices_data_filename(env, n_envs, config, mode=0)
     test_filepath = build_prices_data_filename(env, n_envs, config, mode=1)
