@@ -26,7 +26,6 @@ if __name__ == '__main__':
     parser.add_argument('--seed', type=int, default=0)
 
     args = vars(parser.parse_args())
-    print("Args: ", args)
 
     n_envs = args['envs']
     n_samples = args['samples']
@@ -64,23 +63,6 @@ if __name__ == '__main__':
     if horizon < 0:
         horizon = H
 
-    model_config = {
-        'shuffle': shuffle,
-        'lr': lr,
-        'dropout': dropout,
-        'n_embd': n_embd,
-        'n_layer': n_layer,
-        'n_head': n_head,
-        'n_envs': n_envs,
-        'n_samples': n_samples,
-        'horizon': horizon,
-        'dim': dim,
-        'seed': seed,
-    }
-    
-    model_config.update({'var': var, 'cov': cov})
-    filename = build_prices_model_filename(envname, model_config)
-
     config = {
         'horizon': H,
         'state_dim': state_dim,
@@ -90,11 +72,16 @@ if __name__ == '__main__':
         'n_head': n_head,
         'dropout': dropout,
         'test': True,
+        'lr': lr,
+        'n_envs': n_envs,
+        'dim': dim,
+        'seed': seed,
     }
 
     # Load network from saved file.
     # By default, load the final file, otherwise load specified epoch.
     model = Transformer(config).to(device)
+    filename = build_prices_model_filename(config)
     
     tmp_filename = filename
     if epoch < 0:

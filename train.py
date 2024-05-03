@@ -13,6 +13,10 @@ import numpy as np
 import common_args
 import random
 import wandb
+import pytorch_lightning as pl
+from pytorch_lightning.strategies.ddp import DDPStrategy
+from lightning.pytorch import loggers as pl_loggers
+
 from dataset import Dataset
 from net import Transformer
 from utils import (
@@ -21,7 +25,6 @@ from utils import (
 )
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
 
 if __name__ == '__main__':
     if not os.path.exists('figs/loss'):
@@ -37,7 +40,6 @@ if __name__ == '__main__':
     parser.add_argument('--seed', type=int, default=0)
 
     args = vars(parser.parse_args())
-    print("Args: ", args)
 
     env = args['env']
     n_envs = args['envs']
@@ -62,7 +64,6 @@ if __name__ == '__main__':
     if seed == -1:
         tmp_seed = 0
 
-
     torch.manual_seed(tmp_seed)
     if torch.cuda.is_available():
         torch.cuda.manual_seed(tmp_seed)
@@ -73,37 +74,18 @@ if __name__ == '__main__':
     random.seed(tmp_seed)
 
     dataset_config = {
+        'shuffle' : shuffle,
+        'action_dim': action_dim,
         'n_samples': n_samples,
         'horizon': horizon,
         'dim': dim,
         'var': var,
         'cov': cov,
-        'type': 'uniform'
+        'type': 'uniform',
+        'store_gpu': True,
     }
 
     model_config = {
-        'shuffle': shuffle,
-        'lr': lr,
-        'dropout': dropout,
-        'n_embd': n_embd,
-        'n_layer': n_layer,
-        'n_head': n_head,
-        'n_envs': n_envs,
-        'n_samples': n_samples,
-        'horizon': horizon,
-        'dim': dim,
-        'seed': seed,
-    }
-
-    
-    path_train = build_prices_data_filename(
-        env, n_envs, dataset_config, mode=0)
-    path_test = build_prices_data_filename(
-        env, n_envs, dataset_config, mode=1)
-    model_config.update({'var': var, 'cov': cov})
-    filename = build_prices_model_filename(env, model_config)
-
-    config = {
         'horizon': horizon,
         'state_dim': state_dim,
         'action_dim': action_dim,
@@ -112,16 +94,37 @@ if __name__ == '__main__':
         'n_head': n_head,
         'shuffle': shuffle,
         'dropout': dropout,
+        'lr': lr,
+        'dim': dim,
+        'seed': seed,
+        'n_envs': n_envs,
         'test': False,
         'store_gpu': True,
     }
-    
-    model = Transformer(config).to(device)
+
+    path_train = build_prices_data_filename(
+        env, n_envs, dataset_config, mode=0)
+    path_test = build_prices_data_filename(
+        env, n_envs, dataset_config, mode=1)
+    filename = build_prices_model_filename(model_config)
+
+    model = Transformer(model_config).to(device)
 
     params = {
         'batch_size': 64,
-        'shuffle': True,
+        'shuffle': shuffle,
     }
+
+    logger = pl_loggers.WandbLogger(project='pricing_transformer')
+
+    trainer = pl.Trainer(
+        strategy=DDPStrategy(find_unused_parameters=True),
+        accelerator="gpu",
+        devices=[0],  # List of GPU IDs to use for training
+        max_epochs=num_epochs,
+        logger=logger,
+        # callbacks=[pl.callbacks.ModelCheckpoint(dirpath='models/', filename=filename + "_epoch_" + str(num_epochs), save_top_k=1)]
+    )
 
     log_filename = f'figs/loss/{filename}_logs.txt'
     def printw(string):
@@ -138,114 +141,11 @@ if __name__ == '__main__':
     with open(log_filename, 'w') as f:
         pass
 
-    train_dataset = Dataset(path_train, config)
-    test_dataset = Dataset(path_test, config)
+    train_dataset = Dataset(path_train, dataset_config)
+    test_dataset = Dataset(path_test, dataset_config)
 
     train_loader = torch.utils.data.DataLoader(train_dataset, **params)
     test_loader = torch.utils.data.DataLoader(test_dataset, **params)
 
-    optimizer = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=1e-4)
-    loss_fn = torch.nn.CrossEntropyLoss(reduction='sum')
-    loss_hits = torch.nn.MSELoss(reduction='sum')
+    trainer.fit(model, train_dataloaders=train_loader, val_dataloaders=test_loader)
 
-    test_loss = []
-    train_loss = []
-    test_accuracies = []
-
-    printw("Num train batches: " + str(len(train_loader)))
-    printw("Num test batches: " + str(len(test_loader)))
-
-    for epoch in range(num_epochs):
-        # EVALUATION
-        printw(f"Epoch: {epoch + 1}")
-        start_time = time.time()
-        with torch.no_grad():
-            epoch_test_loss = 0.0
-            correct_predictions = 0
-            total_predictions = 0       
-            for i, batch in enumerate(test_loader):
-                print(f"Batch {i} of {len(test_loader)}", end='\r')
-                batch = {k: v.to(device) for k, v in batch.items()}
-                # true_actions: batch_size x horizon x 1
-                # pred_actions: batch_size x horizon x action_dim
-                true_actions = batch['optimal_actions']
-                pred_actions = model(batch)
-
-                # true_actions: batch_size x horizon x action_dim
-                true_actions = true_actions.unsqueeze(
-                    1).repeat(1, pred_actions.shape[1], 1)
-
-                true_argmax = torch.argmax(true_actions, dim=2)
-                pred_argmax = torch.argmax(pred_actions, dim=2)
-
-                true_actions = true_actions.reshape(-1, action_dim)
-                pred_actions = pred_actions.reshape(-1, action_dim)
-
-                loss = loss_fn(pred_actions, true_actions)
-                epoch_test_loss += loss.item() / horizon
-
-                # check accuracy on the last time step for each eval
-                true_argmax = true_argmax.reshape(-1, 1)[:,-1]
-                pred_argmax = pred_argmax.reshape(-1, 1) [:,-1]
-                correct_predictions += torch.sum(true_argmax == pred_argmax).item()
-                total_predictions += true_argmax.shape[0]
-
-                
-        test_loss.append(epoch_test_loss / len(test_dataset))
-        end_time = time.time()
-        printw(f"\tTest loss: {test_loss[-1]}")
-        printw(f"\tEval time: {end_time - start_time}")
-        test_accuracy = correct_predictions / total_predictions
-        test_accuracies.append(test_accuracy)
-        print(f"\tTest Accuracy: {test_accuracy * 100}%")
-
-        # TRAINING
-        epoch_train_loss = 0.0
-        start_time = time.time()
-
-        for i, batch in enumerate(train_loader):
-            print(f"Batch {i} of {len(train_loader)}", end='\r')
-            batch = {k: v.to(device) for k, v in batch.items()}
-                
-            true_actions = batch['optimal_actions']
-            pred_actions = model(batch)
-            
-            true_actions = true_actions.unsqueeze(1).repeat(1, pred_actions.shape[1], 1)
-            true_actions = true_actions.reshape(-1, action_dim)
-            pred_actions = pred_actions.reshape(-1, action_dim)
-            optimizer.zero_grad()
-            loss = loss_fn(pred_actions, true_actions)
-
-            loss.backward()
-            optimizer.step()
-            epoch_train_loss += loss.item() / horizon
-
-        train_loss.append(epoch_train_loss / len(train_dataset))
-        end_time = time.time()
-        printw(f"\tTrain loss: {train_loss[-1]}")
-        printw(f"\tTrain time: {end_time - start_time}")
-
-        # LOGGING
-        if (epoch + 1) % 50 == 0 or (env == 'linear_bandit' and (epoch + 1) % 10 == 0):
-            torch.save(model.state_dict(),
-                       f'models/{filename}_epoch{epoch+1}.pt')
-
-        # PLOTTING
-        if (epoch + 1) % 10 == 0:
-            printw(f"Epoch: {epoch + 1}")
-            printw(f"Test Loss:        {test_loss[-1]}")
-            printw(f"Train Loss:       {train_loss[-1]}")
-            printw("\n")
-            fig, ax = plt.subplots(1,2)
-            plt.yscale('log')
-            ax[0].plot(train_loss[1:], label="Train Loss")
-            ax[0].plot(test_loss[1:], label="Test Loss")
-            ax[1].plot(test_accuracies[1:], label="Test Accuracy")
-            plt.legend()
-            plt.savefig(f"figs/loss/{filename}_train_loss.png")
-            plt.clf()
-        
-
-    torch.save(model.state_dict(), f'models/{filename}_epoch{epoch+1}.pt')
-    print("Done.")
-    # wandb.finish()

@@ -1,5 +1,6 @@
 import numpy as np
 import torch
+import random
 
 try:
     from envs.base_env import BaseEnv
@@ -21,26 +22,43 @@ def sample_price_env(dim, H, var, lower_price=1, upper_price=10, test=False):
     Returns:
     - env (PricesEnv): An instance of the PricesEnv class.'''
 
-    choice = np.random.randint(10)
-    alpha = [30., 10., 6.5, 5., 3.5, 6., 3., 1.9, 1.6, 1.2]
-    beta = [-14.5, -1.6, -.67, -.4, -.2, -1.5, -.36, -.14, -.1, -.06]
+    # choice = np.random.randint(10)
+
+    # if not test:
+    #     alphas = [13., 30., 1., 4., 7., 4.2, 7., .52, 2., .25]
+    #     betas = [-5., -8., -.17, -.5, -.7, -.35, -.5, -.032, -.11, -.012]
+    # else:
+    #     alphas = [30., 10., 6.5, 5., 3.5, 6., 3., 1.9, 1.6, 1.2]
+    #     betas = [-14.5, -1.6, -.67, -.4, -.2, -1.5, -.36, -.14, -.1, -.06]
     
-    # if test, add noise to the alpha and beta
+    # alpha = alphas[choice]
+    # beta = betas[choice]
+
+    # # Add noise to diversify parameters
+    # alpha += np.random.normal(0, .1)
+    # beta += np.random.normal(0, 0.01)
+
+    # Draw envs in terms of price and reward
+    opt_p = np.random.uniform(lower_price, upper_price)
+    opt_r = np.random.uniform(5, 10)
+
     if test:
-        alpha[choice] += np.random.normal(0, .1)
-        beta[choice] += np.random.normal(0, 0.01)
+        opt_r = np.random.normal(loc=5, scale=3)
+    else:
+        opt_r = np.random.normal(loc=5, scale=3) 
     
-        
-    env = PricesEnv(alpha[choice], beta[choice], dim, H, var=var, 
+    print(f"opt r: {opt_r}")
+
+    alpha = 2 * opt_r / opt_p
+    beta = - opt_r / opt_p ** 2
+    
+    env = PricesEnv(alpha, beta, dim, H, var=var, 
                     lower_price=lower_price, upper_price=upper_price)
-                    
-    print(f"Env: {env.alpha}, {env.beta}")
-    print(f"Optimal price: {env.opt_a_index}")
 
     return env
 
 class PricesEnv(BaseEnv):
-    def __init__(self, alpha, beta, dim, H, lower_price, upper_price, var=0.0, type='uniform'):
+    def __init__(self, alpha, beta, dim, H, lower_price, upper_price, var=0.0):
         self.alpha = alpha
         self.beta = beta
         self.dim = dim

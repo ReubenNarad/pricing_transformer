@@ -1,6 +1,0 @@
-Traceback (most recent call last):
-  File "/home/jupyter-recommendations/pricing_transformer/train.py", line 186, in <module>
-    train_dataset = Dataset(path_train, config)
-  File "/home/jupyter-recommendations/pricing_transformer/dataset.py", line 26, in __init__
-    with open(p, 'rb') as f:
-FileNotFoundError: [Errno 2] No such file or directory: 'datasets/trajs_bandit_envs1000_hists1_samples1_H5_d5_var0.3_cov0.0_train.pkl'

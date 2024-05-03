@@ -32,21 +32,17 @@ def build_prices_data_filename(env, n_envs, config, mode):
     return filename_template.format(filename)
 
 
-def build_prices_model_filename(env, config):
+def build_prices_model_filename(config):
     """
     Builds the filename for the bandit model.
     """
-    filename = env
-    filename += '_shuf' + str(config['shuffle'])
+
+    filename = ''
     filename += '_lr' + str(config['lr'])
     filename += '_do' + str(config['dropout'])
-    filename += '_embd' + str(config['n_embd'])
     filename += '_layer' + str(config['n_layer'])
     filename += '_head' + str(config['n_head'])
     filename += '_envs' + str(config['n_envs'])
-    filename += '_samples' + str(config['n_samples'])
-    filename += '_var' + str(config['var'])
-    filename += '_cov' + str(config['cov'])
     filename += '_H' + str(config['horizon'])
     filename += '_d' + str(config['dim'])
     filename += '_seed' + str(config['seed'])

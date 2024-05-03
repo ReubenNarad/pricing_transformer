@@ -1,0 +1,5 @@
+[default]
+entity = lalits-team
+project = pricing_transformer
+base_url = https://api.wandb.ai
+

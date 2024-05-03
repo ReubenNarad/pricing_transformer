@@ -50,7 +50,7 @@ Research project, implementing Lee et. al.'s (https://arxiv.org/pdf/2306.14892.p
 `python3 eval.py --env prices --envs 1000 --H 50 --dim 10 --var 0.3 --cov 0.0 --lr 0.0001 --layer 4 --head 4 --shuffle --epoch 100 --n_eval 1000 --seed 1`
 
 `
-python3 collect_data.py --env prices --envs 100000 --H 100 --dim 10 --var 0.01 --envs_eval 100 && \
-python3 train.py --env prices --envs 100000 --H 100 --dim 10 --var 0.01 --lr 0.0001 --layer 4 --head 4 --shuffle --num_epochs 50 --seed 2 && \
-python3 eval.py --env prices --envs 100000 --H 100  --dim 10 --var 0.01 --lr 0.0001 --layer 4 --head 4 --shuffle --epoch 50 --n_eval 100 --seed 2
+python3 collect_data.py --env prices --envs 10000 --H 200 --dim 10 --var 0.01 --envs_eval 100 && \
+python3 train.py --env prices --envs 10000 --H 200 --dim 10 --var 0.01 --lr 0.0001 --layer 4 --head 4 --shuffle --num_epochs 300 --seed 2 && \
+python3 eval.py --env prices --envs 10000 --H 200  --dim 10 --var 0.01 --lr 0.0001 --layer 4 --head 4 --shuffle --epoch 300 --n_eval 100 --seed 2
 `

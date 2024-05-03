@@ -121,7 +121,8 @@ if __name__ == '__main__':
         'horizon': horizon,
     }
     config.update({'dim': dim, 'var': var})
-    train_trajs = generate_prices_histories(n_train_envs, **config)
+
+    train_trajs = generate_prices_histories(n_train_envs, test=False, **config)
     test_trajs = generate_prices_histories(n_test_envs, test=True, **config)
     eval_trajs = generate_prices_histories(n_eval_envs, test=True, **config)
 
