@@ -82,12 +82,12 @@ def generate_prices_histories(n_envs, dim, horizon, var, env_type='prices', test
             trajs.append(traj)
 
     # Plot histogram of opt_a's
-    opt_a_values = [np.argmax(traj['optimal_action']) for traj in trajs]
-    plt.hist(opt_a_values, bins=10)
-    plt.xlabel('opt_a')
-    plt.ylabel('Frequency')
-    plt.title('Histogram of opt_a')
-    plt.savefig('opt_a_hist.png')
+    # opt_a_values = [np.argmax(traj['optimal_action']) for traj in trajs]
+    # plt.hist(opt_a_values, bins=10)
+    # plt.xlabel('opt_a')
+    # plt.ylabel('Frequency')
+    # plt.title('Histogram of opt_a')
+    # plt.savefig('opt_a_hist.png')
 
     return trajs
 

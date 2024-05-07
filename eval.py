@@ -113,12 +113,8 @@ if __name__ == '__main__':
     evals_filename = f"evals_epoch{epoch}"
     if not os.path.exists(f'figs/{evals_filename}'):
         os.makedirs(f'figs/{evals_filename}', exist_ok=True)
-    if not os.path.exists(f'figs/{evals_filename}/bar'):
-        os.makedirs(f'figs/{evals_filename}/bar', exist_ok=True)
     if not os.path.exists(f'figs/{evals_filename}/online'):
         os.makedirs(f'figs/{evals_filename}/online', exist_ok=True)
-    if not os.path.exists(f'figs/{evals_filename}/graph'):
-        os.makedirs(f'figs/{evals_filename}/graph', exist_ok=True)
 
     # Online and offline evaluation.
     

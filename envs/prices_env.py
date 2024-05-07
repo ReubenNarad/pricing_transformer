@@ -22,33 +22,16 @@ def sample_price_env(dim, H, var, lower_price=1, upper_price=10, test=False):
     Returns:
     - env (PricesEnv): An instance of the PricesEnv class.'''
 
-    # choice = np.random.randint(10)
-
-    # if not test:
-    #     alphas = [13., 30., 1., 4., 7., 4.2, 7., .52, 2., .25]
-    #     betas = [-5., -8., -.17, -.5, -.7, -.35, -.5, -.032, -.11, -.012]
-    # else:
-    #     alphas = [30., 10., 6.5, 5., 3.5, 6., 3., 1.9, 1.6, 1.2]
-    #     betas = [-14.5, -1.6, -.67, -.4, -.2, -1.5, -.36, -.14, -.1, -.06]
-    
-    # alpha = alphas[choice]
-    # beta = betas[choice]
-
-    # # Add noise to diversify parameters
-    # alpha += np.random.normal(0, .1)
-    # beta += np.random.normal(0, 0.01)
-
     # Draw envs in terms of price and reward
     opt_p = np.random.uniform(lower_price, upper_price)
     opt_r = np.random.uniform(5, 10)
 
     if test:
-        opt_r = np.random.normal(loc=5, scale=3)
+        opt_r = max(np.random.normal(loc=10, scale=3), 2)
     else:
-        opt_r = np.random.normal(loc=5, scale=3) 
+        opt_r = max(np.random.normal(loc=10, scale=3), 2)
     
-    print(f"opt r: {opt_r}")
-
+    # Algebraically replace opt_p and opt_r with alpha and beta
     alpha = 2 * opt_r / opt_p
     beta = - opt_r / opt_p ** 2
     

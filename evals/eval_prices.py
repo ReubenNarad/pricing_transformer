@@ -29,7 +29,7 @@ def deploy_online_vec(vec_env, controller, horizon, include_meta=False):
 
     # play random prices and rewards for the first action
     
-    for h in range(horizon):
+    for h in tqdm(range(horizon)):
         batch = {
             'context_actions': context_actions[:, :h, :],
             'context_rewards': context_rewards[:, :h, :],
@@ -53,7 +53,6 @@ def deploy_online_vec(vec_env, controller, horizon, include_meta=False):
 
         action_indices = np.argmax(actions_lnr, axis=1)
         prices = np.array([env.price_grid[a] for env, a in zip(envs, action_indices)])
-        print('time step', h, 'accuracy', sum(prices==opt_prices)/len(prices))
         revenues = rewards_lnr * prices
         cum_means[:, h] = revenues
 
@@ -80,7 +79,8 @@ def online(eval_trajs, model, n_eval, horizon, var):
     print("Creating envs ...")
     for i_eval in tqdm(range(n_eval)):
         traj = eval_trajs[i_eval]
-        # Note traj['price_grid'] is a list of prices
+
+        # Extract envs from trajectories
         env = PricesEnv(traj['alpha'], traj['beta'], len(traj['price_grid']), 
                         horizon, var=var, lower_price=1, upper_price=10)
         envs.append(env)
@@ -114,8 +114,8 @@ def online(eval_trajs, model, n_eval, horizon, var):
     print("Deploying online Thompson ...")
     cum_means, meta = deploy_online_vec(vec_env, controller, horizon, include_meta=True)
     assert cum_means.shape[0] == n_eval
-    all_means['ParamThomp'] = cum_means
-    metas['ParamThomp'] = meta
+    all_means['PTS'] = cum_means
+    metas['PTS'] = meta
 
 
     # Pickle meta    
@@ -166,5 +166,7 @@ def online(eval_trajs, model, n_eval, horizon, var):
     ax2.set_title(f'Cumuative regret, H={horizon}')
     ax2.legend()
 
+    # Hide left plot
+    ax1.set_visible(False)
 
   
