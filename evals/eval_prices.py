@@ -24,7 +24,7 @@ def deploy_online_vec(vec_env, controller, horizon):
     # horizon x 1 for each env 
     context_rewards = np.zeros((num_envs, horizon, 1))
     envs = vec_env._envs
-    opt_prices = [env.opt_price for env in envs]
+    opt_prices = [env.opt_a_index for env in envs]
     cum_means = np.zeros((num_envs, horizon))
     print("Deplying online vectorized...")
 
@@ -64,9 +64,11 @@ def deploy_online_vec(vec_env, controller, horizon):
     print("Depolyed online vectorized")
 
     # Pickle transformer probabilities
+    result = (logits, opt_prices)
+
     if isinstance(controller, BanditTransformerController):
         with open(f"logits.pkl", "wb") as f:
-            pickle.dump(logits, f)
+            pickle.dump(result, f)
         print("Saved!")
 
     return cum_means
@@ -127,7 +129,6 @@ def online(eval_trajs, model, n_eval, horizon, var):
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
 
-
     for key in means.keys():
         if key == 'opt':
             ax1.plot(means[key], label=key, linestyle='--',
@@ -136,7 +137,6 @@ def online(eval_trajs, model, n_eval, horizon, var):
         else:
             ax1.plot(means[key], label=key)
             ax1.fill_between(np.arange(horizon), means[key] - sems[key], means[key] + sems[key], alpha=0.2)
-
 
     ax1.set_yscale('log')
     ax1.set_xlabel('Episodes')
@@ -156,7 +156,5 @@ def online(eval_trajs, model, n_eval, horizon, var):
     ax2.set_title(f'Cumuative regret, H={horizon}')
     ax2.legend()
 
-    # Hide left plot
-    ax1.set_visible(False)
 
   
