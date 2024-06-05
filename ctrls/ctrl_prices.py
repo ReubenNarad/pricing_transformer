@@ -64,7 +64,7 @@ class ParaThompsonSamplingPolicy():
             opt_a_index = np.argmax(r_hat)
             actions[idx, opt_a_index] = 1.0
 
-        return actions
+        return actions, actions
 
 
 class BanditTransformerController(Controller):
@@ -92,17 +92,14 @@ class BanditTransformerController(Controller):
     def act_numpy_vec(self, opt_as=None):
         self.batch['zeros'] = self.zeros
 
-        a = self.model(self.batch)
-        #print(f"ACTION: {a}")
-        a = a.cpu().detach().numpy()
+        probs = self.model(self.batch)
+        probs = probs.cpu().detach().numpy()
 
-        action_indices = np.argmax(a, axis=-1)
-        #print(f"OPT AS:\n{opt_as}")
+        action_indices = np.argmax(probs, axis=-1)
 
         actions = np.zeros((self.batch_size, self.du))
         actions[np.arange(self.batch_size), action_indices] = 1.0
 
-        #print(f"ACTIONS:\n {actions}")
-        return actions
+        return actions, probs
 
 

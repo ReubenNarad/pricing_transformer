@@ -139,18 +139,21 @@ class PricesEnvVec(BaseEnv):
     def deploy(self, ctrl):
         us = []
         rs = []
+        ps = []
         done = False
         while not done:
             # calls the model on the batch
             # returns env x actions (one hot)
-            u = ctrl.act_numpy_vec()
+            u, probs = ctrl.act_numpy_vec()
             # takes the action and returns the reward
             r, done, _ = self.step(u)
             done = all(done)
             us.append(u)
             rs.append(r)
+            ps.append(probs)
         us = np.concatenate(us)
         rs = np.concatenate(rs)
+        ps = np.concatenate(ps)
         
-        return us, rs
+        return us, rs, ps
 

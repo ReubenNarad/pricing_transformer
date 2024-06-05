@@ -16,10 +16,11 @@ from envs.prices_env import PricesEnv, PricesEnvVec
 from utils import convert_to_tensor
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-def deploy_online_vec(vec_env, controller, horizon, include_meta=False):
+def deploy_online_vec(vec_env, controller, horizon):
     num_envs = vec_env.num_envs
     # horizon x actions for each env since actions are one hot
     context_actions = np.zeros((num_envs, horizon, vec_env.du))
+    logits = np.zeros((num_envs, horizon, vec_env.du))
     # horizon x 1 for each env 
     context_rewards = np.zeros((num_envs, horizon, 1))
     envs = vec_env._envs
@@ -40,16 +41,19 @@ def deploy_online_vec(vec_env, controller, horizon, include_meta=False):
         #gets result at time h
         # actions_lnr: envs x actions
         # rewards_lnr: envs x 1
-        actions_lnr, rewards_lnr = vec_env.deploy(controller)
+        actions_lnr, rewards_lnr, logits_lnr = vec_env.deploy(controller)
+
         if np.random.rand() < 1:#1/np.sqrt(h+1):
             eye = np.eye(vec_env.du)
             actions = [np.random.randint(vec_env.du) for i in range(num_envs)]
             rewards = [env.alpha + env.beta*env.price_grid[a] for env, a in zip(envs, actions)]
             context_actions[:, h, :] = np.array([eye[a] for a in actions])
             context_rewards[:, h, :] = np.array(rewards)[:,None]
+            logits[:, h, :] = logits_lnr
         else:
             context_actions[:, h, :] = actions_lnr
             context_rewards[:, h, :] = rewards_lnr[:,None]
+            
 
         action_indices = np.argmax(actions_lnr, axis=1)
         prices = np.array([env.price_grid[a] for env, a in zip(envs, action_indices)])
@@ -58,22 +62,20 @@ def deploy_online_vec(vec_env, controller, horizon, include_meta=False):
 
 
     print("Depolyed online vectorized")
-    
-    if not include_meta:
-        return cum_means
-    else:
-        meta = {
-            'context_actions': context_actions,
-            'context_rewards': context_rewards,
-        }
-        return cum_means, meta
+
+    # Pickle transformer probabilities
+    if isinstance(controller, BanditTransformerController):
+        with open(f"logits.pkl", "wb") as f:
+            pickle.dump(logits, f)
+        print("Saved!")
+
+    return cum_means
 
 
 def online(eval_trajs, model, n_eval, horizon, var):
     print("Starting Online ...")
 
     all_means = {}
-    metas = {}
 
     envs = []
     print("Creating envs ...")
@@ -88,21 +90,18 @@ def online(eval_trajs, model, n_eval, horizon, var):
     
     # controller = OptPolicy(envs, batch_size=len(envs))
     # print("Deploying online opt ...")
-    # cum_means, meta = deploy_online_vec(vec_env, controller, horizon, include_meta=True)
     # assert cum_means.shape[0] == n_eval
     all_means['opt'] = np.array([[env.opt_r]*horizon for env in envs])
     #all_means['opt'] = cum_means
-    metas['opt'] = [[env.opt_r]*horizon for env in envs]
 
     controller = BanditTransformerController(
         model,
         sample=True,
         batch_size=len(envs))
     print("Deploying online transformer ...")
-    cum_means, meta = deploy_online_vec(vec_env, controller, horizon, include_meta=True)
+    cum_means = deploy_online_vec(vec_env, controller, horizon)
     assert cum_means.shape[0] == n_eval
     all_means['Transformer'] = cum_means
-    metas['Transformer'] = meta
 
     controller = ParaThompsonSamplingPolicy(
         envs[0],
@@ -112,18 +111,9 @@ def online(eval_trajs, model, n_eval, horizon, var):
         warm_start=False,
         batch_size=len(envs))
     print("Deploying online Thompson ...")
-    cum_means, meta = deploy_online_vec(vec_env, controller, horizon, include_meta=True)
+    cum_means = deploy_online_vec(vec_env, controller, horizon)
     assert cum_means.shape[0] == n_eval
     all_means['PTS'] = cum_means
-    metas['PTS'] = meta
-
-
-    # Pickle meta    
-    if not os.path.exists('metas'):
-        os.makedirs('metas')
-
-    with open(f'metas/H_{horizon}_dim_{envs[0].dim}_meta.pkl', 'wb') as f:
-        pickle.dump(metas, f)  # Fixed the closing parenthesis
 
     all_means = {k: np.array(v) for k, v in all_means.items()}
     all_means_diff = {k: all_means['opt'] - v for k, v in all_means.items()}
