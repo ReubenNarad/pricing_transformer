@@ -1,11 +1,12 @@
 import torch
 import torch.nn as nn
-import transformers
-from utils import build_prices_model_filename
-transformers.set_seed(0)
-from transformers import GPT2Config, GPT2Model
-
 import pytorch_lightning as pl
+
+import transformers
+from transformers import GPT2Config, GPT2Model
+transformers.set_seed(0)
+
+from utils import build_prices_model_filename, build_run_name
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -17,16 +18,17 @@ class Transformer(pl.LightningModule):
 
         self.config = config
         self.test = config['test']
-        self.horizon = self.config['horizon']
-        self.n_embd = self.config['n_embd']
-        self.n_layer = self.config['n_layer']
-        self.n_head = self.config['n_head']
+        self.horizon = self.config['H']
+        self.n_embd = self.config['embd']
+        self.n_layer = self.config['layer']
+        self.n_head = self.config['head']
         self.state_dim = self.config['state_dim']
         self.action_dim = self.config['action_dim']
         self.dropout = self.config['dropout']
         self.lr = config['lr']
 
-        self.filename = build_prices_model_filename(config)
+        self.run_name = build_run_name(config)
+        self.filename = 'model'
 
         config = GPT2Config(
             n_positions=4 * (1 + self.horizon),
@@ -65,22 +67,21 @@ class Transformer(pl.LightningModule):
             torch.Tensor: Predicted actions tensor of shape (batch_size, sequence_length - 1, action_dim) if self.test is False,
                           or tensor of shape (batch_size, 1, action_dim) if self.test is True.
         '''
-        # See deploy_online_vec in evals/eval_prices.py
-        # envs(=batch size) x horizon x actions (dim)
+
+        # Format actions and rewards
+        # Inputs are batch_size x horizon x action space
         zeros = x['zeros'][:, None, :]
-
-        action_seq = torch.cat(
-            [zeros[:, :, :self.action_dim], x['context_actions']], dim=1)
+        action_seq = torch.cat([zeros[:, :, :self.action_dim], x['context_actions']], dim=1)
         reward_seq = torch.cat([zeros[:, :, :1], x['context_rewards']], dim=1)
+        seq = torch.cat([action_seq, reward_seq], dim=2)
 
-        seq = torch.cat(
-            [action_seq, reward_seq], dim=2)
-
-
+        # Pass through custom embedding layer
         stacked_inputs = self.embed_transition(seq)
 
+        # Pass through transformer
         transformer_outputs = self.transformer(inputs_embeds=stacked_inputs)
 
+        # Unembed transformer outputs into logits
         preds = self.pred_actions(transformer_outputs['last_hidden_state'])
 
         if self.test:
@@ -89,6 +90,9 @@ class Transformer(pl.LightningModule):
 
 
     def training_step(self, batch, batch_idx):
+        '''
+        Performs a single training step, formatted for PyTorch Lightning
+        '''
         true_actions = batch['optimal_actions']
         pred_actions = self.forward(batch)
         true_actions = true_actions.unsqueeze(1).repeat(1, pred_actions.shape[1], 1)
@@ -99,6 +103,9 @@ class Transformer(pl.LightningModule):
         return loss
     
     def validation_step(self, batch, batch_idx):
+        '''
+        Performs a single validation step, formatted for PyTorch Lightning
+        '''
         true_actions = batch['optimal_actions']
         pred_actions = self.forward(batch)
         true_actions = true_actions.unsqueeze(1).repeat(1, pred_actions.shape[1], 1)
@@ -118,5 +125,6 @@ class Transformer(pl.LightningModule):
         return optimizer
 
     def on_train_epoch_end(self):
+        # Save model every 100 epochs
         if (self.current_epoch + 1) % 100 == 0 or self.current_epoch == self.trainer.max_epochs - 1:
-            torch.save(self.state_dict(), f'models/{self.filename}_epoch{self.current_epoch+1}.pt')
+            torch.save(self.state_dict(), f'runs/{self.run_name}/{self.filename}_epoch{self.current_epoch+1}.pt')

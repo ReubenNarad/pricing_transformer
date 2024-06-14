@@ -11,9 +11,10 @@ class Dataset(torch.utils.data.Dataset):
 
     def __init__(self, path, config):
         self.shuffle = config['shuffle']
-        self.horizon = config['horizon']
+        self.horizon = config['H']
         self.store_gpu = config['store_gpu']
         self.config = config
+        self.truncate = config['truncate']
 
         # load data from paths
         if not isinstance(path, list):
@@ -65,9 +66,31 @@ class Dataset(torch.utils.data.Dataset):
             'zeros': self.zeros,
         }
 
+
+    def __getitem__(self, index):
+        'Generates one sample of data'
+        context_actions = self.dataset['context_actions'][index]
+        context_rewards = self.dataset['context_rewards'][index]
+        optimal_actions = self.dataset['optimal_actions'][index]
+
+        # Randomly truncate sequences
+        if self.truncate:
+            max_length = context_actions.shape[0]
+            trunc_length = np.random.randint(2, max_length)
+
+            context_actions = context_actions[:trunc_length]
+            context_rewards = context_rewards[:trunc_length]
+
+        res = {
+            'context_actions': context_actions,
+            'context_rewards': context_rewards,
+            'optimal_actions': optimal_actions,
+            'zeros': self.zeros,
+        }
+
+        return res
+
         # if self.shuffle:
         #     perm = torch.randperm(self.horizon)
         #     res['context_actions'] = res['context_actions'][perm]
         #     res['context_rewards'] = res['context_rewards'][perm]
-
-        return res

@@ -1,7 +1,4 @@
-import itertools
-
 import numpy as np
-import scipy
 import torch
 from scipy.stats import multivariate_normal
 
@@ -24,13 +21,14 @@ class ParaThompsonSamplingPolicy():
         self.std = std
         self.variance = std**2
         self.theta_0 = theta_0
-        self.cov_0 = cov_0*self.variance
+        self.cov_0 = cov_0 * (self.variance or 0.0001)
         self.batch_size = batch_size
         self.reset()
 
     def reset(self):
         # Reset posteriors over alpha and beta
         self.thetas = np.zeros((self.batch_size, 2))
+        self.covs = np.tile(self.cov_0, (self.batch_size, 1, 1))# * 1e-6
         self.covs = np.tile(self.cov_0, (self.batch_size, 1, 1))
         self.rtxts = [np.zeros(2) for _ in range(self.batch_size)]
         self.prices = [[] for _ in range(self.batch_size)] 
@@ -43,9 +41,11 @@ class ParaThompsonSamplingPolicy():
         rewards = self.batch['context_rewards'][:, :, 0]
         self.envs = self.batch['envs']
 
-        for idx in range(self.batch_size):
+        for idx in range(1, self.batch_size):
             self.update_posterior(idx, actions[idx], rewards[idx])
 
+    # TODO:
+    # This still recalculates the WHOLE posterior, not just updating. Very slow!
     def update_posterior(self, idx, actions, rewards):
         for t in range(len(actions)):
             a = np.argmax(actions[t])
@@ -67,8 +67,8 @@ class ParaThompsonSamplingPolicy():
         return actions, actions
 
 
-class BanditTransformerController(Controller):
-    def __init__(self, model, sample=False,  batch_size=1):
+class TransformerController(Controller):
+    def __init__(self, model, sample=False, batch_size=1):
         self.model = model
         self.du = model.config['action_dim']
         self.dx = model.config['state_dim']

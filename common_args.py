@@ -1,5 +1,4 @@
-
-def add_dataset_args(parser):
+def add_run_args(parser):
     parser.add_argument("--envs", type=int, required=False,
                         default=100000, help="Envs")
     parser.add_argument("--envs_eval", type=int, required=False,
@@ -14,20 +13,15 @@ def add_dataset_args(parser):
                         default=10, help="Dimension")
     parser.add_argument("--lin_d", type=int, required=False,
                         default=2, help="Linear feature dimension")
-
     parser.add_argument("--var", type=float, required=False,
                         default=0.0, help="Bandit arm variance")
     parser.add_argument("--cov", type=float, required=False,
                         default=0.0, help="Coverage of optimal arm")
-
     parser.add_argument("--env", type=str, required=True, help="Environment")
     parser.add_argument("--env_id_start", type=int, required=False,
                         default=-1, help="Start index of envs to sample")
     parser.add_argument("--env_id_end", type=int, required=False,
                         default=-1, help="End index of envs to sample")
-
-
-def add_model_args(parser):
     parser.add_argument("--embd", type=int, required=False,
                         default=32, help="Embedding size")
     parser.add_argument("--head", type=int, required=False,
@@ -38,6 +32,7 @@ def add_model_args(parser):
                         default=1e-3, help="Learning Rate")
     parser.add_argument("--dropout", type=float,
                         required=False, default=0, help="Dropout")
+    parser.add_argument('--seed', type=int, default=0)
     parser.add_argument('--shuffle', default=False, action='store_true')
 
 

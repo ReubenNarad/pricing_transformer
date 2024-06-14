@@ -8,27 +8,41 @@ import pickle
 import os
 
 from ctrls.ctrl_prices import (
-    BanditTransformerController,
+    TransformerController,
     ParaThompsonSamplingPolicy,
 )
-from envs.prices_env import PricesEnv, PricesEnvVec
 
+from envs.prices_env import PricesEnv, PricesEnvVec
 from utils import convert_to_tensor
+from heatmap import generate_heatmaps
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 def deploy_online_vec(vec_env, controller, horizon):
+    '''
+    Deploys the online vectorized environment.
+
+    Args:
+        vec_env (object): The vectorized environment
+        controller (Controller): The policy being deployed
+        horizon (int): Total trajectory length
+
+    Returns:
+        numpy.ndarray: The cumulative means of the revenues.
+
+    '''
+
     num_envs = vec_env.num_envs
+
     # horizon x actions for each env since actions are one hot
     context_actions = np.zeros((num_envs, horizon, vec_env.du))
     logits = np.zeros((num_envs, horizon, vec_env.du))
+
     # horizon x 1 for each env 
     context_rewards = np.zeros((num_envs, horizon, 1))
     envs = vec_env._envs
     opt_prices = [env.opt_a_index for env in envs]
     cum_means = np.zeros((num_envs, horizon))
-    print("Deplying online vectorized...")
-
-    # play random prices and rewards for the first action
     
     for h in tqdm(range(horizon)):
         batch = {
@@ -36,24 +50,22 @@ def deploy_online_vec(vec_env, controller, horizon):
             'context_rewards': context_rewards[:, :h, :],
             'envs': envs
         }
-        # converts batch to tensor, puts it in controller
+
+        # Deploy the controller
+        # actions_lnr: batch_size x action space
+        # rewards_lnr: batch_size x 1
+        # logits_lnr: batch_size x action space
         controller.set_batch_numpy_vec(batch)
-        #gets result at time h
-        # actions_lnr: envs x actions
-        # rewards_lnr: envs x 1
         actions_lnr, rewards_lnr, logits_lnr = vec_env.deploy(controller)
 
-        if np.random.rand() < 1:#1/np.sqrt(h+1):
-            eye = np.eye(vec_env.du)
-            actions = [np.random.randint(vec_env.du) for i in range(num_envs)]
-            rewards = [env.alpha + env.beta*env.price_grid[a] for env, a in zip(envs, actions)]
-            context_actions[:, h, :] = np.array([eye[a] for a in actions])
-            context_rewards[:, h, :] = np.array(rewards)[:,None]
-            logits[:, h, :] = logits_lnr
-        else:
-            context_actions[:, h, :] = actions_lnr
-            context_rewards[:, h, :] = rewards_lnr[:,None]
-            
+        eye = np.eye(vec_env.du)
+        actions = [np.argmax(a) for a in actions_lnr]
+
+        # Observe noiseless rewards
+        rewards = [env.alpha + env.beta*env.price_grid[a] for env, a in zip(envs, actions)]
+        context_actions[:, h, :] = np.array([eye[a] for a in actions])
+        context_rewards[:, h, :] = np.array(rewards)[:,None]
+        logits[:, h, :] = logits_lnr
 
         action_indices = np.argmax(actions_lnr, axis=1)
         prices = np.array([env.price_grid[a] for env, a in zip(envs, action_indices)])
@@ -61,20 +73,10 @@ def deploy_online_vec(vec_env, controller, horizon):
         cum_means[:, h] = revenues
 
 
-    print("Depolyed online vectorized")
-
-    # Pickle transformer probabilities
-    result = (logits, opt_prices)
-
-    if isinstance(controller, BanditTransformerController):
-        with open(f"logits.pkl", "wb") as f:
-            pickle.dump(result, f)
-        print("Saved!")
-
-    return cum_means
+    return cum_means, (logits, opt_prices)
 
 
-def online(eval_trajs, model, n_eval, horizon, var):
+def online(eval_trajs, model, n_eval, horizon, var, run_name):
     print("Starting Online ...")
 
     all_means = {}
@@ -96,12 +98,21 @@ def online(eval_trajs, model, n_eval, horizon, var):
     all_means['opt'] = np.array([[env.opt_r]*horizon for env in envs])
     #all_means['opt'] = cum_means
 
-    controller = BanditTransformerController(
+    controller = TransformerController(
         model,
         sample=True,
         batch_size=len(envs))
     print("Deploying online transformer ...")
-    cum_means = deploy_online_vec(vec_env, controller, horizon)
+    cum_means, logits = deploy_online_vec(vec_env, controller, horizon)
+
+    # Save logits
+    with open(f"runs/{run_name}/evals/logits.pkl", "wb") as f:
+        pickle.dump(logits, f)
+    print("Saved!")
+
+    # Generate heatmaps
+    generate_heatmaps(run_name)
+
     assert cum_means.shape[0] == n_eval
     all_means['Transformer'] = cum_means
 
@@ -113,7 +124,7 @@ def online(eval_trajs, model, n_eval, horizon, var):
         warm_start=False,
         batch_size=len(envs))
     print("Deploying online Thompson ...")
-    cum_means = deploy_online_vec(vec_env, controller, horizon)
+    cum_means, logits = deploy_online_vec(vec_env, controller, horizon)
     assert cum_means.shape[0] == n_eval
     all_means['PTS'] = cum_means
 

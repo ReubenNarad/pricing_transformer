@@ -7,7 +7,7 @@ from IPython import embed
 from tqdm import tqdm
 
 from ctrls.ctrl_prices import (
-    BanditTransformerController,
+    TransformerController,
     GreedyOptPolicy,
     EmpMeanPolicy,
     OptPolicy,
@@ -132,7 +132,7 @@ def online(eval_trajs, model, n_eval, horizon, var, bandit_type):
     all_means['opt'] = cum_means
 
 
-    controller = BanditTransformerController(
+    controller = TransformerController(
         model,
         sample=True,
         batch_size=len(envs))
@@ -257,7 +257,7 @@ def offline(eval_trajs, model, n_eval, horizon, var, bandit_type):
 
     opt_policy = OptPolicy(envs, batch_size=num_envs)
     # emp_policy = EmpMeanPolicy(envs[0], online=False, batch_size=num_envs)
-    lnr_policy = BanditTransformerController(model, sample=False, batch_size=num_envs)
+    lnr_policy = TransformerController(model, sample=False, batch_size=num_envs)
     thomp_policy = ThompsonSamplingPolicy(
         envs[0],
         std=var,

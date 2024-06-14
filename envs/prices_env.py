@@ -25,11 +25,6 @@ def sample_price_env(dim, H, var, lower_price=1, upper_price=10, test=False):
     # Draw envs in terms of price and reward
     opt_p = np.random.uniform(lower_price, upper_price)
     opt_r = np.random.uniform(5, 10)
-
-    if test:
-        opt_r = max(np.random.normal(loc=10, scale=3), 2)
-    else:
-        opt_r = max(np.random.normal(loc=10, scale=3), 2)
     
     # Algebraically replace opt_p and opt_r with alpha and beta
     alpha = 2 * opt_r / opt_p

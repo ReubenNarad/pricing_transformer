@@ -379,7 +379,7 @@ class UCBPolicy(Controller):
         return self.a
 
 
-class BanditTransformerController(Controller):
+class TransformerController(Controller):
     def __init__(self, model, sample=False,  batch_size=1):
         self.model = model
         self.du = model.config['action_dim']
